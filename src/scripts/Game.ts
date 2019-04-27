@@ -75,9 +75,9 @@ export class Game {
         // Add player's projectiles
         this.entities.forEach(entity => {
             this.entities.push(...entity.droppedEntities)
+            // console.log(this.entities)
+            entity.droppedEntities = []
         })
-        // console.log(this.entities)
-        this.player.droppedEntities = []
     }
 
     drawAll(context: CanvasRenderingContext2D) {
@@ -92,6 +92,16 @@ export class Game {
         this.level.draw(context)
         this.entities.forEach(entity => entity.draw(context))
         context.resetTransform()
+        this.drawHud(context)
+    }
+
+    private drawHud(context: CanvasRenderingContext2D) {
+        context.font = "30px Arial"
+        context.fillStyle = "#abc"
+        context.fillText("Child stats:", 10, 30)
+        context.fillText("eyes: " + this.player.childEyes, 10, 70)
+        context.fillText("legs: " + this.player.childLegs, 10, 100)
+        context.fillText("arms: " + this.player.childArms, 10, 130)
     }
 
     handleKeyPress(event: KeyboardEvent) {

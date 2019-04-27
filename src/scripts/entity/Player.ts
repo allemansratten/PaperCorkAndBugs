@@ -10,6 +10,7 @@ import {Arm} from "./Arm"
 import {Leg} from "./Leg"
 import {Monster} from "./monster/Monster"
 import {Projectile} from "./Projectile"
+import {BodyPart} from "./BodyPart"
 
 export class Player extends Entity {
 
@@ -43,7 +44,7 @@ export class Player extends Entity {
     private alive: boolean = true
     private shotCooldown: number = 0 // Time until next shot
     private invincibleTime: number = 0
-    zoomSmoother : Smoother
+    zoomSmoother: Smoother
 
     // hit animations
     private hitAnimStatus: number = -1
@@ -54,6 +55,10 @@ export class Player extends Entity {
     private arms: Arm[] = []
     private legs: Leg[] = []
     private activeArmIndex: number = 0
+
+    childEyes = 0
+    childLegs = 0
+    childArms = 0
 
     constructor(pos: Vector) {
         super(pos, Player.RADIUS, new CircleHitbox((Player.RADIUS)))
@@ -90,11 +95,11 @@ export class Player extends Entity {
         // draw body
         context.fillStyle = this.invincibleTime > 0 ? Player.INVINCIBLE_COLOR : Player.ALIVE_COLOR
         context.beginPath()
-        if(this.hitAnimStatus == -1)
+        if (this.hitAnimStatus == -1)
             context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
         else {
             let hitSine = Math.sin((this.hitStartTime - time) / 100)
-            context.arc(this.pos.x, this.pos.y, this.r-hitSine*Player.HIT_THICC_MULTIPLIER, 0, 2 * Math.PI)
+            context.arc(this.pos.x, this.pos.y, this.r - hitSine * Player.HIT_THICC_MULTIPLIER, 0, 2 * Math.PI)
             if (this.hitAnimStatus == 0 && hitSine >= 0.9) {
                 this.hitAnimStatus = 1
             }
@@ -189,7 +194,7 @@ export class Player extends Entity {
             let spawnPos = this.arms[this.activeArmIndex].getSpawnPoint()
 
             spawnPos.add(this.pos.clone().mulS(3))
-            spawnPos.mulS(1/4)
+            spawnPos.mulS(1 / 4)
             this.arms[this.activeArmIndex].doRecoil()
             this.droppedEntities.push(new Shot(this, spawnPos, direction))
             const shootingSpeed = this.getShootingSpeed()
@@ -218,6 +223,14 @@ export class Player extends Entity {
                 this.legs.pop()
             }
             this.invincibleTime = Player.INVINCIBLE_AFTER_HIT_TIME
+        } else if (entity instanceof BodyPart) {
+            if (entity instanceof Arm) {
+                this.childArms++
+            } else if (entity instanceof Leg) {
+                this.childLegs++
+            } else {
+                this.childEyes++
+            }
         }
     }
 
