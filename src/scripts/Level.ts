@@ -5,7 +5,7 @@ import {Tile} from "./Tile"
 export class Level implements Drawable {
 
     public player: Player
-    private static readonly TILE_SIZE = 60
+    public static readonly TILE_SIZE = 60
     tiles : Tile[][]
 
     constructor(public width : number, public height : number) {

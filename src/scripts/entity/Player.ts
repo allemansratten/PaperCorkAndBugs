@@ -56,6 +56,7 @@ export class Player extends Entity {
         }
 
         this.pos.add(this.speed.clone().mulS(seconds))
+        this.resolveLevelCollision(level, this.speed)
         return true
     }
 
