@@ -49,6 +49,10 @@ export class Game {
     step(seconds: number) {
         this.entities = this.entities.filter(entity => entity.step(seconds, this.level))
         this.resolveCollisions()
+        // Add player's projectiles
+        this.entities.push(...this.player.entitiesToAdd)
+        // console.log(this.entities)
+        this.player.entitiesToAdd = []
     }
 
     drawAll(context: CanvasRenderingContext2D) {
@@ -61,9 +65,11 @@ export class Game {
 
     handleKeyPress(event: KeyboardEvent) {
         this.player.movementKeyState.handleKey(event.key, true)
+        this.player.shootingKeyState.handleKey(event.key, true)
     }
 
     handleKeyRelease(event: KeyboardEvent) {
         this.player.movementKeyState.handleKey(event.key, false)
+        this.player.shootingKeyState.handleKey(event.key, false)
     }
 }

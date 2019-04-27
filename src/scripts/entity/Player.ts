@@ -5,6 +5,7 @@ import {Level} from "../Level"
 import {CircleHitbox} from "./CircleHitbox"
 import {FollowMonster} from "./FollowMonster"
 import {StationaryMonster} from "./StationaryMonster"
+import {Shot} from "./Shot"
 
 export class Player extends Entity {
 
@@ -12,10 +13,14 @@ export class Player extends Entity {
     private static readonly MAX_SPEED = 240 // px / s
     private static readonly ACCELERATION = 2000 // px / s^2
     private static readonly DEACCELERATION = 800
+    private static readonly SHOOTING_SPEED = 5
 
     speed: Vector = new Vector(0, 0)
 
     movementKeyState: DirectionKeyState = new DirectionKeyState(
+        ["w", "d", "s", "a"]
+    )
+    shootingKeyState: DirectionKeyState = new DirectionKeyState(
         ["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"]
     )
 
@@ -24,6 +29,8 @@ export class Player extends Entity {
 
     readonly friendly: boolean = true
     private alive: boolean = true
+    entitiesToAdd : Entity[] = [] // For projectiles produced by the player
+    private shotCooldown: number = 0 // Time until next shot
 
     constructor(pos: Vector) {
         super(pos, Player.RADIUS, new CircleHitbox((Player.RADIUS)))
@@ -37,7 +44,7 @@ export class Player extends Entity {
         context.fill()
     }
 
-    step(seconds: number, level: Level): boolean {
+    private stepMovement(seconds: number) {
         // Acceleration
         let direction: Vector = this.movementKeyState.getDirection()
         if (direction.length() !== 0) {
@@ -56,6 +63,21 @@ export class Player extends Entity {
         }
 
         this.pos.add(this.speed.clone().mulS(seconds))
+    }
+
+    private stepShooting(seconds: number) {
+        let direction: Vector = this.shootingKeyState.getDirection()
+        this.shotCooldown = Math.max(0, this.shotCooldown - seconds)
+        if (this.shotCooldown === 0 && direction.length() !== 0) {
+            this.entitiesToAdd.push(new Shot(this, this.pos.clone() as Vector, direction))
+            this.shotCooldown = 1 / Player.SHOOTING_SPEED
+        }
+    }
+
+    step(seconds: number, level: Level): boolean {
+        this.stepMovement(seconds)
+        this.stepShooting(seconds)
+
         return true
     }
 
