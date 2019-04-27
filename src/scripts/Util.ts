@@ -13,6 +13,10 @@ export function clamp(a: number, mn: number, mx: number): number {
     return Math.min(mx, Math.max(mn, a))
 }
 
+export function interpolateLinear(fr: number, to: number, progress: number) {
+    return fr * (1 - progress) + to * progress
+}
+
 export class Smoother {
     a_fr: number
     a_to: number

@@ -6,6 +6,7 @@ import {Hitbox} from "./entity/Hitbox"
 import {StagBeetle} from "./entity/monster/StagBeetle"
 import {Ant} from "./entity/monster/Ant"
 import {Monster} from "./entity/monster/Monster"
+import {Wasp} from "./entity/monster/Wasp"
 
 export class Game {
 
@@ -26,8 +27,10 @@ export class Game {
 
     private randomMonsterType() {
         const x = Math.random()
-        if (x < 0.5) {
+        if (x < 0.33) {
             return StagBeetle
+        } else if (x < 0.66) {
+            return Wasp
         } else {
             return Ant
         }
