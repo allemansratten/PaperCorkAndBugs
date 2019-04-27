@@ -1,9 +1,9 @@
 import {Monster} from "./Monster"
-import {Player} from "./Player"
-import {Level} from "../Level"
+import {Player} from "../Player"
+import {Level} from "../../Level"
 import {Vector} from "vector2d"
-import {Entity} from "./Entity"
-import {Shot} from "./Shot"
+import {Entity} from "../Entity"
+import {Shot} from "../Shot"
 
 export class StationaryMonster extends Monster {
 
@@ -26,11 +26,5 @@ export class StationaryMonster extends Monster {
     step(seconds: number, level: Level): boolean {
         if (!this.alive()) return true // leave a corpse for now
         return true
-    }
-
-    collideWith(entity: Entity): void {
-        if (entity instanceof Shot) {
-            this.hp--;
-        }
     }
 }

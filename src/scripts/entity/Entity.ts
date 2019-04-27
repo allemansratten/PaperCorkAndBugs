@@ -12,30 +12,35 @@ export abstract class Entity implements Drawable {
     constructor(public pos: Vector, public r: number, public hitbox: Hitbox) {
     }
 
-    /** default implementation for round entities */
-    protected resolveLevelCollision(level: Level, moveDirection: Vector) {
+    /** default implementation for round entities. returns true if a collision happened */
+    protected resolveLevelCollision(level: Level, moveDirection: Vector) : boolean {
+        let didCollide = false
         const levelX = Math.floor(this.pos.x / Level.TILE_SIZE)
         const levelY = Math.floor(this.pos.y / Level.TILE_SIZE)
-        console.log(levelX + " " + levelY)
+
         this.BOX_DIRECTIONS.forEach(direction => {
             const tileX = levelX + direction[0]
             const tileY = levelY + direction[1]
             if (!(tileX < 0 || tileY < 0 || tileX >= level.width || tileY >= level.height) && level.tiles[tileX][tileY].obstacle) {
                 if (levelY == tileY && levelX < tileX && this.pos.x + this.r > tileX * Level.TILE_SIZE) {
                     this.pos.x = tileX * Level.TILE_SIZE - this.r
+                    didCollide = true
                 }
                 if (levelX == tileX && levelY < tileY && this.pos.y + this.r > tileY * Level.TILE_SIZE) {
                     this.pos.y = tileY * Level.TILE_SIZE - this.r
+                    didCollide = true
                 }
                 if (levelY == tileY && levelX > tileX && this.pos.x - this.r < (tileX + 1) * Level.TILE_SIZE) {
                     this.pos.x = (tileX + 1) * Level.TILE_SIZE + this.r
+                    didCollide = true
                 }
                 if (levelX == tileX && levelY > tileY && this.pos.y - this.r < (tileY + 1) * Level.TILE_SIZE) {
                     this.pos.y = (tileY + 1) * Level.TILE_SIZE + this.r
+                    didCollide = true
                 }
             }
         })
-        if (moveDirection.length() === 0) return
+        if (moveDirection.length() === 0) return didCollide
         this.CORNER_DIRECTION_COORDS.forEach(direction => {
             const tileX = levelX + direction[0]
             const tileY = levelY + direction[1]
@@ -47,10 +52,12 @@ export abstract class Entity implements Drawable {
                 //const dist = hypot(cornerX - this.pos.x, cornerY - this.pos.y)
                 if (overlap.length() < this.r) {
                     this.pos = corner.clone().add(overlap.normalise().mulS(this.r)) as Vector
+                    didCollide = true
                     // this.pos.subtract(moveDirection.clone().mulS(overlap.length() / moveDirection.length()))
                 }
             }
         })
+        return didCollide
     }
 
     draw(context: CanvasRenderingContext2D): void {

@@ -3,8 +3,8 @@ import {DirectionKeyState} from "../DirectionKeyState"
 import {Vector} from "vector2d"
 import {Level} from "../Level"
 import {CircleHitbox} from "./CircleHitbox"
-import {FollowMonster} from "./FollowMonster"
-import {StationaryMonster} from "./StationaryMonster"
+import {StagBeetle} from "./monster/StagBeetle"
+import {StationaryMonster} from "./monster/StationaryMonster"
 import {Eye} from "./Eye"
 import {Shot} from "./Shot"
 import {clamp} from "../Util"
@@ -145,7 +145,7 @@ export class Player extends Entity {
     }
 
     collideWith(entity: Entity): void {
-        if (entity instanceof FollowMonster || entity instanceof StationaryMonster) {
+        if (entity instanceof StagBeetle || entity instanceof StationaryMonster) {
             this.alive = false
         }
     }
