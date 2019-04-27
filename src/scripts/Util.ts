@@ -12,3 +12,31 @@ export function angleDistance(a1: number, a2: number): number {
 export function clamp(a: number, mn: number, mx: number): number {
     return Math.min(mx, Math.max(mn, a))
 }
+
+export class Smoother {
+    a_fr: number
+    a_to: number
+    progress: number
+
+    constructor(a: number, public duration: number) {
+        this.a_fr = a
+        this.a_to = a
+        this.progress = 0
+    }
+
+    get() {
+        return this.a_fr * (1 - this.progress) + this.a_to * this.progress
+    }
+
+    step(seconds: number) {
+        this.progress = clamp(this.progress + seconds / this.duration, 0, 1)
+    }
+
+    setTarget(a: number) {
+        if (a !== this.a_to) {
+            this.a_fr = this.get()
+            this.a_to = a
+            this.progress = 0
+        }
+    }
+}

@@ -1,6 +1,5 @@
 import {Player} from "./entity/Player"
 import {Entity} from "./entity/Entity"
-import {StationaryMonster} from "./entity/monster/StationaryMonster"
 import {Level} from "./Level"
 import {Vector} from "vector2d"
 import {Hitbox} from "./entity/Hitbox"
@@ -43,7 +42,7 @@ export class Game {
 
             this.entities.push(toAdd)
             success = true
-        } while(!success)
+        } while (!success)
     }
 
     private resolveCollisions() {
@@ -81,7 +80,13 @@ export class Game {
 
     drawAll(context: CanvasRenderingContext2D) {
         context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight)
-        context.translate(-this.player.pos.x + this.width / 2, -this.player.pos.y + this.height / 2)
+        const zoom = this.player.getZoom()
+        context.scale(zoom, zoom)
+        context.translate(
+            -this.player.pos.x + this.width / 2 / zoom,
+            -this.player.pos.y + this.height / 2 / zoom,
+        )
+
         this.level.draw(context)
         this.entities.forEach(entity => entity.draw(context))
         context.resetTransform()

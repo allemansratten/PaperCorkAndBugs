@@ -5,7 +5,7 @@ import {Level} from "../Level"
 import {CircleHitbox} from "./CircleHitbox"
 import {Eye} from "./Eye"
 import {Shot} from "./Shot"
-import {clamp} from "../Util"
+import {clamp, Smoother} from "../Util"
 import {Arm} from "./Arm"
 import {Leg} from "./Leg"
 import {Monster} from "./monster/Monster"
@@ -20,6 +20,14 @@ export class Player extends Entity {
     private static readonly DEACCELERATION = 800
     private static readonly SHOOTING_SPEED = 5
     private static readonly INVINCIBLE_AFTER_HIT_TIME = 1
+    private static readonly ALIVE_COLOR = "#9e502c"
+    private static readonly INVINCIBLE_COLOR = "#ff502c"
+    private static readonly DEAD_COLOR = "#91a05b"
+    private static readonly MOUTH_COLOR = "#512815"
+    private static readonly MOUTH_RANGE = 0.8
+    private static readonly ZOOM_0_EYES = 5
+    private static readonly ZOOM_1_EYE = 2
+    private static readonly ZOOM_MAX_EYES = 0.5
 
     speed: Vector = new Vector(0, 0)
 
@@ -30,17 +38,12 @@ export class Player extends Entity {
         ["arrowup", "arrowright", "arrowdown", "arrowleft"]
     )
 
-    private static readonly ALIVE_COLOR = "#9e502c"
-    private static readonly INVINCIBLE_COLOR = "#ff502c"
-    private static readonly DEAD_COLOR = "#91a05b"
-    private static readonly MOUTH_COLOR = "#512815"
-    private static readonly MOUTH_RANGE = 0.8
-
     readonly friendly: boolean = true
     private alive: boolean = true
     entitiesToAdd: Entity[] = [] // For entities produced by the player
     private shotCooldown: number = 0 // Time until next shot
     private invincibleTime: number = 0
+    zoomSmoother : Smoother
 
     private eyes: Eye[] = []
     private arms: Arm[] = []
@@ -59,6 +62,7 @@ export class Player extends Entity {
         for (let i = 0; i < 6; i++) {
             this.legs.push(new Leg(pos))
         }
+        this.zoomSmoother = new Smoother(this.getTargetZoom(), 1)
     }
 
     draw(context: CanvasRenderingContext2D): void {
@@ -138,7 +142,7 @@ export class Player extends Entity {
 
         this.speed.add(direction)
         // Deacceleration
-        const maxSpeed = this.legs.length == 0 ? Player.ZERO_LEGS_MAX_SPEED : Player.MAX_SPEED * 0.5 + this.legs.length * 0.1 * Player.MAX_SPEED
+        const maxSpeed = this.getMaxMovementSpeed()
         const length2 = clamp(this.speed.magnitude() - Player.DEACCELERATION * seconds, 0, maxSpeed)
 
         if (this.speed.length() > 1e-6) {
@@ -159,7 +163,7 @@ export class Player extends Entity {
             this.activeArmIndex = (this.activeArmIndex + 1) % this.arms.length
             let spawnPos = this.arms[this.activeArmIndex].getSpawnPoint()
             this.entitiesToAdd.push(new Shot(this, this.pos.clone() as Vector, direction))
-            const shootingSpeed = Player.SHOOTING_SPEED * 0.1 + this.arms.length * Player.SHOOTING_SPEED * 0.1
+            const shootingSpeed = this.getShootingSpeed()
             this.shotCooldown = 1 / shootingSpeed
         }
     }
@@ -168,7 +172,8 @@ export class Player extends Entity {
         this.invincibleTime = Math.max(0, this.invincibleTime - seconds)
         this.stepMovement(seconds, level)
         this.stepShooting(seconds)
-
+        this.zoomSmoother.setTarget(this.getTargetZoom())
+        this.zoomSmoother.step(seconds)
         return true
     }
 
@@ -185,5 +190,30 @@ export class Player extends Entity {
             }
             this.invincibleTime = Player.INVINCIBLE_AFTER_HIT_TIME
         }
+    }
+
+    private getTargetZoom(): number {
+        if (this.eyes.length === 0) {
+            return Player.ZOOM_0_EYES
+        }
+        const goodness = (this.eyes.length - 1) / 9
+        return Math.exp(Math.log(Player.ZOOM_MAX_EYES) * goodness + Math.log(Player.ZOOM_1_EYE) * (1 - goodness))
+        // return 1 / (1 + 0.05 * this.eyes.length)
+    }
+
+    public getZoom(): number {
+        return this.zoomSmoother.get()
+    }
+
+    getMaxMovementSpeed(): number {
+        if (this.legs.length == 0) {
+            return Player.ZERO_LEGS_MAX_SPEED
+        } else {
+            return Player.MAX_SPEED * 0.5 + this.legs.length * 0.1 * Player.MAX_SPEED
+        }
+    }
+
+    getShootingSpeed(): number {
+        return Player.SHOOTING_SPEED * 0.1 + this.arms.length * Player.SHOOTING_SPEED * 0.1
     }
 }
