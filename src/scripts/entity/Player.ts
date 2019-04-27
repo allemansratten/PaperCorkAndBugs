@@ -5,11 +5,12 @@ import {Level} from "../Level"
 import {CircleHitbox} from "./CircleHitbox"
 import {FollowMonster} from "./FollowMonster"
 import {StationaryMonster} from "./StationaryMonster"
+import {Eye} from "./Eye";
 import {Shot} from "./Shot"
 
 export class Player extends Entity {
 
-    private static readonly RADIUS = 23
+    private static readonly RADIUS = 32
     private static readonly MAX_SPEED = 240 // px / s
     private static readonly ACCELERATION = 2000 // px / s^2
     private static readonly DEACCELERATION = 800
@@ -32,16 +33,41 @@ export class Player extends Entity {
     entitiesToAdd : Entity[] = [] // For projectiles produced by the player
     private shotCooldown: number = 0 // Time until next shot
 
+    private eyes: Array<Eye> = new Array<Eye>()
+
     constructor(pos: Vector) {
         super(pos, Player.RADIUS, new CircleHitbox((Player.RADIUS)))
+        for (let i = 0; i < 6; i++)
+            this.eyes.push(new Eye(pos, 5 + (Math.random() - 0.5) * 2.5);
     }
 
     draw(context: CanvasRenderingContext2D): void {
         super.draw(context)
+
+        // draw body
         context.fillStyle = this.alive ? Player.ALIVE_COLOR : Player.DEAD_COLOR
         context.beginPath()
         context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
         context.fill()
+
+        // draw eyes
+        this.eyes.forEach((eye, index) => {
+            if (this.eyes.length == 1) {
+                eye.pos = new Vector(this.pos.x, this.pos.y - this.r)
+            } else {
+                if (index >= 8 && index <= 9)
+                    eye.pos = new Vector(this.pos.x + (8.5 - index) * this.r * 0.9, this.pos.y - this.r / 5.6)
+                if (index >= 6 && index <= 7)
+                    eye.pos = new Vector(this.pos.x + (6.5 - index) * this.r * 1.4, this.pos.y - this.r / 1.6)
+                else if (index >= 4 && index <= 5)
+                    eye.pos = new Vector(this.pos.x + (4.5 - index) * this.r * 1.6, this.pos.y - this.r / 3.5)
+                else if (index >= 2 && index <= 3)
+                    eye.pos = new Vector(this.pos.x, this.pos.y - this.r / 3 + (2 - index) * 13)
+                else if (index >= 0 && index <= 1)
+                    eye.pos = new Vector(this.pos.x + (-0.5 + index) * this.r * 0.7, this.pos.y - this.r / 2)
+            }
+            eye.draw(context)
+        })
     }
 
     private stepMovement(seconds: number) {
