@@ -1,7 +1,8 @@
-import {Entity} from "./Entity"
-import {Player} from "./Player"
+import {Entity} from "../Entity"
+import {Player} from "../Player"
 import {Vector} from "vector2d"
-import {CircleHitbox} from "./CircleHitbox"
+import {CircleHitbox} from "../CircleHitbox"
+import {Shot} from "../Shot"
 
 export abstract class Monster extends Entity {
 
@@ -13,5 +14,11 @@ export abstract class Monster extends Entity {
 
     alive(): boolean {
         return this.hp > 0
+    }
+
+    collideWith(entity: Entity): void {
+        if (entity instanceof Shot) {
+            this.hp--;
+        }
     }
 }

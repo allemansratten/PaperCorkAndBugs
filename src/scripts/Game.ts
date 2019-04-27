@@ -1,9 +1,10 @@
 import {Player} from "./entity/Player"
 import {Entity} from "./entity/Entity"
-import {StationaryMonster} from "./entity/StationaryMonster"
+import {StationaryMonster} from "./entity/monster/StationaryMonster"
 import {Level} from "./Level"
 import {Vector} from "vector2d"
 import {Hitbox} from "./entity/Hitbox"
+import {StagBeetle} from "./entity/monster/StagBeetle"
 
 export class Game {
 
@@ -28,7 +29,7 @@ export class Game {
         const x = Math.random() * this.width
         const y = Math.random() * this.height
         // if (hypot(this.player.x - x, this.player.y - y) > this.width / 2)
-        this.entities.push(new StationaryMonster(this.player, new Vector(x, y)))
+        this.entities.push(new StagBeetle(this.player, new Vector(x, y)))
         // } while (oldSize == this.monsters.length)
     }
 
