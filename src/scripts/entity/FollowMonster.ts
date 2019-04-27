@@ -43,8 +43,8 @@ export class FollowMonster extends Monster {
         } else {
             this.angle = a2
         }
-        this.x += FollowMonster.SPEED * seconds * Math.cos(this.angle)
-        this.y += FollowMonster.SPEED * seconds * Math.sin(this.angle)
+        this.pos.x += FollowMonster.SPEED * seconds * Math.cos(this.angle)
+        this.pos.y += FollowMonster.SPEED * seconds * Math.sin(this.angle)
         return this.alive
     }
 
