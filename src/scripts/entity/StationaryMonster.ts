@@ -2,6 +2,7 @@ import {Monster} from "./Monster"
 import {Player} from "./Player"
 import {Level} from "../Level"
 import {Entity} from "./Entity"
+import {Vector} from "vector2d"
 
 export class StationaryMonster extends Monster {
 
@@ -10,14 +11,14 @@ export class StationaryMonster extends Monster {
     private static readonly DEAD_COLOR = "#558"
     private static readonly HP = 100
 
-    constructor(player: Player, x: number, y: number) {
-        super(player, x, y, StationaryMonster.RADIUS, StationaryMonster.HP)
+    constructor(player: Player, pos: Vector) {
+        super(player, pos, StationaryMonster.RADIUS, StationaryMonster.HP)
     }
 
     draw(context: CanvasRenderingContext2D): void {
         context.fillStyle = this.alive ? StationaryMonster.ALIVE_COLOR : StationaryMonster.DEAD_COLOR
         context.beginPath()
-        context.arc(this.x, this.y, this.r, 0, 2 * Math.PI)
+        context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
         context.fill()
     }
 

@@ -3,6 +3,7 @@ import {Monster} from "./Monster"
 import {Level} from "../Level"
 import {angleDistance, hypot} from "../Util"
 import {Entity} from "./Entity"
+import {Vector} from "vector2d"
 
 export class FollowMonster extends Monster {
 
@@ -12,21 +13,22 @@ export class FollowMonster extends Monster {
     private static readonly HP = 100
     private angle: number = 0
 
-    constructor(player: Player, x: number, y: number) {
-        super(player, x, y, FollowMonster.RADIUS, FollowMonster.HP)
+    constructor(player: Player, pos : Vector) {
+        super(player, pos, FollowMonster.RADIUS, FollowMonster.HP)
         this.angle = this.angleToPlayer()
     }
 
 
     private angleToPlayer(): number {
-        return Math.atan2(this.player.y - this.y, this.player.x - this.x)
+        const delta = this.player.pos.clone().subtract(this.pos)
+        return Math.atan2(delta.y, delta.x)
     }
 
 
     draw(context: CanvasRenderingContext2D): void {
         context.fillStyle = "#2fa"
         context.beginPath()
-        context.arc(this.x, this.y, this.r, 0, 2 * Math.PI)
+        context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
         context.fill()
     }
 
@@ -42,12 +44,13 @@ export class FollowMonster extends Monster {
         } else {
             this.angle = a2
         }
-        this.x += FollowMonster.SPEED * seconds * Math.cos(this.angle)
-        this.y += FollowMonster.SPEED * seconds * Math.sin(this.angle)
+        this.pos.x += FollowMonster.SPEED * seconds * Math.cos(this.angle)
+        this.pos.y += FollowMonster.SPEED * seconds * Math.sin(this.angle)
         return this.alive
     }
 
     collidesWith(entity: Entity): boolean {
-        return hypot(entity.x - this.x, entity.y - this.y) < this.r + entity.r
+        // return hypot(entity.x - this.x, entity.y - this.y) < this.r + entity.r
+        return false
     }
 }
