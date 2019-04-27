@@ -37,10 +37,10 @@ export class Game {
     }
 
     handleKeyPress(event: KeyboardEvent) {
-        console.log("event")
-        this.player.x += 10
+        this.player.movementKeyState.handleKey(event.key, true)
     }
 
     handleKeyRelease(event: KeyboardEvent) {
+        this.player.movementKeyState.handleKey(event.key, false)
     }
 }
