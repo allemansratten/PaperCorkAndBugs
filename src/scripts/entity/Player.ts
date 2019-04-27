@@ -3,21 +3,23 @@ import {DirectionKeyState} from "../DirectionKeyState"
 import {Vector} from "vector2d"
 import {Level} from "../Level"
 import {CircleHitbox} from "./CircleHitbox"
-import {StagBeetle} from "./monster/StagBeetle"
-import {StationaryMonster} from "./monster/StationaryMonster"
 import {Eye} from "./Eye"
 import {Shot} from "./Shot"
 import {clamp} from "../Util"
 import {Arm} from "./Arm"
 import {Leg} from "./Leg"
+import {Monster} from "./monster/Monster"
+import {Projectile} from "./Projectile"
 
 export class Player extends Entity {
 
     private static readonly RADIUS = 32
     static readonly MAX_SPEED = 240 // px / s
+    static readonly ZERO_LEGS_MAX_SPEED = 20 // px / s
     private static readonly ACCELERATION = 2000 // px / s^2
     private static readonly DEACCELERATION = 800
     private static readonly SHOOTING_SPEED = 5
+    private static readonly INVINCIBLE_AFTER_HIT_TIME = 1
 
     speed: Vector = new Vector(0, 0)
 
@@ -29,14 +31,16 @@ export class Player extends Entity {
     )
 
     private static readonly ALIVE_COLOR = "#9e502c"
+    private static readonly INVINCIBLE_COLOR = "#ff502c"
     private static readonly DEAD_COLOR = "#91a05b   "
     private static readonly MOUTH_COLOR = "#512815"
     private static readonly MOUTH_RANGE = 0.8
 
     readonly friendly: boolean = true
     private alive: boolean = true
-    entitiesToAdd: Entity[] = [] // For projectiles produced by the player
+    entitiesToAdd: Entity[] = [] // For entities produced by the player
     private shotCooldown: number = 0 // Time until next shot
+    private inivincibleTime: number = 0
 
     private eyes: Eye[] = []
     private arms: Arm[] = []
@@ -48,7 +52,7 @@ export class Player extends Entity {
             this.eyes.push(new Eye(pos, 5 + (Math.random() - 0.5) * 2.5))
         }
         for (let i = 0; i < 6; i++) {
-            this.arms.push(new Arm(pos, 4*(i%2)+2))
+            this.arms.push(new Arm(pos, 4 * (i % 2) + 2))
         }
         for (let i = 0; i < 6; i++) {
             this.legs.push(new Leg(pos))
@@ -62,20 +66,19 @@ export class Player extends Entity {
         // draw legs
         this.legs.forEach((leg, index) => {
             leg.speed = this.speed.length()
-            if(index % 2 == 0) 
-            {
-                leg.pos = new Vector(this.pos.x+this.r*Math.sin(index/this.legs.length) + 2, this.pos.y + this.r*Math.cos(index/this.legs.length))
-                leg.rot = -index/this.legs.length*Math.PI/2
+            if (index % 2 == 0) {
+                leg.pos = new Vector(this.pos.x + this.r * Math.sin(index / this.legs.length) + 2, this.pos.y + this.r * Math.cos(index / this.legs.length))
+                leg.rot = -index / this.legs.length * Math.PI / 2
             } else {
-                leg.pos = new Vector(this.pos.x-this.r*Math.sin(index/this.legs.length) - 1, this.pos.y + this.r*Math.cos(index/this.legs.length))
-                leg.rot = index/this.legs.length*Math.PI/3
+                leg.pos = new Vector(this.pos.x - this.r * Math.sin(index / this.legs.length) - 1, this.pos.y + this.r * Math.cos(index / this.legs.length))
+                leg.rot = index / this.legs.length * Math.PI / 3
             }
 
             leg.draw(context)
         })
 
         // draw body
-        context.fillStyle = this.alive ? Player.ALIVE_COLOR : Player.DEAD_COLOR
+        context.fillStyle = this.inivincibleTime > 0 ? Player.INVINCIBLE_COLOR : this.alive ? Player.ALIVE_COLOR : Player.DEAD_COLOR
         context.beginPath()
         context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
         context.fill()
@@ -112,11 +115,10 @@ export class Player extends Entity {
         this.arms.forEach((arm, index) => {
             arm.pos = new Vector(this.pos.x - 40, this.pos.y + 5 * index)
 
-            if(index % 2 == 0) 
-            {
-                arm.pos = new Vector(this.pos.x-this.r, this.pos.y + index/6*20)
+            if (index % 2 == 0) {
+                arm.pos = new Vector(this.pos.x - this.r, this.pos.y + index / 6 * 20)
             } else {
-                arm.pos = new Vector(this.pos.x+this.r, this.pos.y + 0*this.r*Math.cos(index/this.legs.length))
+                arm.pos = new Vector(this.pos.x + this.r, this.pos.y + 0 * this.r * Math.cos(index / this.legs.length))
             }
 
             arm.draw(context)
@@ -127,13 +129,15 @@ export class Player extends Entity {
     private stepMovement(seconds: number, level: Level) {
         // Acceleration
         let direction: Vector = this.movementKeyState.getDirection()
+        const accel = Player.ACCELERATION * 0.5 + this.legs.length * 0.1 * Player.ACCELERATION
         if (direction.length() !== 0) {
-            direction.normalise().mulS(Player.ACCELERATION * seconds)
+            direction.normalise().mulS(accel * seconds)
         }
-        this.speed.add(direction)
 
+        this.speed.add(direction)
         // Deacceleration
-        const length2 = clamp(this.speed.magnitude() - Player.DEACCELERATION * seconds, 0, Player.MAX_SPEED)
+        const maxSpeed = this.legs.length == 0 ? Player.ZERO_LEGS_MAX_SPEED : Player.MAX_SPEED * 0.5 + this.legs.length * 0.1 * Player.MAX_SPEED
+        const length2 = clamp(this.speed.magnitude() - Player.DEACCELERATION * seconds, 0, maxSpeed)
 
         if (this.speed.length() > 1e-6) {
             this.speed = this.speed.normalise().mulS(length2)
@@ -149,13 +153,15 @@ export class Player extends Entity {
     private stepShooting(seconds: number) {
         let direction: Vector = this.shootingKeyState.getDirection()
         this.shotCooldown = Math.max(0, this.shotCooldown - seconds)
-        if (this.shotCooldown === 0 && direction.length() !== 0) {
+        if (this.shotCooldown === 0 && direction.length() !== 0 && this.arms.length > 0) {
             this.entitiesToAdd.push(new Shot(this, this.pos.clone() as Vector, direction))
-            this.shotCooldown = 1 / Player.SHOOTING_SPEED
+            const shootingSpeed = Player.SHOOTING_SPEED * 0.1 + this.arms.length * Player.SHOOTING_SPEED * 0.1
+            this.shotCooldown = 1 / shootingSpeed
         }
     }
 
     step(seconds: number, level: Level): boolean {
+        this.inivincibleTime = Math.max(0, this.inivincibleTime - seconds)
         this.stepMovement(seconds, level)
         this.stepShooting(seconds)
 
@@ -163,8 +169,17 @@ export class Player extends Entity {
     }
 
     collideWith(entity: Entity): void {
-        if (entity instanceof StagBeetle || entity instanceof StationaryMonster) {
-            this.alive = false
+        if (this.inivincibleTime <= 0 && (entity instanceof Monster || entity instanceof Projectile)) {
+            const partIndex = Math.floor(Math.random() * (this.eyes.length + this.arms.length + this.legs.length))
+            if (partIndex < this.eyes.length) {
+                this.eyes.pop()
+            } else if (partIndex - this.eyes.length < this.arms.length) {
+                this.arms.pop()
+            } else {
+                this.legs.pop()
+                this.alive = false
+            }
+            this.inivincibleTime = Player.INVINCIBLE_AFTER_HIT_TIME
         }
     }
 }
