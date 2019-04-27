@@ -7,6 +7,7 @@ import {FollowMonster} from "./FollowMonster"
 import {StationaryMonster} from "./StationaryMonster"
 import {Eye} from "./Eye";
 import {Shot} from "./Shot"
+import {clamp} from "../Util"
 
 export class Player extends Entity {
 
@@ -38,7 +39,7 @@ export class Player extends Entity {
     constructor(pos: Vector) {
         super(pos, Player.RADIUS, new CircleHitbox((Player.RADIUS)))
         for (let i = 0; i < 6; i++)
-            this.eyes.push(new Eye(pos, 5 + (Math.random() - 0.5) * 2.5);
+            this.eyes.push(new Eye(pos, 5 + (Math.random() - 0.5) * 2.5))
     }
 
     draw(context: CanvasRenderingContext2D): void {
@@ -112,9 +113,4 @@ export class Player extends Entity {
             this.alive = false
         }
     }
-}
-
-function clamp(a: number, mn: number, mx: number): number {
-    return Math.min(mx, Math.max(mn, a))
-
 }
