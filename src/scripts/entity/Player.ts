@@ -25,7 +25,7 @@ export class Player extends Entity {
         ["w", "d", "s", "a"]
     )
     shootingKeyState: DirectionKeyState = new DirectionKeyState(
-        ["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"]
+        ["arrowup", "arrowright", "arrowdown", "arrowleft"]
     )
 
     private static readonly ALIVE_COLOR = "#9e502c"
