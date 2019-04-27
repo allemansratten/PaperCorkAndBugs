@@ -4,7 +4,7 @@ const canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanva
 const ctx: CanvasRenderingContext2D = canvas.getContext('2d')
 canvas.width = ctx.canvas.clientWidth
 canvas.height = ctx.canvas.clientHeight
-canvas.style.backgroundColor = 'rgb(10,100,100)'
+// canvas.style.backgroundColor = 'rgb(10,100,100)'
 
 let game: Game = new Game(600, 600)
 document.body.onkeydown = (event: KeyboardEvent) => {
