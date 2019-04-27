@@ -5,7 +5,7 @@ import {Level} from "../Level"
 import {CircleHitbox} from "./CircleHitbox"
 import {FollowMonster} from "./FollowMonster"
 import {StationaryMonster} from "./StationaryMonster"
-import {Eye} from "./Eye";
+import {Eye} from "./Eye"
 import {Shot} from "./Shot"
 import {clamp} from "../Util"
 import {Arm} from "./Arm"
@@ -35,7 +35,7 @@ export class Player extends Entity {
 
     readonly friendly: boolean = true
     private alive: boolean = true
-    entitiesToAdd : Entity[] = [] // For projectiles produced by the player
+    entitiesToAdd: Entity[] = [] // For projectiles produced by the player
     private shotCooldown: number = 0 // Time until next shot
 
     private eyes: Eye[] = []
@@ -87,10 +87,10 @@ export class Player extends Entity {
         // draw mouth
         context.fillStyle = Player.MOUTH_COLOR
         context.beginPath()
-        let mouth_range_sine = Math.sin(time/300)/4
+        let mouth_range_sine = Math.sin(time / 300) / 4
         this.alive ?
-            context.arc(this.pos.x, this.pos.y, this.r / 2, Math.PI * (1 - Player.MOUTH_RANGE)+mouth_range_sine, Math.PI * Player.MOUTH_RANGE-mouth_range_sine) :
-            context.arc(this.pos.x, this.pos.y+this.r/1.5, this.r / 2, Math.PI + Math.PI * (1 - Player.MOUTH_RANGE), Math.PI + Math.PI * Player.MOUTH_RANGE)
+            context.arc(this.pos.x, this.pos.y, this.r / 2, Math.PI * (1 - Player.MOUTH_RANGE) + mouth_range_sine, Math.PI * Player.MOUTH_RANGE - mouth_range_sine) :
+            context.arc(this.pos.x, this.pos.y + this.r / 1.5, this.r / 2, Math.PI + Math.PI * (1 - Player.MOUTH_RANGE), Math.PI + Math.PI * Player.MOUTH_RANGE)
         context.stroke()
 
         // draw arms
@@ -106,7 +106,7 @@ export class Player extends Entity {
         })
     }
 
-    private stepMovement(seconds: number) {
+    private stepMovement(seconds: number, level: Level) {
         // Acceleration
         let direction: Vector = this.movementKeyState.getDirection()
         if (direction.length() !== 0) {
@@ -138,7 +138,7 @@ export class Player extends Entity {
     }
 
     step(seconds: number, level: Level): boolean {
-        this.stepMovement(seconds)
+        this.stepMovement(seconds, level)
         this.stepShooting(seconds)
 
         return true
