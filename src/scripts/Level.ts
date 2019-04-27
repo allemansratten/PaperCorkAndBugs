@@ -27,7 +27,7 @@ export class Level implements Drawable {
                 } else {
                     context.fillStyle = "rgb(10, 100, 100)"
                 }
-                context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE, Level.TILE_SIZE)
+                context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE+4, Level.TILE_SIZE+4)
             }
         }
     }
