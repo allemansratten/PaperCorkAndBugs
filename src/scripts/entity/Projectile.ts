@@ -1,11 +1,12 @@
 import {Entity} from "./Entity"
 import {Level} from "../Level"
 import {Player} from "./Player"
+import {Vector} from "vector2d"
 
 export class Projectile extends Entity {
 
-    constructor(private player: Player, x: number, y: number, r: number, public friendly: boolean) {
-        super(x, y, r)
+    constructor(private player: Player, pos: Vector, r: number, public friendly: boolean) {
+        super(pos, r)
 
     }
 

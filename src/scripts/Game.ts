@@ -2,6 +2,7 @@ import {Player} from "./entity/Player"
 import {Entity} from "./entity/Entity"
 import {StationaryMonster} from "./entity/StationaryMonster"
 import {Level} from "./Level"
+import {Vector} from "vector2d"
 
 export class Game {
 
@@ -11,11 +12,13 @@ export class Game {
     private level: Level
 
     constructor(private width: number, private height: number) {
-        this.player = new Player(width / 2, height / 2)
+        this.player = new Player(new Vector(width / 2, height / 2))
         this.entities.push(this.player)
         for (let i = 0; i < 5; i++) {
             this.addMonsterRandom()
         }
+        this.level = new Level()
+        this.level.player = this.player
     }
 
     private addMonsterRandom() {
@@ -24,7 +27,7 @@ export class Game {
         const x = Math.random() * this.width
         const y = Math.random() * this.height
         // if (hypot(this.player.x - x, this.player.y - y) > this.width / 2)
-        this.entities.push(new StationaryMonster(this.player, x, y))
+        this.entities.push(new StationaryMonster(this.player, new Vector(x, y)))
         // } while (oldSize == this.monsters.length)
     }
 
@@ -45,6 +48,7 @@ export class Game {
     }
 
     drawAll(context: CanvasRenderingContext2D) {
+        this.level.draw(context)
         this.entities.forEach(entity => entity.draw(context))
     }
 

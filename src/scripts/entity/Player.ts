@@ -21,15 +21,15 @@ export class Player extends Entity {
 
     readonly friendly: boolean = true
 
-    constructor(x: number, y: number) {
-        super(x, y, Player.RADIUS)
+    constructor(pos: Vector) {
+        super(pos, Player.RADIUS)
     }
 
     draw(context: CanvasRenderingContext2D): void {
         super.draw(context)
         context.fillStyle = Player.ALIVE_COLOR
         context.beginPath()
-        context.arc(this.x, this.y, this.r, 0, 2 * Math.PI)
+        context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
         context.fill()
     }
 
@@ -44,14 +44,14 @@ export class Player extends Entity {
         // Deacceleration
         const length2 = clamp(this.speed.magnitude() - Player.DEACCELERATION * seconds, 0, Player.MAX_SPEED)
 
-        if (this.speed.magnitude() > 1e-6) {
+        if (this.speed.length() > 1e-6) {
             this.speed = this.speed.normalise().mulS(length2)
         } else {
+            // Avoid division by zero
             this.speed.setAxes(0, 0)
         }
 
-        this.x += this.speed.x * seconds
-        this.y += this.speed.y * seconds
+        this.pos.add(this.speed.clone().mulS(seconds))
         return true
     }
 

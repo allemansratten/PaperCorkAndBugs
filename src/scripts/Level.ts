@@ -6,8 +6,7 @@ export class Level implements Drawable {
     public player: Player
 
     draw(context: CanvasRenderingContext2D): void {
-        context.fillRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight)
-
+        context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight)
     }
 
 }

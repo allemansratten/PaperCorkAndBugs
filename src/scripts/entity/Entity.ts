@@ -1,9 +1,10 @@
 import {Drawable} from "../Drawable"
 import {Level} from "../Level"
+import {Vector} from "vector2d"
 
 export abstract class Entity implements Drawable {
 
-    constructor(public x: number, public y: number, public r: number) {
+    constructor(public pos : Vector, public r: number) {
     }
 
     draw(context: CanvasRenderingContext2D): void {
