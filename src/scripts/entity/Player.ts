@@ -27,7 +27,7 @@ export class Player extends Entity {
         ["w", "d", "s", "a"]
     )
     shootingKeyState: DirectionKeyState = new DirectionKeyState(
-        ["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"]
+        ["arrowup", "arrowright", "arrowdown", "arrowleft"]
     )
 
     private static readonly ALIVE_COLOR = "#9e502c"
@@ -40,7 +40,7 @@ export class Player extends Entity {
     private alive: boolean = true
     entitiesToAdd: Entity[] = [] // For entities produced by the player
     private shotCooldown: number = 0 // Time until next shot
-    private inivincibleTime: number = 0
+    private invincibleTime: number = 0
 
     private eyes: Eye[] = []
     private arms: Arm[] = []
@@ -80,7 +80,7 @@ export class Player extends Entity {
         })
 
         // draw body
-        context.fillStyle = this.inivincibleTime > 0 ? Player.INVINCIBLE_COLOR : this.alive ? Player.ALIVE_COLOR : Player.DEAD_COLOR
+        context.fillStyle = this.invincibleTime > 0 ? Player.INVINCIBLE_COLOR : this.alive ? Player.ALIVE_COLOR : Player.DEAD_COLOR
         context.beginPath()
         context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
         context.fill()
@@ -168,7 +168,7 @@ export class Player extends Entity {
     }
 
     step(seconds: number, level: Level): boolean {
-        this.inivincibleTime = Math.max(0, this.inivincibleTime - seconds)
+        this.invincibleTime = Math.max(0, this.invincibleTime - seconds)
         this.stepMovement(seconds, level)
         this.stepShooting(seconds)
 
@@ -176,7 +176,7 @@ export class Player extends Entity {
     }
 
     collideWith(entity: Entity): void {
-        if (this.inivincibleTime <= 0 && (entity instanceof Monster || entity instanceof Projectile)) {
+        if (this.invincibleTime <= 0 && (entity instanceof Monster || entity instanceof Projectile)) {
             const partIndex = Math.floor(Math.random() * (this.eyes.length + this.arms.length + this.legs.length))
             if (partIndex < this.eyes.length) {
                 this.eyes.pop()
@@ -186,7 +186,7 @@ export class Player extends Entity {
                 this.legs.pop()
                 this.alive = false
             }
-            this.inivincibleTime = Player.INVINCIBLE_AFTER_HIT_TIME
+            this.invincibleTime = Player.INVINCIBLE_AFTER_HIT_TIME
         }
     }
 }

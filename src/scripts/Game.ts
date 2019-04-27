@@ -88,12 +88,12 @@ export class Game {
     }
 
     handleKeyPress(event: KeyboardEvent) {
-        this.player.movementKeyState.handleKey(event.key, true)
-        this.player.shootingKeyState.handleKey(event.key, true)
+        this.player.movementKeyState.handleKey(event.key.toLowerCase(), true)
+        this.player.shootingKeyState.handleKey(event.key.toLowerCase(), true)
     }
 
     handleKeyRelease(event: KeyboardEvent) {
-        this.player.movementKeyState.handleKey(event.key, false)
-        this.player.shootingKeyState.handleKey(event.key, false)
+        this.player.movementKeyState.handleKey(event.key.toLowerCase(), false)
+        this.player.shootingKeyState.handleKey(event.key.toLowerCase(), false)
     }
 }
