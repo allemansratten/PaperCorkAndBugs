@@ -118,9 +118,9 @@ export class Player extends Entity {
             arm.pos = new Vector(this.pos.x - 40, this.pos.y + 5 * index)
 
             if (index <= 2) {
-                arm.pos = new Vector(this.pos.x + this.r * 1.2, this.pos.y + index / 6 * 80 - 20)
+                arm.pos = new Vector(this.pos.x + this.r * 1.3, this.pos.y + index / 6 * 80 - 20)
             } else {
-                arm.pos = new Vector(this.pos.x - this.r * 1.2, this.pos.y - index / 6 * 80 + 50)
+                arm.pos = new Vector(this.pos.x - this.r * 1.3, this.pos.y - index / 6 * 80 + 50)
             }
 
             arm.draw(context)
@@ -158,7 +158,10 @@ export class Player extends Entity {
         if (this.shotCooldown === 0 && direction.length() !== 0 && this.arms.length > 0) {
             this.activeArmIndex = (this.activeArmIndex + 1) % this.arms.length
             let spawnPos = this.arms[this.activeArmIndex].getSpawnPoint()
-            this.entitiesToAdd.push(new Shot(this, this.pos.clone() as Vector, direction))
+            spawnPos.add(this.pos.clone().mulS(3))
+            spawnPos.mulS(1/4)
+            this.arms[this.activeArmIndex].doRecoil()
+            this.entitiesToAdd.push(new Shot(this, spawnPos, direction))
             const shootingSpeed = Player.SHOOTING_SPEED * 0.1 + this.arms.length * Player.SHOOTING_SPEED * 0.1
             this.shotCooldown = 1 / shootingSpeed
         }
