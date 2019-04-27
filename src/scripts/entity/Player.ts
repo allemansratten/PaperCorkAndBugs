@@ -8,6 +8,8 @@ import {StationaryMonster} from "./StationaryMonster"
 import {Eye} from "./Eye";
 import {Shot} from "./Shot"
 import {clamp} from "../Util"
+import {Arm} from "./Arm"
+import {Leg} from "./Leg"
 
 export class Player extends Entity {
 
@@ -34,12 +36,21 @@ export class Player extends Entity {
     entitiesToAdd : Entity[] = [] // For projectiles produced by the player
     private shotCooldown: number = 0 // Time until next shot
 
-    private eyes: Array<Eye> = new Array<Eye>()
+    private eyes: Eye[] = []
+    private arms: Arm[] = []
+    private legs: Leg[] = []
 
     constructor(pos: Vector) {
         super(pos, Player.RADIUS, new CircleHitbox((Player.RADIUS)))
-        for (let i = 0; i < 6; i++)
+        for (let i = 0; i < 6; i++) {
             this.eyes.push(new Eye(pos, 5 + (Math.random() - 0.5) * 2.5))
+        }
+        for (let i = 0; i < 6; i++) {
+            this.arms.push(new Arm(pos))
+        }
+        for (let i = 0; i < 6; i++) {
+            this.legs.push(new Leg(pos))
+        }
     }
 
     draw(context: CanvasRenderingContext2D): void {
@@ -68,6 +79,18 @@ export class Player extends Entity {
                     eye.pos = new Vector(this.pos.x + (-0.5 + index) * this.r * 0.7, this.pos.y - this.r / 2)
             }
             eye.draw(context)
+        })
+
+        // draw arms
+        this.arms.forEach((arm, index) => {
+            arm.pos = new Vector(this.pos.x - 40, this.pos.y + 5 * index)
+            arm.draw(context)
+        })
+
+        // draw legs
+        this.legs.forEach((leg, index) => {
+            leg.pos = new Vector(this.pos.x - 8 + 5 * index, this.pos.y + 30)
+            leg.draw(context)
         })
     }
 
