@@ -5,15 +5,15 @@ import {Tile} from "./Tile"
 export class Level implements Drawable {
 
     public player: Player
-    private static readonly TILE_SIZE = 60
-    tiles : Tile[][]
+    public static readonly TILE_SIZE = 80
+    tiles: Tile[][]
 
-    constructor(public width : number, public height : number) {
+    constructor(public width: number, public height: number) {
         this.tiles = []
         for (let xi = 0; xi < width; xi++) {
             this.tiles.push([])
             for (let yi = 0; yi < height; yi++) {
-                this.tiles[xi].push(new Tile(Math.random() < 0.1))
+                this.tiles[xi].push(new Tile(xi == 0 || yi == 0 || xi == width - 1 || yi == height - 1 || Math.random() < 0.1))
             }
         }
     }
