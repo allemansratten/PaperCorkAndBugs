@@ -1,10 +1,11 @@
 import {Drawable} from "../Drawable"
 import {Vector} from "vector2d"
 import {BodyPart} from "./BodyPart"
+import {CircleHitbox} from "./CircleHitbox"
 
 export class Arm extends BodyPart implements Drawable {
 
-    pos: Vector
+    private static readonly RADIUS = 30
     recoil : number = 10
     defaultDir: number
     private recoilState : number = -1
@@ -13,8 +14,7 @@ export class Arm extends BodyPart implements Drawable {
     private static readonly ARM_COLOR = "#000000"
 
     constructor(pos: Vector, defaultDir: number) {
-        super()
-        this.pos = pos
+        super(pos, Arm.RADIUS, new CircleHitbox(Arm.RADIUS))
         this.defaultDir = defaultDir
 
     }
@@ -52,7 +52,7 @@ export class Arm extends BodyPart implements Drawable {
         this.recoilState = 0
         this.recoilSinePrev = 0
         this.recoilStartTime = Date.now()
-    }    
+    }
 
     getSpawnPoint(): Vector {
         return this.pos

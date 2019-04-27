@@ -2,17 +2,17 @@ import {Drawable} from "../Drawable"
 import {Vector} from "vector2d"
 import {Player} from "./Player"
 import {BodyPart} from "./BodyPart"
+import {CircleHitbox} from "./CircleHitbox"
 
 export class Leg extends BodyPart implements Drawable {
 
-    pos: Vector
+    private static readonly RADIUS = 30
     rot: number
     speed: number
     private baseWiggleOffset: number = Math.random() * 10
 
     constructor(pos: Vector) {
-        super()
-        this.pos = pos
+        super(pos, Leg.RADIUS, new CircleHitbox(Leg.RADIUS))
     }
 
     draw(context: CanvasRenderingContext2D): void {

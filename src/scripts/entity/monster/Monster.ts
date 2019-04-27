@@ -5,8 +5,13 @@ import {CircleHitbox} from "../CircleHitbox"
 import {Shot} from "../Shot"
 import {Level} from "../../Level"
 import {clamp} from "../../Util"
+import {Leg} from "../Leg"
+import {Eye} from "../Eye"
+import {Arm} from "../Arm"
 
 export abstract class Monster extends Entity {
+
+    private readonly BODY_PART_DROP_CHANCE = 0.5
 
     constructor(protected player: Player, pos: Vector, r: number, protected hp: number) {
         super(pos, r, new CircleHitbox(r))
@@ -27,6 +32,18 @@ export abstract class Monster extends Entity {
     }
 
     step(seconds: number, level: Level): boolean {
+        if (!this.alive() && this.timeSinceDeath == 0) {
+            if (Math.random() < this.BODY_PART_DROP_CHANCE) {
+                const partRand = Math.random()
+                if (partRand < 1 / 3) {
+                    this.droppedEntities.push(new Leg(this.pos.clone() as Vector))
+                } else if (partRand < 2 / 3) {
+                    this.droppedEntities.push(new Eye(this.pos.clone() as Vector, Eye.randomEyeSize() * 3))
+                } else {
+                    this.droppedEntities.push(new Arm(this.pos.clone() as Vector, Math.PI * 2 * Math.random()))
+                }
+            }
+        }
         if (!this.alive()) {
             this.timeSinceDeath += seconds
             return this.timeSinceDeath < 1
