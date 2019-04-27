@@ -3,7 +3,7 @@ import {Vector} from "vector2d"
 
 export class Eye implements Drawable {
 
-    private pos : Vector
+    pos : Vector
     private r : number
     private blinkingState : number = -1
     private blinkingStartTime : number
