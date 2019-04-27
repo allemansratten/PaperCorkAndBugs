@@ -6,14 +6,14 @@ import {Vector} from "vector2d"
 
 export class Shot extends Projectile {
 
-    private static readonly RADIUS : number = 10
-    private static readonly SPEED : number = 500
-    private static readonly DURATION : number = 1 // How many seconds does the shot stay alive?
+    private static readonly RADIUS: number = 10
+    private static readonly SPEED: number = 500
+    private static readonly DURATION: number = 1 // How many seconds does the shot stay alive?
     protected alive: boolean = true
-    private speed : Vector
-    private duration : number
+    private speed: Vector
+    private duration: number
 
-    constructor(protected player: Player, pos: Vector, dir : Vector) {
+    constructor(protected player: Player, pos: Vector, dir: Vector) {
         // super(pos, Shot.RADIUS, new CircleHitbox(Shot.RADIUS),
         super(player, pos, Shot.RADIUS, true)
         this.speed = dir.normalise().mulS(Shot.SPEED)
