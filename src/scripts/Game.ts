@@ -77,9 +77,11 @@ export class Game {
         }
         this.resolveCollisions()
         // Add player's projectiles
-        this.entities.push(...this.player.entitiesToAdd)
+        this.entities.forEach(entity => {
+            this.entities.push(...entity.droppedEntities)
+        })
         // console.log(this.entities)
-        this.player.entitiesToAdd = []
+        this.player.droppedEntities = []
     }
 
     drawAll(context: CanvasRenderingContext2D) {

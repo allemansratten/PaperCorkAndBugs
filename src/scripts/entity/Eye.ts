@@ -1,11 +1,10 @@
 import {Drawable} from "../Drawable"
 import {Vector} from "vector2d"
 import {BodyPart} from "./BodyPart"
+import {CircleHitbox} from "./CircleHitbox"
 
 export class Eye extends BodyPart implements Drawable {
 
-    pos: Vector
-    private r: number
     private blinkingState: number = -1
     private blinkingStartTime: number
     private blinkingSinePrev: number
@@ -17,12 +16,13 @@ export class Eye extends BodyPart implements Drawable {
     private static readonly BLINKING_INTERVAL = 800
     private static readonly BLINKING_DURATION = 300
 
-
     constructor(pos: Vector, r: number) {
-        super()
-        this.pos = pos
-        this.r = r
+        super(pos, r, new CircleHitbox(r))
         this.blinkingLastTime = Date.now()
+    }
+
+    static randomEyeSize(): number {
+        return 5 + (Math.random() - 0.5) * 2.5
     }
 
     draw(context: CanvasRenderingContext2D): void {

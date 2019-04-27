@@ -17,7 +17,7 @@ export class Player extends Entity {
     static readonly MAX_SPEED = 240 // px / s
     static readonly ZERO_LEGS_MAX_SPEED = 20 // px / s
     private static readonly ACCELERATION = 2000 // px / s^2
-    private static readonly DEACCELERATION = 800
+    private static readonly DECELERATION = 800
     private static readonly SHOOTING_SPEED = 5
     private static readonly INVINCIBLE_AFTER_HIT_TIME = 1
     private static readonly ALIVE_COLOR = "#9e502c"
@@ -40,7 +40,7 @@ export class Player extends Entity {
     )
 
     readonly friendly: boolean = true
-    entitiesToAdd: Entity[] = [] // For entities produced by the player
+    private alive: boolean = true
     private shotCooldown: number = 0 // Time until next shot
     private invincibleTime: number = 0
     zoomSmoother : Smoother
@@ -58,7 +58,7 @@ export class Player extends Entity {
     constructor(pos: Vector) {
         super(pos, Player.RADIUS, new CircleHitbox((Player.RADIUS)))
         for (let i = 0; i < 6; i++) {
-            this.eyes.push(new Eye(pos, 5 + (Math.random() - 0.5) * 2.5))
+            this.eyes.push(new Eye(pos, Eye.randomEyeSize()))
         }
         for (let i = 0, dir = 0; i < 6; i++, dir++) {
             if (dir == 0 || dir == 4) dir++
@@ -170,7 +170,7 @@ export class Player extends Entity {
         this.speed.add(direction)
         // Deacceleration
         const maxSpeed = this.getMaxMovementSpeed()
-        const length2 = clamp(this.speed.magnitude() - Player.DEACCELERATION * seconds, 0, maxSpeed)
+        const length2 = clamp(this.speed.magnitude() - Player.DECELERATION * seconds, 0, maxSpeed)
 
         if (this.speed.length() > 1e-6) {
             this.speed = this.speed.normalise().mulS(length2)
@@ -193,7 +193,7 @@ export class Player extends Entity {
             spawnPos.add(this.pos.clone().mulS(3))
             spawnPos.mulS(1/4)
             this.arms[this.activeArmIndex].doRecoil()
-            this.entitiesToAdd.push(new Shot(this, spawnPos, direction))
+            this.droppedEntities.push(new Shot(this, spawnPos, direction))
             const shootingSpeed = this.getShootingSpeed()
             this.shotCooldown = 1 / shootingSpeed
         }
