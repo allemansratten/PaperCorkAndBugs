@@ -1,11 +1,13 @@
-import { Entity } from "./Entity"
-import { DirectionKeyState } from "../DirectionKeyState"
-import { Vector } from "vector2d"
-import { Level } from "../Level"
-import { CircleHitbox } from "./CircleHitbox"
-import { FollowMonster } from "./FollowMonster"
-import { StationaryMonster } from "./StationaryMonster"
-import { Eye } from "./Eye";
+import {Entity} from "./Entity"
+import {DirectionKeyState} from "../DirectionKeyState"
+import {Vector} from "vector2d"
+import {Level} from "../Level"
+import {CircleHitbox} from "./CircleHitbox"
+import {FollowMonster} from "./FollowMonster"
+import {StationaryMonster} from "./StationaryMonster"
+import {Eye} from "./Eye";
+import {Shot} from "./Shot"
+import {clamp} from "../Util"
 
 export class Player extends Entity {
 
@@ -13,10 +15,14 @@ export class Player extends Entity {
     private static readonly MAX_SPEED = 240 // px / s
     private static readonly ACCELERATION = 2000 // px / s^2
     private static readonly DEACCELERATION = 800
+    private static readonly SHOOTING_SPEED = 5
 
     speed: Vector = new Vector(0, 0)
 
     movementKeyState: DirectionKeyState = new DirectionKeyState(
+        ["w", "d", "s", "a"]
+    )
+    shootingKeyState: DirectionKeyState = new DirectionKeyState(
         ["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"]
     )
 
@@ -27,13 +33,15 @@ export class Player extends Entity {
 
     readonly friendly: boolean = true
     private alive: boolean = true
+    entitiesToAdd : Entity[] = [] // For projectiles produced by the player
+    private shotCooldown: number = 0 // Time until next shot
 
     private eyes: Array<Eye> = new Array<Eye>()
 
     constructor(pos: Vector) {
         super(pos, Player.RADIUS, new CircleHitbox((Player.RADIUS)))
         for (let i = 0; i < 6; i++)
-            this.eyes.push(new Eye(pos, 5 + (Math.random() - 0.5) * 2.5);
+            this.eyes.push(new Eye(pos, 5 + (Math.random() - 0.5) * 2.5))
     }
 
     draw(context: CanvasRenderingContext2D): void {
@@ -75,7 +83,7 @@ export class Player extends Entity {
         context.stroke()
     }
 
-    step(seconds: number, level: Level): boolean {
+    private stepMovement(seconds: number) {
         // Acceleration
         let direction: Vector = this.movementKeyState.getDirection()
         if (direction.length() !== 0) {
@@ -94,6 +102,21 @@ export class Player extends Entity {
         }
 
         this.pos.add(this.speed.clone().mulS(seconds))
+    }
+
+    private stepShooting(seconds: number) {
+        let direction: Vector = this.shootingKeyState.getDirection()
+        this.shotCooldown = Math.max(0, this.shotCooldown - seconds)
+        if (this.shotCooldown === 0 && direction.length() !== 0) {
+            this.entitiesToAdd.push(new Shot(this, this.pos.clone() as Vector, direction))
+            this.shotCooldown = 1 / Player.SHOOTING_SPEED
+        }
+    }
+
+    step(seconds: number, level: Level): boolean {
+        this.stepMovement(seconds)
+        this.stepShooting(seconds)
+
         return true
     }
 
@@ -102,9 +125,4 @@ export class Player extends Entity {
             this.alive = false
         }
     }
-}
-
-function clamp(a: number, mn: number, mx: number): number {
-    return Math.min(mx, Math.max(mn, a))
-
 }

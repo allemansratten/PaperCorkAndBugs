@@ -34,7 +34,7 @@ export class FollowMonster extends Monster {
 
 
     step(seconds: number, level: Level): boolean {
-        if (!this.alive) return true // leave a corpse
+        if (!this.alive()) return true // leave a corpse
         const newAngle = this.angleToPlayer()
         const angleDif = Math.min(angleDistance(newAngle, this.angle), FollowMonster.ANGLE_SPEED_MAX * seconds)
         const a1 = this.angle + angleDif
@@ -46,7 +46,7 @@ export class FollowMonster extends Monster {
         }
         this.pos.x += FollowMonster.SPEED * seconds * Math.cos(this.angle)
         this.pos.y += FollowMonster.SPEED * seconds * Math.sin(this.angle)
-        return this.alive
+        return this.alive()
     }
 
     collideWith(entity: Entity): void {
