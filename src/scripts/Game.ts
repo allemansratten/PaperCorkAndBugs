@@ -18,7 +18,7 @@ export class Game {
         for (let i = 0; i < 5; i++) {
             this.addMonsterRandom()
         }
-        this.level = new Level()
+        this.level = new Level(20, 20)
         this.level.player = this.player
     }
 
@@ -52,8 +52,11 @@ export class Game {
     }
 
     drawAll(context: CanvasRenderingContext2D) {
+        context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight)
+        context.translate(-this.player.pos.x + this.width / 2, -this.player.pos.y + this.height / 2)
         this.level.draw(context)
         this.entities.forEach(entity => entity.draw(context))
+        context.resetTransform()
     }
 
     handleKeyPress(event: KeyboardEvent) {
