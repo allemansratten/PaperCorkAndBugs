@@ -40,7 +40,6 @@ export class Player extends Entity {
     )
 
     readonly friendly: boolean = true
-    private alive: boolean = true
     entitiesToAdd: Entity[] = [] // For entities produced by the player
     private shotCooldown: number = 0 // Time until next shot
     private invincibleTime: number = 0
@@ -88,9 +87,8 @@ export class Player extends Entity {
 
             leg.draw(context)
         })
-
         // draw body
-        context.fillStyle = this.invincibleTime > 0 ? Player.INVINCIBLE_COLOR : this.alive ? Player.ALIVE_COLOR : Player.DEAD_COLOR
+        context.fillStyle = this.invincibleTime > 0 ? Player.INVINCIBLE_COLOR : Player.ALIVE_COLOR
         context.beginPath()
         if(this.hitAnimStatus == -1)
             context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
@@ -130,9 +128,18 @@ export class Player extends Entity {
         context.fillStyle = Player.MOUTH_COLOR
         context.beginPath()
         let mouth_range_sine = Math.sin(time / 300) / 4
-        this.alive ?
-            context.arc(this.pos.x, this.pos.y, this.r / 2, Math.PI * (1 - Player.MOUTH_RANGE) + mouth_range_sine, Math.PI * Player.MOUTH_RANGE - mouth_range_sine) :
-            context.arc(this.pos.x, this.pos.y + this.r / 1.5, this.r / 2, Math.PI + Math.PI * (1 - Player.MOUTH_RANGE), Math.PI + Math.PI * Player.MOUTH_RANGE)
+        if (this.invincibleTime <= 0) {
+            context.arc(this.pos.x, this.pos.y,
+                this.r / 2, Math.PI * (1 - Player.MOUTH_RANGE) + mouth_range_sine,
+                Math.PI * Player.MOUTH_RANGE - mouth_range_sine
+            )
+        } else {
+            context.arc(this.pos.x, this.pos.y + this.r / 1.5, this.r / 2,
+                Math.PI + Math.PI * (1 - Player.MOUTH_RANGE),
+                Math.PI + Math.PI * Player.MOUTH_RANGE
+            )
+        }
+
         context.stroke()
 
         // draw arms
@@ -209,7 +216,6 @@ export class Player extends Entity {
                 this.arms.pop()
             } else {
                 this.legs.pop()
-                this.alive = false
             }
             this.invincibleTime = Player.INVINCIBLE_AFTER_HIT_TIME
         }
