@@ -1,5 +1,5 @@
 import {Drawable} from "./Drawable"
-import {Player} from "./Player"
+import {Player} from "./entity/Player"
 
 export class Level implements Drawable {
 
