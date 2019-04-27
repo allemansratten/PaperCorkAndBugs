@@ -32,6 +32,7 @@ export class Shot extends Projectile {
             this.alive = false
         }
         this.pos.add(this.speed.clone().mulS(seconds))
+        if (this.resolveLevelCollision(level, this.speed)) this.alive = false
         return this.alive
     }
 
