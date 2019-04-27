@@ -31,5 +31,4 @@ export class Level implements Drawable {
             }
         }
     }
-
 }

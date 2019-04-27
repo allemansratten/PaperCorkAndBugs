@@ -14,7 +14,7 @@ import {Leg} from "./Leg"
 export class Player extends Entity {
 
     private static readonly RADIUS = 32
-    private static readonly MAX_SPEED = 240 // px / s
+    static readonly MAX_SPEED = 240 // px / s
     private static readonly ACCELERATION = 2000 // px / s^2
     private static readonly DEACCELERATION = 800
     private static readonly SHOOTING_SPEED = 5
@@ -48,7 +48,7 @@ export class Player extends Entity {
             this.eyes.push(new Eye(pos, 5 + (Math.random() - 0.5) * 2.5))
         }
         for (let i = 0; i < 6; i++) {
-            this.arms.push(new Arm(pos))
+            this.arms.push(new Arm(pos, 4*(i%2)+2))
         }
         for (let i = 0; i < 6; i++) {
             this.legs.push(new Leg(pos))
@@ -58,6 +58,21 @@ export class Player extends Entity {
     draw(context: CanvasRenderingContext2D): void {
         super.draw(context)
         let time = Date.now()
+
+        // draw legs
+        this.legs.forEach((leg, index) => {
+            leg.speed = this.speed.length()
+            if(index % 2 == 0) 
+            {
+                leg.pos = new Vector(this.pos.x+this.r*Math.sin(index/this.legs.length) + 2, this.pos.y + this.r*Math.cos(index/this.legs.length))
+                leg.rot = -index/this.legs.length*Math.PI/2
+            } else {
+                leg.pos = new Vector(this.pos.x-this.r*Math.sin(index/this.legs.length) - 1, this.pos.y + this.r*Math.cos(index/this.legs.length))
+                leg.rot = index/this.legs.length*Math.PI/3
+            }
+
+            leg.draw(context)
+        })
 
         // draw body
         context.fillStyle = this.alive ? Player.ALIVE_COLOR : Player.DEAD_COLOR
@@ -96,14 +111,17 @@ export class Player extends Entity {
         // draw arms
         this.arms.forEach((arm, index) => {
             arm.pos = new Vector(this.pos.x - 40, this.pos.y + 5 * index)
+
+            if(index % 2 == 0) 
+            {
+                arm.pos = new Vector(this.pos.x-this.r, this.pos.y + index/6*20)
+            } else {
+                arm.pos = new Vector(this.pos.x+this.r, this.pos.y + 0*this.r*Math.cos(index/this.legs.length))
+            }
+
             arm.draw(context)
         })
 
-        // draw legs
-        this.legs.forEach((leg, index) => {
-            leg.pos = new Vector(this.pos.x - 8 + 5 * index, this.pos.y + 30)
-            leg.draw(context)
-        })
     }
 
     private stepMovement(seconds: number, level: Level) {
