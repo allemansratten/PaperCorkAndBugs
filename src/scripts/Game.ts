@@ -2,6 +2,7 @@ import {Player} from "./entity/Player"
 import {Entity} from "./entity/Entity"
 import {Level} from "./Level"
 import {Vector} from "vector2d"
+import {PauseSymbol} from "./entity/PauseSymbol"
 import {Hitbox} from "./entity/Hitbox"
 import {StagBeetle} from "./entity/monster/StagBeetle"
 import {Ant} from "./entity/monster/Ant"
@@ -14,6 +15,8 @@ export class Game {
 
     private player: Player
     private level: Level
+    public pauseSymbol: PauseSymbol
+    public paused: boolean = false
 
     constructor(private width: number, private height: number) {
         this.player = new Player(new Vector(width / 2, height / 2))
@@ -23,6 +26,7 @@ export class Game {
         for (let i = 0; i < 5; i++) {
             this.addMonsterRandom()
         }
+        this.pauseSymbol = new PauseSymbol()
     }
 
     private randomMonsterType() {
@@ -76,9 +80,11 @@ export class Game {
         }
         this.resolveCollisions()
         // Add player's projectiles
-        this.entities.push(...this.player.entitiesToAdd)
+        this.entities.forEach(entity => {
+            this.entities.push(...entity.droppedEntities)
+        })
         // console.log(this.entities)
-        this.player.entitiesToAdd = []
+        this.player.droppedEntities = []
     }
 
     drawAll(context: CanvasRenderingContext2D) {
@@ -92,12 +98,16 @@ export class Game {
 
         this.level.draw(context)
         this.entities.forEach(entity => entity.draw(context))
+
         context.resetTransform()
     }
 
     handleKeyPress(event: KeyboardEvent) {
         this.player.movementKeyState.handleKey(event.key.toLowerCase(), true)
         this.player.shootingKeyState.handleKey(event.key.toLowerCase(), true)
+        if(event.key.toLowerCase() == 'p') {
+            this.paused = !this.paused;
+        }
     }
 
     handleKeyRelease(event: KeyboardEvent) {

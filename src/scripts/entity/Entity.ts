@@ -5,6 +5,8 @@ import {Hitbox} from "./Hitbox"
 
 export abstract class Entity implements Drawable {
 
+    droppedEntities: Entity[] = [] // For entities produced by the player
+
     private readonly BOX_DIRECTIONS = [[-1, 0], [0, -1], [0, 1], [1, 0]]
     private readonly CORNER_DIRECTION_COORDS = [[-1, -1, 0, 0], [-1, 1, 0, 1], [1, -1, 1, 0], [1, 1, 1, 1]]
 
@@ -12,7 +14,7 @@ export abstract class Entity implements Drawable {
     }
 
     /** default implementation for round entities. returns true if a collision happened */
-    protected resolveLevelCollision(level: Level, moveDirection: Vector) : boolean {
+    protected resolveLevelCollision(level: Level, moveDirection: Vector): boolean {
         let didCollide = false
         const levelX = Math.floor(this.pos.x / Level.TILE_SIZE)
         const levelY = Math.floor(this.pos.y / Level.TILE_SIZE)
