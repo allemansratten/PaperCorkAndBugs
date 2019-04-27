@@ -5,7 +5,7 @@ import {Hitbox} from "./Hitbox"
 
 export abstract class Entity implements Drawable {
 
-    constructor(public pos : Vector, public r: number, public hitbox: Hitbox) {
+    constructor(public pos: Vector, public r: number, public hitbox: Hitbox) {
     }
 
     draw(context: CanvasRenderingContext2D): void {
@@ -14,7 +14,7 @@ export abstract class Entity implements Drawable {
     /** returns false when the entity is dead and ready to be deleted */
     abstract step(seconds: number, level: Level): boolean;
 
-    abstract die(): void
+    abstract collideWith(entity: Entity): void
 
     abstract friendly: boolean
 }

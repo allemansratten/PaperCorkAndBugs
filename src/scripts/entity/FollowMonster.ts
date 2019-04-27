@@ -13,7 +13,7 @@ export class FollowMonster extends Monster {
     private static readonly HP = 100
     private angle: number = 0
 
-    constructor(player: Player, pos : Vector) {
+    constructor(player: Player, pos: Vector) {
         super(player, pos, FollowMonster.RADIUS, FollowMonster.HP)
         this.angle = this.angleToPlayer()
     }
@@ -49,8 +49,7 @@ export class FollowMonster extends Monster {
         return this.alive
     }
 
-    collidesWith(entity: Entity): boolean {
-        // return hypot(entity.x - this.x, entity.y - this.y) < this.r + entity.r
-        return false
+    collideWith(entity: Entity): void {
+
     }
 }

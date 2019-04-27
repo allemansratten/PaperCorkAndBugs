@@ -1,8 +1,8 @@
 import {Monster} from "./Monster"
 import {Player} from "./Player"
 import {Level} from "../Level"
-import {Entity} from "./Entity"
 import {Vector} from "vector2d"
+import {Entity} from "./Entity"
 
 export class StationaryMonster extends Monster {
 
@@ -27,8 +27,7 @@ export class StationaryMonster extends Monster {
         return true
     }
 
-    collidesWith(entity: Entity): boolean {
-        return false
-    }
+    collideWith(entity: Entity): void {
 
+    }
 }

@@ -2,6 +2,9 @@ import {Entity} from "./Entity"
 import {DirectionKeyState} from "../DirectionKeyState"
 import {Vector} from "vector2d"
 import {Level} from "../Level"
+import {CircleHitbox} from "./CircleHitbox"
+import {FollowMonster} from "./FollowMonster"
+import {StationaryMonster} from "./StationaryMonster"
 
 export class Player extends Entity {
 
@@ -20,14 +23,15 @@ export class Player extends Entity {
     private static readonly DEAD_COLOR = "#900"
 
     readonly friendly: boolean = true
+    private alive: boolean = true
 
     constructor(pos: Vector) {
-        super(pos, Player.RADIUS)
+        super(pos, Player.RADIUS, new CircleHitbox((Player.RADIUS)))
     }
 
     draw(context: CanvasRenderingContext2D): void {
         super.draw(context)
-        context.fillStyle = Player.ALIVE_COLOR
+        context.fillStyle = this.alive ? Player.ALIVE_COLOR : Player.DEAD_COLOR
         context.beginPath()
         context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
         context.fill()
@@ -55,14 +59,11 @@ export class Player extends Entity {
         return true
     }
 
-    collidesWith(entity: Entity): boolean {
-        return false
+    collideWith(entity: Entity): void {
+        if (entity instanceof FollowMonster || entity instanceof StationaryMonster) {
+            this.alive = false
+        }
     }
-
-    die(): void {
-
-    }
-
 }
 
 function clamp(a: number, mn: number, mx: number): number {

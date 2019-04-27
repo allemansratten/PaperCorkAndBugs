@@ -3,6 +3,7 @@ import {Entity} from "./entity/Entity"
 import {StationaryMonster} from "./entity/StationaryMonster"
 import {Level} from "./Level"
 import {Vector} from "vector2d"
+import {Hitbox} from "./entity/Hitbox"
 
 export class Game {
 
@@ -34,11 +35,15 @@ export class Game {
     private resolveCollisions() {
         const friendly = this.entities.filter(entity => entity.friendly)
         const hostile = this.entities.filter(entity => !entity.friendly)
-        const deadFriendly = friendly.filter(entity => hostile.some(e => e.collidesWith(entity)))
-        const deadHostile = hostile.filter(entity => friendly.some(e => e.collidesWith(entity)))
 
-        deadFriendly.forEach(e => e.die())
-        deadHostile.forEach(e => e.die())
+        friendly.forEach(friend => {
+            hostile.forEach(enemy => {
+                if (Hitbox.checkCollision(friend, enemy)) {
+                    friend.collideWith(enemy)
+                    enemy.collideWith(friend)
+                }
+            })
+        })
     }
 
     step(seconds: number) {
