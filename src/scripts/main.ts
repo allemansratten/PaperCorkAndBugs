@@ -19,7 +19,6 @@ let lastTime = Date.now()
 function update() {
     let curTime = Date.now()
     let seconds = Math.min((curTime - lastTime) / 1000, 0.1)
-
     lastTime = curTime
     game.step(seconds)
     game.drawAll(ctx)
