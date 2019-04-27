@@ -73,7 +73,6 @@ export class Player extends Entity {
     draw(context: CanvasRenderingContext2D): void {
         super.draw(context)
         let time = Date.now()
-
         // draw legs
         this.legs.forEach((leg, index) => {
             leg.speed = this.speed.length()
@@ -154,6 +153,9 @@ export class Player extends Entity {
 
             arm.draw(context)
         })
+
+
+
 
     }
 
