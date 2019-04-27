@@ -32,7 +32,7 @@ export class Player extends Entity {
 
     private static readonly ALIVE_COLOR = "#9e502c"
     private static readonly INVINCIBLE_COLOR = "#ff502c"
-    private static readonly DEAD_COLOR = "#91a05b   "
+    private static readonly DEAD_COLOR = "#91a05b"
     private static readonly MOUTH_COLOR = "#512815"
     private static readonly MOUTH_RANGE = 0.8
 
@@ -45,14 +45,16 @@ export class Player extends Entity {
     private eyes: Eye[] = []
     private arms: Arm[] = []
     private legs: Leg[] = []
+    private activeArmIndex: number = 0
 
     constructor(pos: Vector) {
         super(pos, Player.RADIUS, new CircleHitbox((Player.RADIUS)))
         for (let i = 0; i < 6; i++) {
             this.eyes.push(new Eye(pos, 5 + (Math.random() - 0.5) * 2.5))
         }
-        for (let i = 0; i < 6; i++) {
-            this.arms.push(new Arm(pos, 4 * (i % 2) + 2))
+        for (let i = 0, dir = 0; i < 6; i++, dir++) {
+            if (dir == 0 || dir == 4) dir++
+            this.arms.push(new Arm(pos, dir))
         }
         for (let i = 0; i < 6; i++) {
             this.legs.push(new Leg(pos))
@@ -115,10 +117,10 @@ export class Player extends Entity {
         this.arms.forEach((arm, index) => {
             arm.pos = new Vector(this.pos.x - 40, this.pos.y + 5 * index)
 
-            if (index % 2 == 0) {
-                arm.pos = new Vector(this.pos.x - this.r, this.pos.y + index / 6 * 20)
+            if (index <= 2) {
+                arm.pos = new Vector(this.pos.x + this.r * 1.2, this.pos.y + index / 6 * 80 - 20)
             } else {
-                arm.pos = new Vector(this.pos.x + this.r, this.pos.y + 0 * this.r * Math.cos(index / this.legs.length))
+                arm.pos = new Vector(this.pos.x - this.r * 1.2, this.pos.y - index / 6 * 80 + 50)
             }
 
             arm.draw(context)
@@ -154,6 +156,8 @@ export class Player extends Entity {
         let direction: Vector = this.shootingKeyState.getDirection()
         this.shotCooldown = Math.max(0, this.shotCooldown - seconds)
         if (this.shotCooldown === 0 && direction.length() !== 0 && this.arms.length > 0) {
+            this.activeArmIndex = (this.activeArmIndex + 1) % this.arms.length
+            let spawnPos = this.arms[this.activeArmIndex].getSpawnPoint()
             this.entitiesToAdd.push(new Shot(this, this.pos.clone() as Vector, direction))
             const shootingSpeed = Player.SHOOTING_SPEED * 0.1 + this.arms.length * Player.SHOOTING_SPEED * 0.1
             this.shotCooldown = 1 / shootingSpeed

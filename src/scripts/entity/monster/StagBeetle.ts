@@ -2,9 +2,7 @@ import {Player} from "../Player"
 import {Monster} from "./Monster"
 import {Level} from "../../Level"
 import {angleDistance} from "../../Util"
-import {Entity} from "../Entity"
 import {Vector} from "vector2d"
-import {Shot} from "../Shot"
 
 export class StagBeetle extends Monster {
 
@@ -18,7 +16,7 @@ export class StagBeetle extends Monster {
     private angle: number = 0
     private angry: boolean = false
     private angryCooldown: number = 0
-    private timeSinceDeath: number = 0
+    protected timeSinceDeath: number = 0
 
     constructor(player: Player, pos: Vector) {
         super(player, pos, StagBeetle.RADIUS, StagBeetle.HP)
@@ -31,6 +29,7 @@ export class StagBeetle extends Monster {
     }
 
     draw(context: CanvasRenderingContext2D): void {
+        context.globalAlpha = this.getAlpha()
         context.fillStyle = "#2fa"
         if (this.angry) {
             context.fillStyle = "#d33"
@@ -38,14 +37,16 @@ export class StagBeetle extends Monster {
         context.beginPath()
         context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
         context.fill()
+
+        context.globalAlpha = 1
     }
 
     step(seconds: number, level: Level): boolean {
-        if (!this.alive()) {
-            this.timeSinceDeath += seconds
+        if(!super.step(seconds, level)) {
+            return false
         }
-        if (!this.alive()) {
-            return this.timeSinceDeath > 1
+        if(!this.alive()){
+            return true
         }
         this.angryCooldown = Math.max(0, this.angryCooldown - seconds)
         const targetAngle = this.angleToPlayer()
