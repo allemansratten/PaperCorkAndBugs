@@ -28,8 +28,10 @@ export class Player extends Entity {
         ["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"]
     )
 
-    private static readonly ALIVE_COLOR = "#d22"
-    private static readonly DEAD_COLOR = "#900"
+    private static readonly ALIVE_COLOR = "#9e502c"
+    private static readonly DEAD_COLOR = "#91a05b   "
+    private static readonly MOUTH_COLOR = "#512815"
+    private static readonly MOUTH_RANGE = 0.8
 
     readonly friendly: boolean = true
     private alive: boolean = true
@@ -55,6 +57,7 @@ export class Player extends Entity {
 
     draw(context: CanvasRenderingContext2D): void {
         super.draw(context)
+        let time = Date.now()
 
         // draw body
         context.fillStyle = this.alive ? Player.ALIVE_COLOR : Player.DEAD_COLOR
@@ -80,6 +83,15 @@ export class Player extends Entity {
             }
             eye.draw(context)
         })
+
+        // draw mouth
+        context.fillStyle = Player.MOUTH_COLOR
+        context.beginPath()
+        let mouth_range_sine = Math.sin(time/300)/4
+        this.alive ?
+            context.arc(this.pos.x, this.pos.y, this.r / 2, Math.PI * (1 - Player.MOUTH_RANGE)+mouth_range_sine, Math.PI * Player.MOUTH_RANGE-mouth_range_sine) :
+            context.arc(this.pos.x, this.pos.y+this.r/1.5, this.r / 2, Math.PI + Math.PI * (1 - Player.MOUTH_RANGE), Math.PI + Math.PI * Player.MOUTH_RANGE)
+        context.stroke()
 
         // draw arms
         this.arms.forEach((arm, index) => {
