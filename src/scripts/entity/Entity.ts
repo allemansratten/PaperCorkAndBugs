@@ -1,9 +1,10 @@
 import {Drawable} from "../Drawable"
 import {Level} from "../Level"
+import {Hitbox} from "./Hitbox"
 
 export abstract class Entity implements Drawable {
 
-    constructor(public x: number, public y: number, public r: number) {
+    constructor(public x: number, public y: number, public r: number, public hitbox: Hitbox) {
     }
 
     draw(context: CanvasRenderingContext2D): void {
@@ -11,8 +12,6 @@ export abstract class Entity implements Drawable {
 
     /** returns false when the entity is dead and ready to be deleted */
     abstract step(seconds: number, level: Level): boolean;
-
-    abstract collidesWith(entity: Entity): boolean
 
     abstract die(): void
 

@@ -5,7 +5,7 @@ export abstract class Monster extends Entity {
 
     protected alive: boolean = true
 
-    constructor(protected player: Player, x: number, y: number, r: number) {
+    constructor(protected player: Player, x: number, y: number, r: number, protected hp: number) {
         super(x, y, r)
     }
 

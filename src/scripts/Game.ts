@@ -31,7 +31,6 @@ export class Game {
     private resolveCollisions() {
         const friendly = this.entities.filter(entity => entity.friendly)
         const hostile = this.entities.filter(entity => !entity.friendly)
-
         const deadFriendly = friendly.filter(entity => hostile.some(e => e.collidesWith(entity)))
         const deadHostile = hostile.filter(entity => friendly.some(e => e.collidesWith(entity)))
 

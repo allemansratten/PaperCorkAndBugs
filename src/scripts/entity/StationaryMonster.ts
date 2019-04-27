@@ -8,9 +8,10 @@ export class StationaryMonster extends Monster {
     private static readonly RADIUS = 20
     private static readonly ALIVE_COLOR = "#77a"
     private static readonly DEAD_COLOR = "#558"
+    private static readonly HP = 100
 
     constructor(player: Player, x: number, y: number) {
-        super(player, x, y, StationaryMonster.RADIUS)
+        super(player, x, y, StationaryMonster.RADIUS, StationaryMonster.HP)
     }
 
     draw(context: CanvasRenderingContext2D): void {
@@ -19,7 +20,6 @@ export class StationaryMonster extends Monster {
         context.arc(this.x, this.y, this.r, 0, 2 * Math.PI)
         context.fill()
     }
-
 
     step(seconds: number, level: Level): boolean {
         if (!this.alive) return true // leave a corpse for now

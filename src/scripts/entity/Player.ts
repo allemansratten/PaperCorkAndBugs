@@ -10,11 +10,11 @@ export class Player extends Entity {
     private static readonly ACCELERATION = 2000 // px / s^2
     private static readonly DEACCELERATION = 800
 
-    speed : Vector = new Vector(0,0)
+    speed: Vector = new Vector(0, 0)
 
-    movementKeyState : DirectionKeyState = new DirectionKeyState(
+    movementKeyState: DirectionKeyState = new DirectionKeyState(
         ["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"]
-    );
+    )
 
     private static readonly ALIVE_COLOR = "#d22"
     private static readonly DEAD_COLOR = "#900"
@@ -33,7 +33,7 @@ export class Player extends Entity {
         context.fill()
     }
 
-    step(seconds: number, level:Level): boolean {
+    step(seconds: number, level: Level): boolean {
         // Acceleration
         let direction: Vector = this.movementKeyState.getDirection()
         if (direction.length() !== 0) {

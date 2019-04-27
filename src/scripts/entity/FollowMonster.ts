@@ -9,10 +9,11 @@ export class FollowMonster extends Monster {
     private static readonly RADIUS = 20
     private static readonly ANGLE_SPEED_MAX = Math.PI / 2
     private static readonly SPEED = 100
+    private static readonly HP = 100
     private angle: number = 0
 
     constructor(player: Player, x: number, y: number) {
-        super(player, x, y, FollowMonster.RADIUS)
+        super(player, x, y, FollowMonster.RADIUS, FollowMonster.HP)
         this.angle = this.angleToPlayer()
     }
 
