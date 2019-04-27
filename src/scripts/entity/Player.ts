@@ -28,6 +28,7 @@ export class Player extends Entity {
     private static readonly ZOOM_0_EYES = 5
     private static readonly ZOOM_1_EYE = 2
     private static readonly ZOOM_MAX_EYES = 0.5
+    private static readonly HIT_THICC_MULTIPLIER = 6
 
     speed: Vector = new Vector(0, 0)
 
@@ -44,6 +45,11 @@ export class Player extends Entity {
     private shotCooldown: number = 0 // Time until next shot
     private invincibleTime: number = 0
     zoomSmoother : Smoother
+
+    // hit animations
+    private hitAnimStatus: number = -1
+    private hitStartTime: number
+    private hitSinePrev: number
 
     private eyes: Eye[] = []
     private arms: Arm[] = []
@@ -86,7 +92,19 @@ export class Player extends Entity {
         // draw body
         context.fillStyle = this.invincibleTime > 0 ? Player.INVINCIBLE_COLOR : this.alive ? Player.ALIVE_COLOR : Player.DEAD_COLOR
         context.beginPath()
-        context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
+        if(this.hitAnimStatus == -1)
+            context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
+        else {
+            let hitSine = Math.sin((this.hitStartTime - time) / 100)
+            context.arc(this.pos.x, this.pos.y, this.r-hitSine*Player.HIT_THICC_MULTIPLIER, 0, 2 * Math.PI)
+            if (this.hitAnimStatus == 0 && hitSine >= 0.9) {
+                this.hitAnimStatus = 1
+            }
+            if (this.hitAnimStatus == 1 && hitSine <= 0.1) {
+                this.hitAnimStatus = -1
+            }
+            this.hitSinePrev = hitSine
+        }
         context.fill()
 
         // draw eyes
@@ -183,6 +201,7 @@ export class Player extends Entity {
 
     collideWith(entity: Entity): void {
         if (this.invincibleTime <= 0 && (entity instanceof Monster || entity instanceof Projectile)) {
+            this.hitAnim()
             const partIndex = Math.floor(Math.random() * (this.eyes.length + this.arms.length + this.legs.length))
             if (partIndex < this.eyes.length) {
                 this.eyes.pop()
@@ -194,6 +213,12 @@ export class Player extends Entity {
             }
             this.invincibleTime = Player.INVINCIBLE_AFTER_HIT_TIME
         }
+    }
+
+    hitAnim(): void {
+        this.hitStartTime = Date.now()
+        this.hitAnimStatus = 0
+        this.hitSinePrev = 0
     }
 
     private getTargetZoom(): number {
