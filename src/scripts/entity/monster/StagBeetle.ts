@@ -12,7 +12,7 @@ export class StagBeetle extends Monster {
     private static readonly SPEED = 70
     private static readonly ANGRY_SPEED = 180
     private static readonly ANGRY_COOLDOWN = 0.5
-    private static readonly HP = 10
+    private static readonly HP = 8
     private angle: number = 0
     private angry: boolean = false
     private angryCooldown: number = 0
