@@ -31,6 +31,8 @@ export abstract class Monster extends Entity {
         }
     }
 
+    abstract aliveStep(seconds: number, level: Level): void;
+
     step(seconds: number, level: Level): boolean {
         if (!this.alive() && this.timeSinceDeath == 0) {
             if (Math.random() < this.BODY_PART_DROP_CHANCE) {
@@ -47,8 +49,18 @@ export abstract class Monster extends Entity {
         if (!this.alive()) {
             this.timeSinceDeath += seconds
             return this.timeSinceDeath < 1
+        } else {
+            this.aliveStep(seconds, level)
+            return true
         }
-        return true
+    }
+
+    abstract aliveDraw(context: CanvasRenderingContext2D): void;
+
+    draw(context: CanvasRenderingContext2D) {
+        context.globalAlpha = this.getAlpha()
+        this.aliveDraw(context)
+        context.globalAlpha = 1
     }
 
     getAlpha(): number {

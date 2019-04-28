@@ -17,22 +17,14 @@ export class Ant extends Monster {
         super(player, pos, Ant.RADIUS, Ant.HP)
     }
 
-    draw(context: CanvasRenderingContext2D): void {
-        context.globalAlpha = this.getAlpha()
+    aliveDraw(context: CanvasRenderingContext2D): void {
         context.fillStyle = "#525"
         context.beginPath()
         context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
         context.fill()
-        context.globalAlpha = 1
     }
 
-    step(seconds: number, level: Level): boolean {
-        if (!super.step(seconds, level)) {
-            return false
-        }
-        if (!this.alive()) {
-            return true
-        }
+    aliveStep(seconds: number, level: Level) {
         let direction: Vector = this.player.pos.clone().subtract(this.pos) as Vector
         if (direction.length() !== 0) {
             direction.normalise().mulS(Ant.ACCELERATION * seconds)
@@ -49,7 +41,5 @@ export class Ant extends Monster {
 
         this.pos.add(this.speed.clone().mulS(seconds))
         this.resolveLevelCollision(level, this.speed)
-
-        return true
     }
 }

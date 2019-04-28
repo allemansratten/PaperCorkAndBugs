@@ -10,6 +10,7 @@ import {Monster} from "./entity/monster/Monster"
 import {Wasp} from "./entity/monster/Wasp"
 import {Fly} from "./entity/monster/Fly"
 import {GameState} from "./GameState"
+import {Worm} from "./entity/monster/Worm"
 
 export class Game {
 
@@ -55,7 +56,7 @@ export class Game {
     }
 
     private randomMonsterType() {
-        const types = [StagBeetle, Wasp, Ant, Fly]
+        const types = [StagBeetle, Wasp, Ant, Fly, Worm]
         return types[Math.floor(Math.random() * types.length)]
     }
 

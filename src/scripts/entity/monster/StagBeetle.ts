@@ -23,8 +23,7 @@ export class StagBeetle extends Monster {
         this.angle = this.angleToPlayer()
     }
 
-    draw(context: CanvasRenderingContext2D): void {
-        context.globalAlpha = this.getAlpha()
+    aliveDraw(context: CanvasRenderingContext2D): void {
         context.fillStyle = "#2fa"
         if (this.angry) {
             context.fillStyle = "#d33"
@@ -32,17 +31,9 @@ export class StagBeetle extends Monster {
         context.beginPath()
         context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
         context.fill()
-
-        context.globalAlpha = 1
     }
 
-    step(seconds: number, level: Level): boolean {
-        if(!super.step(seconds, level)) {
-            return false
-        }
-        if(!this.alive()){
-            return true
-        }
+    aliveStep(seconds: number, level: Level) {
         this.angryCooldown = Math.max(0, this.angryCooldown - seconds)
         this.angle = this.getCloserAngle(this.angle, this.angleToPlayer(), StagBeetle.ANGLE_SPEED_MAX * seconds)
         this.angry = (this.angryCooldown === 0) && angleDistance(this.angle, this.angleToPlayer()) < StagBeetle.ANGRY_ANGLE
@@ -54,7 +45,5 @@ export class StagBeetle extends Monster {
         if (didCollide) {
             this.angryCooldown = StagBeetle.ANGRY_COOLDOWN
         }
-
-        return true
     }
 }

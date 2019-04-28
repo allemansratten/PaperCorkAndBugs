@@ -16,15 +16,13 @@ export class StationaryMonster extends Monster {
         super(player, pos, StationaryMonster.RADIUS, StationaryMonster.HP)
     }
 
-    draw(context: CanvasRenderingContext2D): void {
+    aliveDraw(context: CanvasRenderingContext2D): void {
         context.fillStyle = this.alive() ? StationaryMonster.ALIVE_COLOR : StationaryMonster.DEAD_COLOR
         context.beginPath()
         context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
         context.fill()
     }
 
-    step(seconds: number, level: Level): boolean {
-        if (!this.alive()) return true // leave a corpse for now
-        return true
+    aliveStep(seconds: number, level: Level) {
     }
 }

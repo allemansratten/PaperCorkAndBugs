@@ -19,16 +19,18 @@ export class Player extends Entity {
     static readonly ZERO_LEGS_MAX_SPEED = 20 // px / s
     private static readonly ACCELERATION = 2000 // px / s^2
     private static readonly DECELERATION = 800
-    private static readonly SHOOTING_SPEED = 5
+    private static readonly SHOOTING_FREQ = 5
     private static readonly INVINCIBLE_AFTER_HIT_TIME = 1
+    private static readonly SHOT_SPEED = 500
+    private static readonly ZOOM_0_EYES = 5
+    private static readonly ZOOM_1_EYE = 2
+    private static readonly ZOOM_MAX_EYES = 0.5
+    // Cosmetics
     private static readonly ALIVE_COLOR = "#9e502c"
     private static readonly INVINCIBLE_COLOR = "#ff502c"
     private static readonly DEAD_COLOR = "#91a05b"
     private static readonly MOUTH_COLOR = "#512815"
     private static readonly MOUTH_RANGE = 0.8
-    private static readonly ZOOM_0_EYES = 5
-    private static readonly ZOOM_1_EYE = 2
-    private static readonly ZOOM_MAX_EYES = 0.5
     private static readonly HIT_THICC_MULTIPLIER = 6
 
     speed: Vector = new Vector(0, 0)
@@ -196,7 +198,7 @@ export class Player extends Entity {
             spawnPos.add(this.pos.clone().mulS(3))
             spawnPos.mulS(1 / 4)
             this.arms[this.activeArmIndex].doRecoil()
-            this.createdEntities.push(new Shot(this, spawnPos, direction))
+            this.createdEntities.push(new Shot(this, spawnPos, direction, true, Player.SHOT_SPEED))
             const shootingSpeed = this.getShootingSpeed()
             this.shotCooldown = 1 / shootingSpeed
         }
@@ -263,6 +265,6 @@ export class Player extends Entity {
     }
 
     getShootingSpeed(): number {
-        return Player.SHOOTING_SPEED * 0.1 + this.arms.length * Player.SHOOTING_SPEED * 0.1
+        return Player.SHOOTING_FREQ * 0.1 + this.arms.length * Player.SHOOTING_FREQ * 0.1
     }
 }
