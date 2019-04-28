@@ -24,8 +24,8 @@ export class Shot extends Projectile {
 
     collideWith(entity: Entity): void {
         if (entity.friendly !== this.friendly &&
-            (entity instanceof Monster) ||
-            (entity instanceof Player)) {
+            (entity instanceof Monster && (entity as Monster).alive()) ||
+            (entity instanceof Player && (entity as Player).alive)) {
             this.alive = false
         }
     }

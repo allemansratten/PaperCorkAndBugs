@@ -35,7 +35,7 @@ export class Fly extends Monster {
             this.timeSinceReorientation = 0
         }
 
-        this.angle = this.getCloserAngle(this.angle, this.targetAngle, Fly.ANGLE_SPEED_MAX * seconds)
+        this.angle = Monster.getCloserAngle(this.angle, this.targetAngle, Fly.ANGLE_SPEED_MAX * seconds)
         let speed = new Vector(Math.cos(this.angle), Math.sin(this.angle)).mulS(Fly.MAX_SPEED)
         this.pos.add(speed.clone().mulS(seconds))
     }

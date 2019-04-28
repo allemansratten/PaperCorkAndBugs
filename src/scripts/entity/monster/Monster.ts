@@ -73,7 +73,7 @@ export abstract class Monster extends Entity {
         return Math.atan2(delta.y, delta.x)
     }
 
-    protected getCloserAngle(current: number, target: number, maxDelta: number): number {
+    protected static getCloserAngle(current: number, target: number, maxDelta: number): number {
         const delta = Math.min(angleDistance(target, current), maxDelta)
         const a1 = current + delta
         const a2 = current - delta
