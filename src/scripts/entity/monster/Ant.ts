@@ -9,7 +9,7 @@ export class Ant extends Monster {
     private static readonly RADIUS = 15
     private static readonly MAX_SPEED = 120
     private static readonly ACCELERATION = 1000
-    private static readonly HP = 7
+    private static readonly HP = 3
 
     speed: Vector = new Vector(0, 0)
 
