@@ -12,7 +12,7 @@ import {Mosquito} from "./monster/Mosquito"
 
 export class MonsterGenerator {
     private static readonly FIRST_LEVEL_MONSTERS = 5
-    private static readonly LEVEL_MONSTERS_INCREMENT = 1
+    private static readonly LEVEL_MONSTERS_INCREMENT = 0.4
     private static readonly NEW_MONSTER_MIN_DIST = 250
     private static readonly LEVEL_MONSTERS = [
         [Wasp],

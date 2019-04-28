@@ -3,6 +3,7 @@ import {Vector} from "vector2d"
 import {BodyPart} from "./BodyPart"
 import {CircleHitbox} from "./CircleHitbox"
 import {ImageManager} from "../ImageManager"
+import {Player} from "./Player"
 
 export class Arm extends BodyPart implements Drawable {
 
@@ -16,10 +17,10 @@ export class Arm extends BodyPart implements Drawable {
     private recoilSinePrev: number = 0
     private static readonly ARM_COLOR = "#000000"
 
-    constructor(pos: Vector, defaultDir: number) {
+    constructor(pos: Vector, defaultDir: number, magnet: Player = null) {
         super(pos, Arm.RADIUS, new CircleHitbox(Arm.RADIUS))
         this.defaultDir = defaultDir
-
+        this.magnet = magnet
     }
 
     draw(context: CanvasRenderingContext2D): void {
