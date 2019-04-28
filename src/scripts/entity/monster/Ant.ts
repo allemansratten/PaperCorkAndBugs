@@ -10,7 +10,6 @@ export class Ant extends Monster {
     private static readonly RADIUS = 15
     private static readonly MAX_SPEED = 120
     private static readonly ACCELERATION = 1000
-    private static readonly PLAYER_ANGLE_WEIGHT = 60
     private static readonly HP = 3
 
     speed: Vector = new Vector(0, 0)
@@ -20,20 +19,12 @@ export class Ant extends Monster {
     }
 
     aliveDraw(context: CanvasRenderingContext2D): void {
-        // context.fillStyle = "#525"
-        // context.beginPath()
-        // context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
-        // context.fill()
-
-        const direction = (this.speed.clone()
-            .add(angleToVector(this.angleToPlayer()).mulS(Ant.PLAYER_ANGLE_WEIGHT)))
         context.save()
         context.translate(this.pos.x, this.pos.y)
-        context.rotate(vectorToAngle(direction) + Math.PI / 2)
+        context.rotate(this.imageAngle())
         const img = ImageManager.get("ant")
         context.drawImage(img, 0, 0, img.width, img.height,
             - this.r, - this.r, this.r * 2, this.r * 2)
-
         context.restore()
     }
 
