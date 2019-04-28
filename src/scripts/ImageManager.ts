@@ -9,6 +9,9 @@ export class ImageManager {
     }
 
     public static get(name: string) {
+        if (!ImageManager.images.has(name)) {
+            console.error("Image not found: " + name)
+        }
         return ImageManager.images.get(name)
     }
 
@@ -18,6 +21,7 @@ export class ImageManager {
         ["harold", "harold.jpg"],
         ["eye1", "eye1.png"],
         ["paper1", "paper1.png"],
+        ["leg1", "leg1.png"],
     ]
 
     public static loadAll() {
