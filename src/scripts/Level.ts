@@ -50,20 +50,43 @@ export class Level implements Drawable {
     }
 
     draw(context: CanvasRenderingContext2D): void {
+        const img_background = ImageManager.get("cork")
+        // draw cork background
+        context.drawImage(img_background, 0, 0, img_background.width, img_background.height, -300, -300, img_background.width, img_background.height)
+        
+        // add pad tiles
+        const PAD_TILES_COUNT = 4
+        context.globalAlpha = 0.8
+        for(let xi = -PAD_TILES_COUNT; xi < 0; xi++) {
+            for(let yi = -PAD_TILES_COUNT; yi < this.height+PAD_TILES_COUNT; yi++) {
+                context.fillStyle = "#444340"
+                context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
+                context.fillRect((this.width + PAD_TILES_COUNT + xi) * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
+            }
+        }        
+        for(let yi = -PAD_TILES_COUNT; yi < 0; yi++) {
+            for(let xi = 0; xi < this.width; xi++) {
+                context.fillStyle = "#444340"
+                context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
+                context.fillRect(xi * Level.TILE_SIZE, (this.height + PAD_TILES_COUNT + yi) * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
+            }
+        }        
+        context.globalAlpha = 1
+        
+
+
         for (let xi = 0; xi < this.width; xi++) {
             for (let yi = 0; yi < this.height; yi++) {
                 const tile = this.tiles[xi][yi]
-                const img = ImageManager.get("harold")
-                context.drawImage(img, 0, 0, img.width, img.height,
-                    xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 4, Level.TILE_SIZE + 4)
-                context.globalAlpha = 0.8
                 if (tile.obstacle) {
-                    context.fillStyle = "rgb(50,50,50)"
-
+                    context.globalAlpha = 0.8
+                    context.fillStyle = "rgb(50, 50, 50)"
+                    context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
                 } else {
-                    context.fillStyle = "rgb(10, 100, 100)"
+                    // context.globalAlpha = 0.8
+                    // context.fillStyle = "rgb(10, 100, 100)"
+                    // context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
                 }
-                context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
                 context.globalAlpha = 1
             }
         }
