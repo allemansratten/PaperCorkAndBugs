@@ -21,7 +21,14 @@ export class MonsterGenerator {
 
     static generateMonsters(level: Level, player: Player): Entity[] {
         const entities: Entity[] = []
-        for (let i = 0; i < MonsterGenerator.FIRST_LEVEL_MONSTERS + MonsterGenerator.LEVEL_MONSTERS_INCREMENT * (level.levelNum - 1); i++) {
+        if (level.levelNum != this.LEVEL_MONSTERS.length) {
+            /** make sure the new monster shows up */
+            const monsterTypes = this.LEVEL_MONSTERS[level.levelNum - 1]
+            const toAdd = new (monsterTypes[monsterTypes.length - 1])(player, new Vector(0, 0))
+            toAdd.pos = level.generateValidPos(toAdd.r)
+            entities.push(toAdd)
+        }
+        while (entities.length < MonsterGenerator.FIRST_LEVEL_MONSTERS + MonsterGenerator.LEVEL_MONSTERS_INCREMENT * (level.levelNum - 1)) {
             entities.push(this.addMonsterRandom(level, player))
         }
         return entities
