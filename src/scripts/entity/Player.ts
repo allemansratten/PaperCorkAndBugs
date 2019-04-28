@@ -31,7 +31,7 @@ export class Player extends Entity {
     private static readonly DEAD_COLOR = "#91a05b"
     private static readonly MOUTH_COLOR = "#512815"
     private static readonly MOUTH_RANGE = 0.8
-    private static readonly HIT_THICC_MULTIPLIER = 6
+    private static readonly HIT_THICC_MULTIPLIER = 8
     private static readonly BODY_PARTS_MAX = 10
 
     speed: Vector = new Vector(0, 0)
