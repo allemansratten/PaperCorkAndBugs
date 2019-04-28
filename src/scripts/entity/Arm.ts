@@ -2,10 +2,13 @@ import {Drawable} from "../Drawable"
 import {Vector} from "vector2d"
 import {BodyPart} from "./BodyPart"
 import {CircleHitbox} from "./CircleHitbox"
+import {ImageManager} from "../ImageManager"
 
 export class Arm extends BodyPart implements Drawable {
 
-    private static readonly RADIUS = 30
+    private static readonly RADIUS = 25
+    private static readonly WIDTH = Arm.RADIUS * 1.2
+    private static readonly HEIGHT = Arm.RADIUS * 0.8
     recoil: number = 10
     defaultDir: number
     private recoilState: number = -1
@@ -24,13 +27,11 @@ export class Arm extends BodyPart implements Drawable {
 
         context.save()
         context.translate(this.pos.x, this.pos.y)
-        if (this.recoilState == -1)
-            context.rotate(Math.PI * 2 / 8 * this.defaultDir)
-        else {
+        context.rotate(Math.PI * 2 / 8 * this.defaultDir - Math.PI / 2)
+        if (this.recoilState !== -1) {
             let recoilSine = Math.sin((this.recoilStartTime - time) / 100)
-            context.rotate(Math.PI * 2 / 8 * this.defaultDir)
             // context.rotate(Math.PI * 2 / 8 * this.defaultDir + (recoilSine*2))
-            context.translate(0, -20 - recoilSine * 20)
+            context.translate(-20 - recoilSine * 20, 0)
             if (this.recoilState == 0 && recoilSine <= this.recoilSinePrev) {
                 this.recoilState = 1
             }
@@ -40,11 +41,15 @@ export class Arm extends BodyPart implements Drawable {
             this.recoilSinePrev = recoilSine
         }
 
-
-        context.fillStyle = Arm.ARM_COLOR
-        context.beginPath()
-        context.ellipse(0, 0, 2, 14, 0, 0, 2 * Math.PI)
-        context.fill()
+        // context.fillStyle = Arm.ARM_COLOR
+        // context.beginPath()
+        // context.ellipse(0, 0, 2, 14, 0, 0, 2 * Math.PI)
+        // context.fill()
+        const img = ImageManager.get("arm1")
+        context.drawImage(img, 0, 0, img.width, img.height,
+            -Arm.WIDTH / 2, -Arm.HEIGHT / 2, Arm.WIDTH, Arm.HEIGHT)
+        // context.fillStyle = "red"
+        // context.fillRect(0, 0, 5, 5)
         context.restore()
     }
 
