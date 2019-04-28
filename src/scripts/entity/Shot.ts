@@ -11,7 +11,7 @@ export class Shot extends Projectile {
     private static readonly RADIUS: number = 10
     private static readonly SPEED: number = 500
     private static readonly DURATION: number = 1 // How many seconds does the shot stay alive?
-    protected alive: boolean = true
+    alive: boolean = true
     private speed: Vector
     private duration: number
 

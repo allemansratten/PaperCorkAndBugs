@@ -220,7 +220,8 @@ export class Player extends Entity {
     }
 
     collideWith(entity: Entity): void {
-        if (this.invincibleTime <= 0 && (entity instanceof Monster && (entity as Monster).alive()) || entity instanceof Projectile) {
+        if (this.invincibleTime <= 0 && (entity instanceof Monster && (entity as Monster).alive()) || (entity instanceof Shot && (entity as Shot).alive)) {
+            if (entity instanceof Shot) (entity as Shot).alive = false
             this.hitAnim()
             const partIndex = Math.floor(Math.random() * (this.eyes.length + this.arms.length + this.legs.length))
             if (partIndex < this.eyes.length) {
