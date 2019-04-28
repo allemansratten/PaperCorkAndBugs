@@ -14,15 +14,15 @@ export class Shot extends Projectile {
     private speed: Vector
     private duration: number
 
-    constructor(protected player: Player, pos: Vector, dir: Vector) {
+    constructor(protected player: Player, pos: Vector, dir: Vector, friendly: boolean, speed: number) {
         // super(pos, Shot.RADIUS, new CircleHitbox(Shot.RADIUS),
-        super(player, pos, Shot.RADIUS, true)
-        this.speed = dir.normalise().mulS(Shot.SPEED)
+        super(player, pos.clone() as Vector, Shot.RADIUS, friendly)
+        this.speed = dir.normalise().mulS(speed)
         this.duration = Shot.DURATION
     }
 
     collideWith(entity: Entity): void {
-        if (entity.friendly !== this.friendly && !(entity instanceof BodyPart)) {
+        if (entity.friendly !== this.friendly && !(entity instanceof BodyPart) && !(entity instanceof Projectile)) {
             this.alive = false
         }
     }
@@ -39,7 +39,7 @@ export class Shot extends Projectile {
 
     draw(context: CanvasRenderingContext2D): void {
         super.draw(context)
-        context.fillStyle = 'rgb(230,230,230)'
+        context.fillStyle = this.friendly ? 'rgb(230,230,230)' : 'rgb(160,50,50)'
         context.beginPath()
         context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
         context.fill()
