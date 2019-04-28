@@ -198,7 +198,7 @@ export class Player extends Entity {
             spawnPos.add(this.pos.clone().mulS(3))
             spawnPos.mulS(1 / 4)
             this.arms[this.activeArmIndex].doRecoil()
-            this.droppedEntities.push(new Shot(this, spawnPos, direction))
+            this.createdEntities.push(new Shot(this, spawnPos, direction))
             const shootingSpeed = this.getShootingSpeed()
             this.shotCooldown = 1 / shootingSpeed
         }
