@@ -38,7 +38,7 @@ export class Game {
     private nextPlayer(level: Level): Player {
         const playerPos = level.generateValidPos(Player.RADIUS)
         if (this.player == undefined) {
-            return new Player(playerPos, 6, 6, 6)
+            return new Player(playerPos, 4, 4, 4)
         } else {
             return new Player(playerPos, this.player.childEyes, this.player.childLegs, this.player.childArms)
         }
@@ -122,18 +122,18 @@ export class Game {
         const x = this.width - 120
         const y = this.height / 2
         context.textAlign = "right"
-        context.font = '30px Sans-serif'
-        context.lineWidth = 8
+        context.font = '30px Schoolbell'
+        context.lineWidth = 5
         context.lineJoin = "bevel"
 
         context.strokeStyle = 'black'
         context.strokeText(option1, x, y - 30)
-        context.fillStyle = '#1fc'
+        context.fillStyle = '#90cc9b'
         context.fillText(option1, x, y - 30)
 
         context.strokeStyle = 'black'
         context.strokeText(option2, x, y + 30)
-        context.fillStyle = '#600'
+        context.fillStyle = '#af4646'
         context.fillText(option2, x, y + 30)
 
         context.textAlign = "start"
@@ -141,9 +141,9 @@ export class Game {
     }
 
     drawAll(context: CanvasRenderingContext2D) {
-        if(this.gameState != GameState.PAUSED)
+        if (this.gameState != GameState.PAUSED)
             this.drawGame(context)
-        
+
         switch (this.gameState) {
             case GameState.PAUSED:
                 this.pauseSymbol.draw(context)
@@ -157,9 +157,9 @@ export class Game {
                 const y = this.height / 2
                 context.textAlign = "center"
                 context.lineJoin = "bevel"
-                context.font = '80px Sans-serif'
+                context.font = '70px Schoolbell'
                 context.strokeStyle = 'black'
-                context.lineWidth = 8
+                context.lineWidth = 7
                 context.strokeText(text, x, y)
                 context.fillStyle = '#600'
                 context.fillText(text, x, y)
@@ -171,11 +171,11 @@ export class Game {
             const y = this.height - 20
             context.textAlign = "center"
             context.lineJoin = "bevel"
-            context.font = '30px Sans-serif'
+            context.font = '23px Schoolbell'
             context.strokeStyle = 'black'
-            context.lineWidth = 8
+            context.lineWidth = 5
             context.strokeText(text, x, y)
-            context.fillStyle = '#af0'
+            context.fillStyle = '#c9b352'
             context.fillText(text, x, y)
             context.textAlign = "start"
         }
@@ -186,14 +186,25 @@ export class Game {
     }
 
     private drawHud(context: CanvasRenderingContext2D) {
-        context.font = "30px Arial"
-        context.fillStyle = "#abc"
-        context.fillText("Level:" + this.level.levelNum, 10, 30)
+        context.font = "23px Schoolbell"
+        context.lineJoin = "bevel"
+        context.strokeStyle = 'black'
+        context.lineWidth = 5
+        context.strokeText("Level: " + this.level.levelNum, 10, 30)
+        context.strokeText("Monsters left: " + this.monstersLeft(), 10, 60)
+        context.strokeText("Offspring stats:", 10, 490)
+        context.strokeText("eyes: " + this.player.childEyes, 10, 520)
+        context.strokeText("legs: " + this.player.childLegs, 10, 550)
+        context.strokeText("arms: " + this.player.childArms, 10, 580)
+
+        context.fillStyle = "#d0d0d0"
+        context.fillText("Level: " + this.level.levelNum, 10, 30)
         context.fillText("Monsters left: " + this.monstersLeft(), 10, 60)
-        context.fillText("Child stats:", 10, 90)
-        context.fillText("eyes: " + this.player.childEyes, 10, 120)
-        context.fillText("legs: " + this.player.childLegs, 10, 150)
-        context.fillText("arms: " + this.player.childArms, 10, 180)
+        context.fillText("Offspring stats:", 10, 490)
+        context.fillText("eyes: " + this.player.childEyes, 10, 520)
+        context.fillText("legs: " + this.player.childLegs, 10, 550)
+        context.fillText("arms: " + this.player.childArms, 10, 580)
+        
     }
 
     handleKeyPress(event: KeyboardEvent) {
