@@ -6,7 +6,6 @@ import {Vector} from "vector2d"
 
 export class Level implements Drawable {
 
-    public player: Player
     public static readonly TILE_SIZE = 80
     public static readonly PAD_TILES_COUNT = 7
     tiles: Tile[][]
