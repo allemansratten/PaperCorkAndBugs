@@ -72,23 +72,6 @@ export class Level implements Drawable {
             (this.width + 2*Level.PAD_TILES_COUNT)*Level.TILE_SIZE, (this.height + 2*Level.PAD_TILES_COUNT)*Level.TILE_SIZE)
             
         const img_pins = ImageManager.get("pins")
-        // add pad tiles
-        context.globalAlpha = 1
-        for(let xi = -Level.PAD_TILES_COUNT; xi < 0; xi++) {
-            for(let yi = -Level.PAD_TILES_COUNT; yi < this.height+Level.PAD_TILES_COUNT; yi++) {
-                context.fillStyle = "#444340"
-                context.drawImage(img_pins, 0, 0, img_pins.width, img_pins.height, xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE -0, Level.TILE_SIZE -0)
-                context.drawImage(img_pins, 0, 0, img_pins.width, img_pins.height, (this.width + Level.PAD_TILES_COUNT + xi) * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE -0, Level.TILE_SIZE -0)
-            }
-        }        
-        for(let yi = -Level.PAD_TILES_COUNT; yi < 0; yi++) {
-            for(let xi = 0; xi < this.width; xi++) {
-                context.fillStyle = "#444340"
-                context.drawImage(img_pins, 0, 0, img_pins.width, img_pins.height, xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE -0, Level.TILE_SIZE -0)
-                context.drawImage(img_pins, 0, 0, img_pins.width, img_pins.height, xi * Level.TILE_SIZE, (this.height + Level.PAD_TILES_COUNT + yi) * Level.TILE_SIZE, Level.TILE_SIZE -0, Level.TILE_SIZE -0)
-            }
-        }        
-        context.globalAlpha = 1
         
 
         for (let xi = 0; xi < this.width; xi++) {
@@ -108,5 +91,24 @@ export class Level implements Drawable {
                 }
             }
         }
+
+
+        // add pad tiles
+        context.globalAlpha = 1
+        for(let xi = -Level.PAD_TILES_COUNT-1; xi < 1; xi++) {
+            for(let yi = -Level.PAD_TILES_COUNT; yi < this.height+Level.PAD_TILES_COUNT; yi++) {
+                context.fillStyle = "#444340"
+                context.drawImage(img_pins, 0, 0, img_pins.width, img_pins.height, xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE -0, Level.TILE_SIZE -0)
+                context.drawImage(img_pins, 0, 0, img_pins.width, img_pins.height, (this.width + Level.PAD_TILES_COUNT + xi) * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE -0, Level.TILE_SIZE -0)
+            }
+        }        
+        for(let yi = -Level.PAD_TILES_COUNT-1; yi < 1; yi++) {
+            for(let xi = 0; xi < this.width; xi++) {
+                context.fillStyle = "#444340"
+                context.drawImage(img_pins, 0, 0, img_pins.width, img_pins.height, xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE -0, Level.TILE_SIZE -0)
+                context.drawImage(img_pins, 0, 0, img_pins.width, img_pins.height, xi * Level.TILE_SIZE, (this.height + Level.PAD_TILES_COUNT + yi) * Level.TILE_SIZE, Level.TILE_SIZE -0, Level.TILE_SIZE -0)
+            }
+        }        
+        context.globalAlpha = 1
     }
 }
