@@ -18,6 +18,8 @@ export class MonsterGenerator {
         [Ant, Fly],
         [Ant, Fly, StagBeetle],
         [Ant, Fly, StagBeetle, Wasp],
+        [Ant, Fly, StagBeetle, Wasp],
+        [Ant, Fly, StagBeetle, Wasp, Worm],
         [Ant, Fly, StagBeetle, Wasp, Worm],
         [Ant, Fly, StagBeetle, Wasp, Worm, Ladybug],
     ]
