@@ -20,10 +20,10 @@ export class Ant extends Monster {
     }
 
     aliveDraw(context: CanvasRenderingContext2D): void {
-        context.fillStyle = "#525"
-        context.beginPath()
-        context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
-        context.fill()
+        // context.fillStyle = "#525"
+        // context.beginPath()
+        // context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
+        // context.fill()
 
         const direction = (this.speed.clone()
             .add(angleToVector(this.angleToPlayer()).mulS(Ant.PLAYER_ANGLE_WEIGHT)))
