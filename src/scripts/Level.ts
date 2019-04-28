@@ -90,14 +90,16 @@ export class Level implements Drawable {
         context.globalAlpha = 1
         
 
-
+        const img_pins = ImageManager.get("pins")
         for (let xi = 0; xi < this.width; xi++) {
             for (let yi = 0; yi < this.height; yi++) {
                 const tile = this.tiles[xi][yi]
                 if (tile.obstacle) {
                     context.globalAlpha = 0.8
-                    context.fillStyle = "rgb(50, 50, 50)"
-                    context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
+                    context.drawImage(img_pins, 0, 0, img_pins.width, img_pins.height, 0+xi * Level.TILE_SIZE, 0+yi * Level.TILE_SIZE, Level.TILE_SIZE -0, Level.TILE_SIZE -0)
+                    // context.globalAlpha = 0.8
+                    // context.fillStyle = "rgb(50, 50, 50)"
+                    // context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
                 } else {
                     // context.globalAlpha = 0.8
                     // context.fillStyle = "rgb(10, 100, 100)"
