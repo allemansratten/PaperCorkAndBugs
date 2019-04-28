@@ -1,6 +1,6 @@
 export class ImageManager {
 
-    private static images : Map<string, HTMLImageElement> = new Map<string, HTMLImageElement>()
+    private static images: Map<string, HTMLImageElement> = new Map<string, HTMLImageElement>()
 
     public static add(name: string, url: string) {
         let img = new Image()

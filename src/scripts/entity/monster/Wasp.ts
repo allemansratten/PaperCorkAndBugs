@@ -3,7 +3,6 @@ import {Monster} from "./Monster"
 import {Level} from "../../Level"
 import {clamp, interpolateLinear} from "../../Util"
 import {Vector} from "vector2d"
-import {getAndCacheOutputJSFileName} from "ts-loader/dist/types/utils"
 
 export class Wasp extends Monster {
 
@@ -21,8 +20,8 @@ export class Wasp extends Monster {
     private static readonly COLOR_DEFAULT = [200, 200, 0]
     private static readonly COLOR_ANGRY = [200, 50, 50]
 
-    chargePrepProgress : number = 0 // How long has the wasp been waiting to charge?
-    timeSinceLastCharge : number = Wasp.CHARGE_COOLDOWN
+    chargePrepProgress: number = 0 // How long has the wasp been waiting to charge?
+    timeSinceLastCharge: number = Wasp.CHARGE_COOLDOWN
     speed: Vector = new Vector(0, 0)
 
     constructor(player: Player, pos: Vector) {
@@ -99,7 +98,7 @@ export class Wasp extends Monster {
     }
 
     getColor(): string {
-        let rgb = [0,0,0]
+        let rgb = [0, 0, 0]
         for (let i = 0; i < 3; i++) {
             rgb[i] = Math.floor(interpolateLinear(Wasp.COLOR_DEFAULT[i], Wasp.COLOR_ANGRY[i], this.getAngriness()))
         }

@@ -1,7 +1,6 @@
 import {Player} from "../Player"
 import {Monster} from "./Monster"
 import {Level} from "../../Level"
-import {angleDistance, clamp} from "../../Util"
 import {Vector} from "vector2d"
 
 export class Fly extends Monster {

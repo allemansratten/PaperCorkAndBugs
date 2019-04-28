@@ -2,8 +2,6 @@ import {Monster} from "./Monster"
 import {Player} from "../Player"
 import {Level} from "../../Level"
 import {Vector} from "vector2d"
-import {Entity} from "../Entity"
-import {Shot} from "../Shot"
 
 export class StationaryMonster extends Monster {
 

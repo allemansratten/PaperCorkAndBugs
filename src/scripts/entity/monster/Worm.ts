@@ -2,7 +2,6 @@ import {Monster} from "./Monster"
 import {Player} from "../Player"
 import {Level} from "../../Level"
 import {Vector} from "vector2d"
-import {Entity} from "../Entity"
 import {Shot} from "../Shot"
 
 export class Worm extends Monster {
@@ -12,7 +11,7 @@ export class Worm extends Monster {
     private static readonly HP = 5
     private static readonly SHOOTING_FREQ = 1
     private static readonly SHOT_SPEED = 300
-    private timeSinceLastShot : number = 1 / Worm.SHOOTING_FREQ
+    private timeSinceLastShot: number = 1 / Worm.SHOOTING_FREQ
 
     constructor(player: Player, pos: Vector) {
         super(player, pos, Worm.RADIUS, Worm.HP)

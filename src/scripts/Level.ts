@@ -25,7 +25,7 @@ export class Level implements Drawable {
                 const tile = this.tiles[xi][yi]
                 const img = ImageManager.get("harold")
                 context.drawImage(img, 0, 0, img.width, img.height,
-                    xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE+4, Level.TILE_SIZE+4)
+                    xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 4, Level.TILE_SIZE + 4)
                 context.globalAlpha = 0.8
                 if (tile.obstacle) {
                     context.fillStyle = "rgb(50,50,50)"
@@ -33,7 +33,7 @@ export class Level implements Drawable {
                 } else {
                     context.fillStyle = "rgb(10, 100, 100)"
                 }
-                context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE+1, Level.TILE_SIZE+1)
+                context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
                 context.globalAlpha = 1
             }
         }
