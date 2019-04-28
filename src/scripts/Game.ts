@@ -9,6 +9,7 @@ import {Ant} from "./entity/monster/Ant"
 import {Monster} from "./entity/monster/Monster"
 import {Wasp} from "./entity/monster/Wasp"
 import {Fly} from "./entity/monster/Fly"
+import {GameState} from "./GameState"
 
 export class Game {
 
@@ -17,7 +18,7 @@ export class Game {
     private player: Player
     private level: Level
     public pauseSymbol: PauseSymbol
-    public paused: boolean = false
+    private gameState: GameState = GameState.IN_GAME
 
     constructor(private width: number, private height: number) {
         this.player = new Player(new Vector(width / 2, height / 2))
@@ -62,27 +63,30 @@ export class Game {
     }
 
     step(seconds: number) {
-        let nKilled = 0
-        this.entities = this.entities.filter(entity => {
-            const died = entity.step(seconds, this.level)
-            if (!died && entity instanceof Monster) {
-                nKilled++
+        if (this.gameState == GameState.IN_GAME) {
+            let nKilled = 0
+            this.entities = this.entities.filter(entity => {
+                const died = entity.step(seconds, this.level)
+                if (!died && entity instanceof Monster) {
+                    nKilled++
+                }
+                return died
+            })
+            for (let i = 0; i < nKilled * 2; i++) {
+                this.addMonsterRandom()
             }
-            return died
-        })
-        for (let i = 0; i < nKilled * 2; i++) {
-            this.addMonsterRandom()
+            this.resolveCollisions()
+            // Add player's projectiles
+            this.entities.forEach(entity => {
+                this.entities.push(...entity.createdEntities)
+                // console.log(this.entities)
+                entity.createdEntities = []
+            })
+            if (!this.player.alive) this.gameState = GameState.GAME_OVER
         }
-        this.resolveCollisions()
-        // Add player's projectiles
-        this.entities.forEach(entity => {
-            this.entities.push(...entity.createdEntities)
-            // console.log(this.entities)
-            entity.createdEntities = []
-        })
     }
 
-    drawAll(context: CanvasRenderingContext2D) {
+    drawGame(context: CanvasRenderingContext2D) {
         context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight)
         const zoom = this.player.getZoom()
         context.scale(zoom, zoom)
@@ -96,6 +100,28 @@ export class Game {
 
         context.resetTransform()
         this.drawHud(context)
+
+    }
+
+    drawAll(context: CanvasRenderingContext2D) {
+        this.drawGame(context)
+        switch (this.gameState) {
+            case GameState.PAUSED:
+                this.pauseSymbol.draw(context)
+                break
+            case GameState.LEVEL_END:
+                break
+            case GameState.GAME_OVER:
+                /** SPOOOOOKY */
+                context.textAlign = "center"
+                context.font = '80px Sans-serif'
+                context.strokeStyle = 'black'
+                context.lineWidth = 8
+                context.strokeText("GAME OVER", this.width / 2, this.height / 2)
+                context.fillStyle = '#600'
+                context.fillText("GAME OVER", this.width / 2, this.height / 2)
+                context.textAlign = "start"
+        }
     }
 
     private drawHud(context: CanvasRenderingContext2D) {
@@ -110,8 +136,9 @@ export class Game {
     handleKeyPress(event: KeyboardEvent) {
         this.player.movementKeyState.handleKey(event.key.toLowerCase(), true)
         this.player.shootingKeyState.handleKey(event.key.toLowerCase(), true)
-        if(event.key.toLowerCase() == 'p') {
-            this.paused = !this.paused;
+        if (event.key.toLowerCase() == 'p') {
+            if (this.gameState == GameState.PAUSED) this.gameState = GameState.IN_GAME
+            else if (this.gameState == GameState.IN_GAME) this.gameState = GameState.PAUSED
         }
     }
 

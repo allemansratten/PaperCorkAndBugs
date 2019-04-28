@@ -41,7 +41,7 @@ export class Player extends Entity {
     )
 
     readonly friendly: boolean = true
-    private alive: boolean = true
+    alive: boolean = true
     private shotCooldown: number = 0 // Time until next shot
     private invincibleTime: number = 0
     zoomSmoother: Smoother
@@ -160,8 +160,6 @@ export class Player extends Entity {
         })
 
 
-
-
     }
 
     private stepMovement(seconds: number, level: Level) {
@@ -234,6 +232,7 @@ export class Player extends Entity {
                 this.childEyes++
             }
         }
+        if (this.legs.length == 0 && this.arms.length == 0 && this.eyes.length == 0) this.alive = false
     }
 
     hitAnim(): void {
