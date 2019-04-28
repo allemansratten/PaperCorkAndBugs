@@ -23,11 +23,6 @@ export class StagBeetle extends Monster {
         this.angle = this.angleToPlayer()
     }
 
-    private angleToPlayer(): number {
-        const delta = this.player.pos.clone().subtract(this.pos)
-        return Math.atan2(delta.y, delta.x)
-    }
-
     draw(context: CanvasRenderingContext2D): void {
         context.globalAlpha = this.getAlpha()
         context.fillStyle = "#2fa"
@@ -49,16 +44,8 @@ export class StagBeetle extends Monster {
             return true
         }
         this.angryCooldown = Math.max(0, this.angryCooldown - seconds)
-        const targetAngle = this.angleToPlayer()
-        const angleDif = Math.min(angleDistance(targetAngle, this.angle), StagBeetle.ANGLE_SPEED_MAX * seconds)
-        const a1 = this.angle + angleDif
-        const a2 = this.angle - angleDif
-        if (angleDistance(a1, targetAngle) < angleDistance(a2, targetAngle)) {
-            this.angle = a1
-        } else {
-            this.angle = a2
-        }
-        this.angry = (this.angryCooldown === 0) && angleDistance(this.angle, targetAngle) < StagBeetle.ANGRY_ANGLE
+        this.angle = this.getCloserAngle(this.angle, this.angleToPlayer(), StagBeetle.ANGLE_SPEED_MAX * seconds)
+        this.angry = (this.angryCooldown === 0) && angleDistance(this.angle, this.angleToPlayer()) < StagBeetle.ANGRY_ANGLE
         const speedMagnitude = this.angry ? StagBeetle.ANGRY_SPEED : StagBeetle.SPEED
         let speed = new Vector(Math.cos(this.angle), Math.sin(this.angle)).mulS(speedMagnitude)
         this.pos.add(speed.clone().mulS(seconds))

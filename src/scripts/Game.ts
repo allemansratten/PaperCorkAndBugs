@@ -8,6 +8,7 @@ import {StagBeetle} from "./entity/monster/StagBeetle"
 import {Ant} from "./entity/monster/Ant"
 import {Monster} from "./entity/monster/Monster"
 import {Wasp} from "./entity/monster/Wasp"
+import {Fly} from "./entity/monster/Fly"
 
 export class Game {
 
@@ -30,14 +31,8 @@ export class Game {
     }
 
     private randomMonsterType() {
-        const x = Math.random()
-        if (x < 0.33) {
-            return StagBeetle
-        } else if (x < 0.66) {
-            return Wasp
-        } else {
-            return Ant
-        }
+        const types = [StagBeetle, Wasp, Ant, Fly]
+        return types[Math.floor(Math.random() * types.length)]
     }
 
     private addMonsterRandom() {
