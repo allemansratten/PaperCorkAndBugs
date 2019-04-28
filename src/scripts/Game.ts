@@ -89,6 +89,14 @@ export class Game {
     step(seconds: number) {
         if (this.gameState == GameState.IN_GAME) {
             let nKilled = 0
+
+            const monsters = this.entities.filter(entity => (entity instanceof Monster)) as Monster[]
+            for (let i = 0; i < monsters.length; i++) {
+                for (let j = i + 1; j < monsters.length; j++) {
+                    Monster.pushAway(monsters[i], monsters[j])
+                }
+            }
+
             this.entities = this.entities.filter(entity => {
                 const died = entity.step(seconds, this.level)
                 if (!died && entity instanceof Monster) {
