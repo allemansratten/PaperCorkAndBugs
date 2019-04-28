@@ -15,7 +15,7 @@ export class MonsterGenerator {
     private static readonly LEVEL_MONSTERS_INCREMENT = 0.4
     private static readonly NEW_MONSTER_MIN_DIST = 250
     private static readonly LEVEL_MONSTERS = [
-        [Wasp],
+        [Ant],
         [Ant, Fly],
         [Ant, Fly, StagBeetle],
         [Ant, Fly, StagBeetle, Wasp],
