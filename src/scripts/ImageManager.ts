@@ -19,6 +19,7 @@ export class ImageManager {
 
     public static readonly IMAGES_TO_LOAD = [
         ["cork", "cork.jpg"],
+        ["pins", "pins.png"],
         ["eye1", "eye1.png"],
         ["paper1", "paper1.png"],
         ["leg1", "leg1.png"],
