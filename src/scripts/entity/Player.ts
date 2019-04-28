@@ -174,7 +174,7 @@ export class Player extends Entity {
     private stepMovement(seconds: number, level: Level) {
         // Acceleration
         let direction: Vector = this.movementKeyState.getDirection()
-        const accel = Player.ACCELERATION * 0.5 + this.legs.length * 0.1 * Player.ACCELERATION
+        const accel = Player.ACCELERATION * 0.75 + this.legs.length * 0.08 * Player.ACCELERATION
         if (direction.length() !== 0) {
             direction.normalise().mulS(accel * seconds)
         }
@@ -239,7 +239,7 @@ export class Player extends Entity {
             } else if (entity instanceof Leg) {
                 this.childLegs = Math.min(Player.BODY_PARTS_MAX, this.childLegs + 1)
             } else {
-                this.childArms = Math.min(Player.BODY_PARTS_MAX, this.childArms + 1)
+                this.childEyes = Math.min(Player.BODY_PARTS_MAX, this.childEyes + 1)
             }
         }
         if (this.legs.length == 0 && this.arms.length == 0 && this.eyes.length == 0) this.alive = false
@@ -255,7 +255,7 @@ export class Player extends Entity {
         if (this.eyes.length === 0) {
             return Player.ZOOM_0_EYES
         }
-        const goodness = (this.eyes.length - 1) / 9
+        const goodness = (this.eyes.length - 1) / 7
         return Math.exp(Math.log(Player.ZOOM_MAX_EYES) * goodness + Math.log(Player.ZOOM_1_EYE) * (1 - goodness))
         // return 1 / (1 + 0.05 * this.eyes.length)
     }
@@ -268,11 +268,11 @@ export class Player extends Entity {
         if (this.legs.length == 0) {
             return Player.ZERO_LEGS_MAX_SPEED
         } else {
-            return Player.MAX_SPEED * 0.5 + this.legs.length * 0.1 * Player.MAX_SPEED
+            return Player.MAX_SPEED * 0.75 + this.legs.length * 0.08 * Player.MAX_SPEED
         }
     }
 
     getShootingSpeed(): number {
-        return Player.SHOOTING_FREQ * 0.1 + this.arms.length * Player.SHOOTING_FREQ * 0.1
+        return Player.SHOOTING_FREQ * 0.1 + this.arms.length * Player.SHOOTING_FREQ * 0.15
     }
 }
