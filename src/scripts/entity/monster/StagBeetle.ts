@@ -35,7 +35,7 @@ export class StagBeetle extends Monster {
 
     aliveStep(seconds: number, level: Level) {
         this.angryCooldown = Math.max(0, this.angryCooldown - seconds)
-        this.angle = this.getCloserAngle(this.angle, this.angleToPlayer(), StagBeetle.ANGLE_SPEED_MAX * seconds)
+        this.angle = Monster.getCloserAngle(this.angle, this.angleToPlayer(), StagBeetle.ANGLE_SPEED_MAX * seconds)
         this.angry = (this.angryCooldown === 0) && angleDistance(this.angle, this.angleToPlayer()) < StagBeetle.ANGRY_ANGLE
         const speedMagnitude = this.angry ? StagBeetle.ANGRY_SPEED : StagBeetle.SPEED
         let speed = new Vector(Math.cos(this.angle), Math.sin(this.angle)).mulS(speedMagnitude)

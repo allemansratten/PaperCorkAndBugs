@@ -15,7 +15,7 @@ export class Game {
     private level: Level
     public pauseSymbol: PauseSymbol
     private gameState: GameState = GameState.IN_GAME
-    private endLevelContinueSelected: boolean = false
+    private endLevelContinueSelected: boolean = true
     private static readonly END_LEVEL_MENU_OPTION_1 = "Continue with this character"
     private static readonly END_LEVEL_MENU_OPTION_2 = "Kill parent and spawn a child"
 
@@ -25,7 +25,7 @@ export class Game {
     }
 
     private nextLevel(createNewPlayer: boolean) {
-        this.endLevelContinueSelected = false
+        this.endLevelContinueSelected = true
         this.entities = []
         this.level = new Level(20, 20, this.level == undefined ? 1 : this.level.levelNum + 1)
         if (createNewPlayer) this.player = this.nextPlayer(this.level)
