@@ -10,7 +10,7 @@ import {Player} from "./Player"
 
 export class MonsterGenerator {
     private static readonly FIRST_LEVEL_MONSTERS = 5
-    private static readonly LEVEL_MONSTERS_INCREMENT = 2
+    private static readonly LEVEL_MONSTERS_INCREMENT = 1
     private static readonly NEW_MONSTER_MIN_DIST = 250
     private static readonly LEVEL_MONSTERS = [
         [Ant],
@@ -22,7 +22,7 @@ export class MonsterGenerator {
 
     static generateMonsters(level: Level, player: Player): Entity[] {
         const entities: Entity[] = []
-        if (level.levelNum != this.LEVEL_MONSTERS.length) {
+        if (level.levelNum <= this.LEVEL_MONSTERS.length) {
             /** make sure the new monster shows up */
             const monsterTypes = this.LEVEL_MONSTERS[level.levelNum - 1]
             const toAdd = new (monsterTypes[monsterTypes.length - 1])(player, new Vector(0, 0))
