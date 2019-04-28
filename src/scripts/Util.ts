@@ -1,3 +1,5 @@
+import {AbstractVector, Vector} from "vector2d"
+
 export function hypot(x: number, y: number): number {
     return Math.sqrt(x ** 2 + y ** 2)
 }
@@ -15,6 +17,14 @@ export function clamp(a: number, mn: number, mx: number): number {
 
 export function interpolateLinear(fr: number, to: number, progress: number) {
     return fr * (1 - progress) + to * progress
+}
+
+export function angleToVector(angle: number) {
+    return new Vector(Math.cos(angle), Math.sin(angle))
+}
+
+export function vectorToAngle(v: AbstractVector) {
+    return Math.atan2(v.y, v.x)
 }
 
 export class Smoother {
