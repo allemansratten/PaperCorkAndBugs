@@ -12,7 +12,7 @@ export class Shot extends Projectile {
     private static readonly SPEED: number = 500
     private static readonly DURATION: number = 1 // How many seconds does the shot stay alive?
     alive: boolean = true
-    private speed: Vector
+    public speed: Vector
     private duration: number
 
     constructor(protected player: Player, pos: Vector, dir: Vector, friendly: boolean, speed: number) {
