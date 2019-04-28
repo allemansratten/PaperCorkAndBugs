@@ -19,14 +19,13 @@ export class Mosquito extends Monster {
     }
 
     aliveDraw(context: CanvasRenderingContext2D): void {
-        /*context.save()
+        context.save()
         context.translate(this.pos.x, this.pos.y)
         context.rotate(this.imageAngle())
-        const img = ImageManager.get("ant")
+        const img = ImageManager.get("mosquito")
         context.drawImage(img, 0, 0, img.width, img.height,
             - this.r, - this.r, this.r * 2, this.r * 2)
-        context.restore()*/
-        this.drawDebugCircle(context, "#00f")
+        context.restore()
     }
 
     collideWith(entity: Entity): void {
