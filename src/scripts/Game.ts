@@ -16,8 +16,8 @@ export class Game {
     public pauseSymbol: PauseSymbol
     private gameState: GameState = GameState.IN_GAME
     private endLevelContinueSelected: boolean = true
-    private static readonly END_LEVEL_MENU_OPTION_1 = "Continue with this character"
-    private static readonly END_LEVEL_MENU_OPTION_2 = "Kill parent and spawn a child"
+    private static readonly END_LEVEL_MENU_OPTION_1 = "Continue"
+    private static readonly END_LEVEL_MENU_OPTION_2 = "Let your offspring take over"
 
     constructor(private width: number, private height: number) {
         this.pauseSymbol = new PauseSymbol()
@@ -166,18 +166,19 @@ export class Game {
                 context.textAlign = "start"
         }
         if (this.monstersLeft() == 0 && this.gameState != GameState.LEVEL_END) {
-            const text = "press F to end level"
-            const x = this.width / 2
-            const y = this.height - 20
-            context.textAlign = "center"
-            context.lineJoin = "bevel"
-            context.font = '23px Schoolbell'
-            context.strokeStyle = 'black'
-            context.lineWidth = 5
-            context.strokeText(text, x, y)
-            context.fillStyle = '#c9b352'
-            context.fillText(text, x, y)
-            context.textAlign = "start"
+            this.gameState = GameState.LEVEL_END
+            // const text = "press F to end level"
+            // const x = this.width / 2
+            // const y = this.height - 20
+            // context.textAlign = "center"
+            // context.lineJoin = "bevel"
+            // context.font = '23px Schoolbell'
+            // context.strokeStyle = 'black'
+            // context.lineWidth = 5
+            // context.strokeText(text, x, y)
+            // context.fillStyle = '#c9b352'
+            // context.fillText(text, x, y)
+            // context.textAlign = "start"
         }
     }
 
