@@ -137,6 +137,7 @@ export class Player extends Entity {
 
         // draw mouth
         context.fillStyle = Player.MOUTH_COLOR
+        context.lineWidth = 3
         context.beginPath()
         let mouth_range_sine = Math.sin(time / 300) / 4
         if (this.invincibleTime <= 0) {

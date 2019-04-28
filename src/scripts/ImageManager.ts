@@ -22,6 +22,7 @@ export class ImageManager {
         ["eye1", "eye1.png"],
         ["paper1", "paper1.png"],
         ["leg1", "leg1.png"],
+        ["arm1", "arm1.png"],
     ]
 
     public static loadAll() {
