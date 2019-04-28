@@ -7,16 +7,19 @@ import {Fly} from "./monster/Fly"
 import {StagBeetle} from "./monster/StagBeetle"
 import {Vector} from "vector2d"
 import {Player} from "./Player"
+import {Ladybug} from "./monster/Ladybug"
 
 export class MonsterGenerator {
     private static readonly FIRST_LEVEL_MONSTERS = 5
     private static readonly LEVEL_MONSTERS_INCREMENT = 2
+    private static readonly NEW_MONSTER_MIN_DIST = 250
     private static readonly LEVEL_MONSTERS = [
         [Ant],
         [Ant, Fly],
         [Ant, Fly, StagBeetle],
         [Ant, Fly, StagBeetle, Wasp],
         [Ant, Fly, StagBeetle, Wasp, Worm],
+        [Ant, Fly, StagBeetle, Wasp, Worm, Ladybug],
     ]
 
     static generateMonsters(level: Level, player: Player): Entity[] {
@@ -25,7 +28,7 @@ export class MonsterGenerator {
             /** make sure the new monster shows up */
             const monsterTypes = this.LEVEL_MONSTERS[level.levelNum - 1]
             const toAdd = new (monsterTypes[monsterTypes.length - 1])(player, new Vector(0, 0))
-            toAdd.pos = level.generateValidPos(toAdd.r)
+            toAdd.pos = level.generateValidPosNotCloseTo(toAdd.r, player.pos, this.NEW_MONSTER_MIN_DIST)
             entities.push(toAdd)
         }
         while (entities.length < MonsterGenerator.FIRST_LEVEL_MONSTERS + MonsterGenerator.LEVEL_MONSTERS_INCREMENT * (level.levelNum - 1)) {
@@ -42,7 +45,7 @@ export class MonsterGenerator {
 
     static addMonsterRandom(level: Level, player: Player): Entity {
         const toAdd = new (this.randomMonsterType(level))(player, new Vector(0, 0))
-        toAdd.pos = level.generateValidPos(toAdd.r)
+        toAdd.pos = level.generateValidPosNotCloseTo(toAdd.r, player.pos, this.NEW_MONSTER_MIN_DIST)
         return toAdd
     }
 }
