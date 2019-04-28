@@ -43,6 +43,7 @@ export class Worm extends Monster {
                 this.pos = this.targetPos
                 this.targetPos = null
                 this.timeSinceTeleportStart = 0
+                this.timeSinceLastShot = (1 / Worm.SHOOTING_FREQ) / 2 // Prevent from shooting immediately after teleport
             }
         } else {
             if (this.timeSinceLastShot > 1 / Worm.SHOOTING_FREQ) {
