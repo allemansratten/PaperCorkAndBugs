@@ -27,10 +27,9 @@ export class Arm extends BodyPart implements Drawable {
 
         context.save()
         context.translate(this.pos.x, this.pos.y)
-        context.rotate(Math.PI * 2 / 8 * this.defaultDir - Math.PI / 2)
+        context.rotate(Math.PI * 2 / 13 * this.defaultDir - Math.PI / 2)
         if (this.recoilState !== -1) {
             let recoilSine = Math.sin((this.recoilStartTime - time) / 100)
-            // context.rotate(Math.PI * 2 / 8 * this.defaultDir + (recoilSine*2))
             context.translate(-20 - recoilSine * 20, 0)
             if (this.recoilState == 0 && recoilSine <= this.recoilSinePrev) {
                 this.recoilState = 1
@@ -41,15 +40,9 @@ export class Arm extends BodyPart implements Drawable {
             this.recoilSinePrev = recoilSine
         }
 
-        // context.fillStyle = Arm.ARM_COLOR
-        // context.beginPath()
-        // context.ellipse(0, 0, 2, 14, 0, 0, 2 * Math.PI)
-        // context.fill()
         const img = ImageManager.get("arm1")
         context.drawImage(img, 0, 0, img.width, img.height,
             -Arm.WIDTH / 2, -Arm.HEIGHT / 2, Arm.WIDTH, Arm.HEIGHT)
-        // context.fillStyle = "red"
-        // context.fillRect(0, 0, 5, 5)
         context.restore()
     }
 

@@ -27,6 +27,20 @@ export function vectorToAngle(v: AbstractVector) {
     return Math.atan2(v.y, v.x)
 }
 
+export function shuffleArray(array: Array<number>) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array
+}
+
+export function randFromArray(items: Array<number>) {
+    return items[Math.floor(Math.random()*items.length)];
+}
+
 export class Smoother {
     a_fr: number
     a_to: number
@@ -53,4 +67,5 @@ export class Smoother {
             this.progress = 0
         }
     }
+
 }
