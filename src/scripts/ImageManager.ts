@@ -31,6 +31,7 @@ export class ImageManager {
         ["waspYellow", "waspyellow.png"],
         ["waspOrange", "wasporange.png"],
         ["waspRed", "waspred.png"],
+        ["worm", "worm.png"],
     ]
 
     public static loadAll() {
