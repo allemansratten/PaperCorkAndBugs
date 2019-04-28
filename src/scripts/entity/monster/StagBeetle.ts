@@ -17,6 +17,7 @@ export class StagBeetle extends Monster {
     private angry: boolean = false
     private angryCooldown: number = 0
     protected timeSinceDeath: number = 0
+    private speed: Vector
 
     constructor(player: Player, pos: Vector) {
         super(player, pos, StagBeetle.RADIUS, StagBeetle.HP)
@@ -38,10 +39,10 @@ export class StagBeetle extends Monster {
         this.angle = Monster.getCloserAngle(this.angle, this.angleToPlayer(), StagBeetle.ANGLE_SPEED_MAX * seconds)
         this.angry = (this.angryCooldown === 0) && angleDistance(this.angle, this.angleToPlayer()) < StagBeetle.ANGRY_ANGLE
         const speedMagnitude = this.angry ? StagBeetle.ANGRY_SPEED : StagBeetle.SPEED
-        let speed = new Vector(Math.cos(this.angle), Math.sin(this.angle)).mulS(speedMagnitude)
-        this.pos.add(speed.clone().mulS(seconds))
+        this.speed = new Vector(Math.cos(this.angle), Math.sin(this.angle)).mulS(speedMagnitude)
+        this.pos.add(this.speed.clone().mulS(seconds))
 
-        const didCollide = this.resolveLevelCollision(level, speed)
+        const didCollide = this.resolveLevelCollision(level, this.speed)
         if (didCollide) {
             this.angryCooldown = StagBeetle.ANGRY_COOLDOWN
         }

@@ -4,7 +4,7 @@ import {Vector} from "vector2d"
 import {CircleHitbox} from "../CircleHitbox"
 import {Shot} from "../Shot"
 import {Level} from "../../Level"
-import {angleDistance, clamp} from "../../Util"
+import {angleDistance, angleToVector, clamp, vectorToAngle} from "../../Util"
 import {Leg} from "../Leg"
 import {Eye} from "../Eye"
 import {Arm} from "../Arm"
@@ -12,6 +12,7 @@ import {Arm} from "../Arm"
 export abstract class Monster extends Entity {
 
     private static readonly BODY_PART_DROP_CHANCE = 0.5
+    private static readonly PLAYER_ANGLE_WEIGHT = 30
 
     constructor(protected player: Player, pos: Vector, r: number, protected hp: number) {
         super(pos, r, new CircleHitbox(r))
@@ -21,6 +22,7 @@ export abstract class Monster extends Entity {
     protected timeSinceDeath: number = 0
     protected static readonly DEATH_TIME = 0.5
     protected static readonly PUSH_COEF = 0.2
+    protected speed: Vector = new Vector(0,0)
 
     alive(): boolean {
         return this.hp > 0
@@ -73,6 +75,13 @@ export abstract class Monster extends Entity {
         return Math.atan2(delta.y, delta.x)
     }
 
+    protected imageAngle(): number {
+        const direction = (this.speed.clone()
+            .add(angleToVector(this.angleToPlayer()).mulS(Monster.PLAYER_ANGLE_WEIGHT)))
+        // Add Math.PI / 2 because images are turned up
+        return vectorToAngle(direction) + Math.PI / 2
+    }
+
     protected static getCloserAngle(current: number, target: number, maxDelta: number): number {
         const delta = Math.min(angleDistance(target, current), maxDelta)
         const a1 = current + delta
@@ -96,6 +105,5 @@ export abstract class Monster extends Entity {
             m1.pos.subtract(overlap.clone().mulS(Monster.PUSH_COEF))
             m2.pos.add(overlap.clone().mulS(Monster.PUSH_COEF))
         }
-
     }
 }
