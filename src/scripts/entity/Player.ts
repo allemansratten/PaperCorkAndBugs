@@ -9,27 +9,30 @@ import {clamp, Smoother} from "../Util"
 import {Arm} from "./Arm"
 import {Leg} from "./Leg"
 import {Monster} from "./monster/Monster"
-import {Projectile} from "./Projectile"
 import {BodyPart} from "./BodyPart"
+import {ImageManager} from "../ImageManager"
 
 export class Player extends Entity {
 
-    private static readonly RADIUS = 32
+    static readonly RADIUS = 32
     static readonly MAX_SPEED = 240 // px / s
     static readonly ZERO_LEGS_MAX_SPEED = 20 // px / s
     private static readonly ACCELERATION = 2000 // px / s^2
     private static readonly DECELERATION = 800
-    private static readonly SHOOTING_SPEED = 5
+    private static readonly SHOOTING_FREQ = 5
     private static readonly INVINCIBLE_AFTER_HIT_TIME = 1
+    private static readonly SHOT_SPEED = 500
+    private static readonly ZOOM_0_EYES = 5
+    private static readonly ZOOM_1_EYE = 2
+    private static readonly ZOOM_MAX_EYES = 0.5
+    // Cosmetics
     private static readonly ALIVE_COLOR = "#9e502c"
     private static readonly INVINCIBLE_COLOR = "#ff502c"
     private static readonly DEAD_COLOR = "#91a05b"
     private static readonly MOUTH_COLOR = "#512815"
     private static readonly MOUTH_RANGE = 0.8
-    private static readonly ZOOM_0_EYES = 5
-    private static readonly ZOOM_1_EYE = 2
-    private static readonly ZOOM_MAX_EYES = 0.5
-    private static readonly HIT_THICC_MULTIPLIER = 6
+    private static readonly HIT_THICC_MULTIPLIER = 8
+    private static readonly BODY_PARTS_MAX = 10
 
     speed: Vector = new Vector(0, 0)
 
@@ -41,7 +44,7 @@ export class Player extends Entity {
     )
 
     readonly friendly: boolean = true
-    private alive: boolean = true
+    alive: boolean = true
     private shotCooldown: number = 0 // Time until next shot
     private invincibleTime: number = 0
     zoomSmoother: Smoother
@@ -60,16 +63,20 @@ export class Player extends Entity {
     childLegs = 0
     childArms = 0
 
-    constructor(pos: Vector) {
+    constructor(pos: Vector, eyes: number, legs: number, arms: number) {
         super(pos, Player.RADIUS, new CircleHitbox((Player.RADIUS)))
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < eyes; i++) {
             this.eyes.push(new Eye(pos, Eye.randomEyeSize()))
         }
-        for (let i = 0, dir = 0; i < 6; i++, dir++) {
-            if (dir == 0 || dir == 4) dir++
+        let armIndicies = [1, 2, 3, 4, 6, 7, 8, 9, 11, 12]
+        for (let i = 0; i < arms; i++) {
+            let index = Math.floor(Math.random() * armIndicies.length)
+            let dir = armIndicies[index]
+            armIndicies.splice(index, 1)
             this.arms.push(new Arm(pos, dir))
         }
-        for (let i = 0; i < 6; i++) {
+
+        for (let i = 0; i < legs; i++) {
             this.legs.push(new Leg(pos))
         }
         this.zoomSmoother = new Smoother(this.getTargetZoom(), 1)
@@ -91,14 +98,27 @@ export class Player extends Entity {
 
             leg.draw(context)
         })
+
+
+        // draw arms
+        this.arms.forEach((arm, index) => {
+            arm.pos = new Vector(this.pos.x - 40, this.pos.y + 5 * index)
+            if (arm.defaultDir <= 6) {
+                arm.pos = new Vector(this.pos.x + this.r * 1.22, this.pos.y + arm.defaultDir / 12 * 110 - 38)
+            } else {
+                arm.pos = new Vector(this.pos.x - this.r * 1.22, this.pos.y - arm.defaultDir / 12 * 100 + 76)
+            }
+            arm.draw(context)
+        })
+
+
         // draw body
         context.fillStyle = this.invincibleTime > 0 ? Player.INVINCIBLE_COLOR : Player.ALIVE_COLOR
         context.beginPath()
-        if (this.hitAnimStatus == -1)
-            context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
-        else {
+        let curR = this.r
+        if (this.hitAnimStatus !== -1) {
             let hitSine = Math.sin((this.hitStartTime - time) / 100)
-            context.arc(this.pos.x, this.pos.y, this.r - hitSine * Player.HIT_THICC_MULTIPLIER, 0, 2 * Math.PI)
+            curR = this.r - hitSine * Player.HIT_THICC_MULTIPLIER
             if (this.hitAnimStatus == 0 && hitSine >= 0.9) {
                 this.hitAnimStatus = 1
             }
@@ -107,12 +127,14 @@ export class Player extends Entity {
             }
             this.hitSinePrev = hitSine
         }
-        context.fill()
+        const img = ImageManager.get("paper1")
+        context.drawImage(img, 0, 0, img.width, img.height,
+            this.pos.x - curR, this.pos.y - curR, curR * 2, curR * 2)
 
         // draw eyes
         this.eyes.forEach((eye, index) => {
             if (this.eyes.length == 1) {
-                eye.pos = new Vector(this.pos.x, this.pos.y - this.r)
+                eye.pos = new Vector(this.pos.x, this.pos.y - this.r / 2)
             } else {
                 if (index >= 8 && index <= 9)
                     eye.pos = new Vector(this.pos.x + (8.5 - index) * this.r * 0.9, this.pos.y - this.r / 5.6)
@@ -130,6 +152,7 @@ export class Player extends Entity {
 
         // draw mouth
         context.fillStyle = Player.MOUTH_COLOR
+        context.lineWidth = 3
         context.beginPath()
         let mouth_range_sine = Math.sin(time / 300) / 4
         if (this.invincibleTime <= 0) {
@@ -146,28 +169,13 @@ export class Player extends Entity {
 
         context.stroke()
 
-        // draw arms
-        this.arms.forEach((arm, index) => {
-            arm.pos = new Vector(this.pos.x - 40, this.pos.y + 5 * index)
-
-            if (index <= 2) {
-                arm.pos = new Vector(this.pos.x + this.r * 1.3, this.pos.y + index / 6 * 80 - 20)
-            } else {
-                arm.pos = new Vector(this.pos.x - this.r * 1.3, this.pos.y - index / 6 * 80 + 50)
-            }
-
-            arm.draw(context)
-        })
-
-
-
 
     }
 
     private stepMovement(seconds: number, level: Level) {
         // Acceleration
         let direction: Vector = this.movementKeyState.getDirection()
-        const accel = Player.ACCELERATION * 0.5 + this.legs.length * 0.1 * Player.ACCELERATION
+        const accel = Player.ACCELERATION * 0.75 + this.legs.length * 0.08 * Player.ACCELERATION
         if (direction.length() !== 0) {
             direction.normalise().mulS(accel * seconds)
         }
@@ -198,7 +206,7 @@ export class Player extends Entity {
             spawnPos.add(this.pos.clone().mulS(3))
             spawnPos.mulS(1 / 4)
             this.arms[this.activeArmIndex].doRecoil()
-            this.droppedEntities.push(new Shot(this, spawnPos, direction))
+            this.createdEntities.push(new Shot(this, spawnPos, direction, true, Player.SHOT_SPEED))
             const shootingSpeed = this.getShootingSpeed()
             this.shotCooldown = 1 / shootingSpeed
         }
@@ -214,7 +222,8 @@ export class Player extends Entity {
     }
 
     collideWith(entity: Entity): void {
-        if (this.invincibleTime <= 0 && (entity instanceof Monster || entity instanceof Projectile)) {
+        if (this.invincibleTime <= 0 && (entity instanceof Monster && (entity as Monster).alive()) || (entity instanceof Shot && (entity as Shot).alive)) {
+            if (entity instanceof Shot) (entity as Shot).alive = false
             this.hitAnim()
             const partIndex = Math.floor(Math.random() * (this.eyes.length + this.arms.length + this.legs.length))
             if (partIndex < this.eyes.length) {
@@ -227,13 +236,14 @@ export class Player extends Entity {
             this.invincibleTime = Player.INVINCIBLE_AFTER_HIT_TIME
         } else if (entity instanceof BodyPart) {
             if (entity instanceof Arm) {
-                this.childArms++
+                this.childArms = Math.min(Player.BODY_PARTS_MAX, this.childArms + 1)
             } else if (entity instanceof Leg) {
-                this.childLegs++
+                this.childLegs = Math.min(Player.BODY_PARTS_MAX, this.childLegs + 1)
             } else {
-                this.childEyes++
+                this.childEyes = Math.min(Player.BODY_PARTS_MAX, this.childEyes + 1)
             }
         }
+        if (this.legs.length == 0 && this.arms.length == 0 && this.eyes.length == 0) this.alive = false
     }
 
     hitAnim(): void {
@@ -246,7 +256,7 @@ export class Player extends Entity {
         if (this.eyes.length === 0) {
             return Player.ZOOM_0_EYES
         }
-        const goodness = (this.eyes.length - 1) / 9
+        const goodness = (this.eyes.length - 1) / 7
         return Math.exp(Math.log(Player.ZOOM_MAX_EYES) * goodness + Math.log(Player.ZOOM_1_EYE) * (1 - goodness))
         // return 1 / (1 + 0.05 * this.eyes.length)
     }
@@ -259,11 +269,11 @@ export class Player extends Entity {
         if (this.legs.length == 0) {
             return Player.ZERO_LEGS_MAX_SPEED
         } else {
-            return Player.MAX_SPEED * 0.5 + this.legs.length * 0.1 * Player.MAX_SPEED
+            return Player.MAX_SPEED * 0.75 + this.legs.length * 0.08 * Player.MAX_SPEED
         }
     }
 
     getShootingSpeed(): number {
-        return Player.SHOOTING_SPEED * 0.1 + this.arms.length * Player.SHOOTING_SPEED * 0.1
+        return Player.SHOOTING_FREQ * 0.1 + this.arms.length * Player.SHOOTING_FREQ * 0.15
     }
 }

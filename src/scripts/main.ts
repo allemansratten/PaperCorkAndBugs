@@ -1,12 +1,16 @@
 import {Game} from "./Game"
+import {ImageManager} from "./ImageManager"
 
-const canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement
+
+const GAME_WINDOW_SIZE : number = 600
+const canvas: HTMLCanvasElement = document.getElementById('game_canvas') as HTMLCanvasElement
 const ctx: CanvasRenderingContext2D = canvas.getContext('2d')
-canvas.width = ctx.canvas.clientWidth
-canvas.height = ctx.canvas.clientHeight
-// canvas.style.backgroundColor = 'rgb(10,100,100)'
+canvas.width = GAME_WINDOW_SIZE
+canvas.height = GAME_WINDOW_SIZE
 
-let game: Game = new Game(600, 600)
+ImageManager.loadAll()
+
+let game: Game = new Game(GAME_WINDOW_SIZE, GAME_WINDOW_SIZE)
 document.body.onkeydown = (event: KeyboardEvent) => {
     game.handleKeyPress(event)
 }
@@ -17,15 +21,11 @@ document.body.onkeyup = (event: KeyboardEvent) => {
 let lastTime = Date.now()
 
 function update() {
-    if(!game.paused) {
-        let curTime = Date.now()
-        let seconds = Math.min((curTime - lastTime) / 1000, 0.1)
-        lastTime = curTime
-        game.step(seconds)
-        game.drawAll(ctx)
-    } else {
-        game.pauseSymbol.draw(ctx)
-    }
+    let curTime = Date.now()
+    let seconds = Math.min((curTime - lastTime) / 1000, 0.1)
+    lastTime = curTime
+    game.step(seconds)
+    game.drawAll(ctx)
     window.requestAnimationFrame(update)
 }
 
