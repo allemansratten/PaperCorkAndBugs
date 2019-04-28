@@ -4,6 +4,7 @@ import {Level} from "../Level"
 import {Player} from "./Player"
 import {Vector} from "vector2d"
 import {BodyPart} from "./BodyPart"
+import {Monster} from "./monster/Monster"
 
 export class Shot extends Projectile {
 
@@ -22,7 +23,9 @@ export class Shot extends Projectile {
     }
 
     collideWith(entity: Entity): void {
-        if (entity.friendly !== this.friendly && !(entity instanceof BodyPart) && !(entity instanceof Projectile)) {
+        if (entity.friendly !== this.friendly &&
+            (entity instanceof Monster) ||
+            (entity instanceof Player)) {
             this.alive = false
         }
     }
