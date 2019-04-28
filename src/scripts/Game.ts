@@ -27,7 +27,7 @@ export class Game {
     private nextLevel(createNewPlayer: boolean) {
         this.endLevelContinueSelected = true
         this.entities = []
-        this.level = new Level(20, 20, this.level == undefined ? 1 : this.level.levelNum + 1)
+        this.level = new Level(this.level == undefined ? 1 : this.level.levelNum + 1)
         if (createNewPlayer) this.player = this.nextPlayer(this.level)
         this.entities.push(this.player)
         this.entities.push(...MonsterGenerator.generateMonsters(this.level, this.player))
