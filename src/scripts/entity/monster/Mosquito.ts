@@ -14,8 +14,6 @@ export class Mosquito extends Monster {
     private static readonly ACCELERATION = 750
     private static readonly HP = 3
 
-    speed: Vector = new Vector(0, 0)
-
     constructor(player: Player, pos: Vector) {
         super(player, pos, Mosquito.RADIUS, Mosquito.HP)
     }

@@ -17,10 +17,8 @@ export class Ladybug extends Monster {
     private static readonly SHOOTING_FREQ = 0.3
     private static readonly N_SHOTS = 7
     private static readonly SHOT_SPEED = 300
-    private timeSinceLastShot: number = Math.random() * 1 / Ladybug.SHOOTING_FREQ
+    private timeSinceLastShot: number = Math.random() / Ladybug.SHOOTING_FREQ
     private timeSinceShotPrep: number = 0
-
-    speed: Vector = new Vector(0, 0)
 
     constructor(player: Player, pos: Vector) {
         super(player, pos, Ladybug.RADIUS, Ladybug.HP)

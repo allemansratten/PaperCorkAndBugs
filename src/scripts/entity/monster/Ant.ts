@@ -12,8 +12,6 @@ export class Ant extends Monster {
     private static readonly ACCELERATION = 1000
     private static readonly HP = 3
 
-    speed: Vector = new Vector(0, 0)
-
     constructor(player: Player, pos: Vector) {
         super(player, pos, Ant.RADIUS, Ant.HP)
     }
