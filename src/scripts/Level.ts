@@ -2,6 +2,7 @@ import {Drawable} from "./Drawable"
 import {Player} from "./entity/Player"
 import {Tile} from "./Tile"
 import {ImageManager} from "./ImageManager"
+import {Vector} from "vector2d"
 
 export class Level implements Drawable {
 
@@ -17,6 +18,25 @@ export class Level implements Drawable {
                 this.tiles[xi].push(new Tile(xi == 0 || yi == 0 || xi == width - 1 || yi == height - 1 || Math.random() < 0.1))
             }
         }
+    }
+
+    at(coords: Vector): Tile {
+        return this.tiles[coords.x][coords.y]
+    }
+
+    generateValidPos(r: number): Vector {
+        while (true) {
+            const coords = this.randomCoords()
+            if (this.at(coords).obstacle) continue
+            coords.mulS(Level.TILE_SIZE)
+            return coords.add(new Vector(r + Math.random() * (Level.TILE_SIZE - 2 * r), r + Math.random() * (Level.TILE_SIZE - 2 * r)))
+        }
+    }
+
+    private randomCoords(): Vector {
+        const x = Math.floor(Math.random() * this.width)
+        const y = Math.floor(Math.random() * this.height)
+        return new Vector(x, y)
     }
 
     draw(context: CanvasRenderingContext2D): void {

@@ -24,8 +24,9 @@ export class Game {
     private static readonly END_LEVEL_MENU_OPTION_1 = "Continue with this character"
     private static readonly END_LEVEL_MENU_OPTION_2 = "Kill parent and spawn a child"
     // private monstersKilledInLevel = 0
-    private static readonly MONSTERS_TO_KILL_IN_LEVEL = 10
     private levelNum = 0
+    private static readonly FIRST_LEVEL_MONSTERS = 5
+    private static readonly LEVEL_MONSTERS_INCREMENT = 2
 
     constructor(private width: number, private height: number) {
         this.pauseSymbol = new PauseSymbol()
@@ -37,21 +38,22 @@ export class Game {
         // this.monstersKilledInLevel = 0
         this.endLevelContinueSelected = false
         this.entities = []
-        if (createNewPlayer) this.player = this.nextPlayer()
-        this.entities.push(this.player)
         this.level = new Level(20, 20)
+        if (createNewPlayer) this.player = this.nextPlayer(this.level)
+        this.entities.push(this.player)
         this.level.player = this.player
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < Game.FIRST_LEVEL_MONSTERS + Game.LEVEL_MONSTERS_INCREMENT * (this.levelNum - 1); i++) {
             this.addMonsterRandom()
         }
         this.gameState = GameState.IN_GAME
     }
 
-    private nextPlayer(): Player {
+    private nextPlayer(level: Level): Player {
+        const playerPos = level.generateValidPos(Player.RADIUS)
         if (this.player == undefined) {
-            return new Player(new Vector(this.width / 2, this.height / 2), 6, 6, 6)
+            return new Player(playerPos, 6, 6, 6)
         } else {
-            return new Player(new Vector(this.width / 2, this.height / 2), this.player.childEyes, this.player.childLegs, this.player.childArms)
+            return new Player(playerPos, this.player.childEyes, this.player.childLegs, this.player.childArms)
         }
     }
 
@@ -63,9 +65,8 @@ export class Game {
     private addMonsterRandom() {
         let success = false
         do {
-            const x = Math.random() * this.level.width * Level.TILE_SIZE
-            const y = Math.random() * this.level.height * Level.TILE_SIZE
-            const toAdd = new (this.randomMonsterType())(this.player, new Vector(x, y))
+            const toAdd = new (this.randomMonsterType())(this.player, new Vector(0, 0))
+            toAdd.pos = this.level.generateValidPos(toAdd.r)
 
             this.entities.push(toAdd)
             success = true

@@ -14,7 +14,7 @@ import {BodyPart} from "./BodyPart"
 
 export class Player extends Entity {
 
-    private static readonly RADIUS = 32
+    static readonly RADIUS = 32
     static readonly MAX_SPEED = 240 // px / s
     static readonly ZERO_LEGS_MAX_SPEED = 20 // px / s
     private static readonly ACCELERATION = 2000 // px / s^2
