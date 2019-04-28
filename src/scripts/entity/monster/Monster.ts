@@ -66,13 +66,17 @@ export abstract class Monster extends Entity {
         context.globalAlpha = 1
     }
 
-    drawDebugCircle(context: CanvasRenderingContext2D) {
+    drawDebugCircle(context: CanvasRenderingContext2D, fill: any) {
         context.globalAlpha = 0.5
         context.strokeStyle = "#f00"
         context.lineWidth = 2
         context.beginPath()
         context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
         context.stroke()
+        if (fill) {
+            context.fillStyle = fill
+        }
+        context.fill()
         context.globalAlpha = 1
     }
 

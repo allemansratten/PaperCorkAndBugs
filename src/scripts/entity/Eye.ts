@@ -31,17 +31,6 @@ export class Eye extends BodyPart implements Drawable {
     draw(context: CanvasRenderingContext2D): void {
         let time = Date.now()
 
-        context.fillStyle = Eye.WHITE_COLOR
-        context.beginPath()
-        context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
-        context.fill()
-        context.fillStyle = Eye.IRIS_COLOR
-
-        context.beginPath()
-        context.arc(this.pos.x, this.pos.y, this.r / 2, 0, 2 * Math.PI)
-        context.closePath()
-        context.fill()
-
         const img = ImageManager.get("eye1")
         context.drawImage(img, 0, 0, img.width, img.height,
             this.pos.x - this.r, this.pos.y - this.r, this.r * 2, this.r * 2)
@@ -59,8 +48,8 @@ export class Eye extends BodyPart implements Drawable {
             context.beginPath()
             context.arc(this.pos.x, this.pos.y, this.r, Math.PI - blinkSine*1.1,  +blinkSine*1.1)
             // context.ellipse(this.pos.x, this.pos.y, this.r, (1 + blinkSine) * this.r, 0, 0, 2 * Math.PI)
-            context.fill()
             context.fillStyle = Eye.EYELID_COLOR
+            context.fill()
             if (this.blinkingState == 0 && blinkSine <= this.blinkingSinePrev) {
                 this.blinkingState = 1
             }

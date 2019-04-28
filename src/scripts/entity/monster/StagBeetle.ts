@@ -3,6 +3,7 @@ import {Monster} from "./Monster"
 import {Level} from "../../Level"
 import {angleDistance} from "../../Util"
 import {Vector} from "vector2d"
+import {ImageManager} from "../../ImageManager"
 
 export class StagBeetle extends Monster {
 
@@ -17,7 +18,6 @@ export class StagBeetle extends Monster {
     private angry: boolean = false
     private angryCooldown: number = 0
     protected timeSinceDeath: number = 0
-    private speed: Vector
 
     constructor(player: Player, pos: Vector) {
         super(player, pos, StagBeetle.RADIUS, StagBeetle.HP)
@@ -25,13 +25,22 @@ export class StagBeetle extends Monster {
     }
 
     aliveDraw(context: CanvasRenderingContext2D): void {
-        context.fillStyle = "#2fa"
-        if (this.angry) {
-            context.fillStyle = "#d33"
-        }
-        context.beginPath()
-        context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
-        context.fill()
+        /*     context.fillStyle = "#2fa"
+             if (this.angry) {
+                 context.fillStyle = "#d33"
+             }
+             context.beginPath()
+             context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
+             context.fill()
+
+     */
+        context.save()
+        context.translate(this.pos.x, this.pos.y)
+        context.rotate(this.imageAngle())
+        const img = this.angry ? ImageManager.get("stagBeetleAngry") : ImageManager.get("stagBeetle")
+        context.drawImage(img, 0, 0, img.width, img.height,
+            -this.r, -this.r, this.r * 2, this.r * 2)
+        context.restore()
     }
 
     aliveStep(seconds: number, level: Level) {
