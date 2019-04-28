@@ -76,15 +76,15 @@ export class Level implements Drawable {
         for(let xi = -Level.PAD_TILES_COUNT; xi < 0; xi++) {
             for(let yi = -Level.PAD_TILES_COUNT; yi < this.height+Level.PAD_TILES_COUNT; yi++) {
                 context.fillStyle = "#444340"
-                context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
-                context.fillRect((this.width + Level.PAD_TILES_COUNT + xi) * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
+                // context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 0, Level.TILE_SIZE + 0)
+                // context.fillRect((this.width + Level.PAD_TILES_COUNT + xi) * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 0, Level.TILE_SIZE + 0)
             }
         }        
         for(let yi = -Level.PAD_TILES_COUNT; yi < 0; yi++) {
             for(let xi = 0; xi < this.width; xi++) {
                 context.fillStyle = "#444340"
-                context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
-                context.fillRect(xi * Level.TILE_SIZE, (this.height + Level.PAD_TILES_COUNT + yi) * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
+                // context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 0, Level.TILE_SIZE + 0)
+                // context.fillRect(xi * Level.TILE_SIZE, (this.height + Level.PAD_TILES_COUNT + yi) * Level.TILE_SIZE, Level.TILE_SIZE + 0, Level.TILE_SIZE + 0)
             }
         }        
         context.globalAlpha = 1
