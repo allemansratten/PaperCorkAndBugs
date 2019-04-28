@@ -32,6 +32,7 @@ export class Player extends Entity {
     private static readonly MOUTH_COLOR = "#512815"
     private static readonly MOUTH_RANGE = 0.8
     private static readonly HIT_THICC_MULTIPLIER = 6
+    private static readonly BODY_PARTS_MAX = 10
 
     speed: Vector = new Vector(0, 0)
 
@@ -233,11 +234,11 @@ export class Player extends Entity {
             this.invincibleTime = Player.INVINCIBLE_AFTER_HIT_TIME
         } else if (entity instanceof BodyPart) {
             if (entity instanceof Arm) {
-                this.childArms++
+                this.childArms = Math.max(Player.BODY_PARTS_MAX, this.childArms + 1)
             } else if (entity instanceof Leg) {
-                this.childLegs++
+                this.childLegs = Math.max(Player.BODY_PARTS_MAX, this.childLegs + 1)
             } else {
-                this.childEyes++
+                this.childArms = Math.max(Player.BODY_PARTS_MAX, this.childArms + 1)
             }
         }
         if (this.legs.length == 0 && this.arms.length == 0 && this.eyes.length == 0) this.alive = false
