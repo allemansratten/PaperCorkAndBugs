@@ -5,7 +5,7 @@ import {Level} from "../Level"
 import {CircleHitbox} from "./CircleHitbox"
 import {Eye} from "./Eye"
 import {Shot} from "./Shot"
-import {clamp, Smoother, randFromArray} from "../Util"
+import {clamp, Smoother} from "../Util"
 import {Arm} from "./Arm"
 import {Leg} from "./Leg"
 import {Monster} from "./monster/Monster"
@@ -70,12 +70,12 @@ export class Player extends Entity {
         }
         let armIndicies = [1, 2, 3, 4, 6, 7, 8, 9, 11, 12]
         for (let i = 0; i < arms; i++) {
-            let index = Math.floor(Math.random()*armIndicies.length)
+            let index = Math.floor(Math.random() * armIndicies.length)
             let dir = armIndicies[index]
             armIndicies.splice(index, 1)
             this.arms.push(new Arm(pos, dir))
         }
-        
+
         for (let i = 0; i < legs; i++) {
             this.legs.push(new Leg(pos))
         }
@@ -134,7 +134,7 @@ export class Player extends Entity {
         // draw eyes
         this.eyes.forEach((eye, index) => {
             if (this.eyes.length == 1) {
-                eye.pos = new Vector(this.pos.x, this.pos.y - this.r/2)
+                eye.pos = new Vector(this.pos.x, this.pos.y - this.r / 2)
             } else {
                 if (index >= 8 && index <= 9)
                     eye.pos = new Vector(this.pos.x + (8.5 - index) * this.r * 0.9, this.pos.y - this.r / 5.6)
@@ -168,7 +168,6 @@ export class Player extends Entity {
         }
 
         context.stroke()
-
 
 
     }
