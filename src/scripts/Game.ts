@@ -78,9 +78,9 @@ export class Game {
             this.resolveCollisions()
             // Add player's projectiles
             this.entities.forEach(entity => {
-                this.entities.push(...entity.droppedEntities)
+                this.entities.push(...entity.createdEntities)
                 // console.log(this.entities)
-                entity.droppedEntities = []
+                entity.createdEntities = []
             })
             if (!this.player.alive) this.gameState = GameState.GAME_OVER
         }

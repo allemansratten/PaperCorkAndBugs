@@ -38,8 +38,6 @@ export class Shot extends Projectile {
     }
 
     draw(context: CanvasRenderingContext2D): void {
-        // console.log("yes")
-        // console.log(this.pos.toString())
         super.draw(context)
         context.fillStyle = 'rgb(230,230,230)'
         context.beginPath()
