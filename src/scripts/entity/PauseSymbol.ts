@@ -10,8 +10,8 @@ export class PauseSymbol implements Drawable {
     draw(context: CanvasRenderingContext2D): void {
         context.fillStyle = '#FFFFFF'
         context.beginPath()
-        context.fillRect(40, 40, 20, 80)
-        context.fillRect(80, 40, 20, 80)
+        context.fillRect(550, 30, 20, 80)
+        context.fillRect(510, 30, 20, 80)
         context.fill()
     }
 }
