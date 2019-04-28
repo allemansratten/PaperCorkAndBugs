@@ -68,11 +68,11 @@ export class Player extends Entity {
         for (let i = 0; i < eyes; i++) {
             this.eyes.push(new Eye(pos, Eye.randomEyeSize()))
         }
-        for (let i = 0, dir = 0; i < legs; i++, dir++) {
-            if (dir == 0 || dir == 4) dir++
+        for (let i = 0, dir = 0; i < 10; i++, dir++) {
+            if(dir == 0 || dir == 5) dir++;
             this.arms.push(new Arm(pos, dir))
         }
-        for (let i = 0; i < arms; i++) {
+        for (let i = 0; i < legs; i++) {
             this.legs.push(new Leg(pos))
         }
         this.zoomSmoother = new Smoother(this.getTargetZoom(), 1)
@@ -94,6 +94,20 @@ export class Player extends Entity {
 
             leg.draw(context)
         })
+
+
+        // draw arms
+        this.arms.forEach((arm, index) => {
+            arm.pos = new Vector(this.pos.x - 40, this.pos.y + 5 * index)
+            if (index <= 4) {
+                arm.pos = new Vector(this.pos.x + this.r * 1.3, this.pos.y + index / 10 * 110 - 20)
+            } else {
+                arm.pos = new Vector(this.pos.x - this.r * 1.3, this.pos.y - index / 10 * 100 + 70)
+            }
+            arm.draw(context)
+        })
+
+
         // draw body
         context.fillStyle = this.invincibleTime > 0 ? Player.INVINCIBLE_COLOR : Player.ALIVE_COLOR
         context.beginPath()
@@ -112,10 +126,6 @@ export class Player extends Entity {
         const img = ImageManager.get("paper1")
         context.drawImage(img, 0, 0, img.width, img.height,
             this.pos.x - curR, this.pos.y - curR, curR * 2, curR * 2)
-        // context.globalAlpha = 0.5
-        // context.arc(this.pos.x, this.pos.y, curR, 0, 2 * Math.PI)
-        // context.fill()
-        // context.globalAlpha = 1.0
 
         // draw eyes
         this.eyes.forEach((eye, index) => {
@@ -155,18 +165,6 @@ export class Player extends Entity {
 
         context.stroke()
 
-        // draw arms
-        this.arms.forEach((arm, index) => {
-            arm.pos = new Vector(this.pos.x - 40, this.pos.y + 5 * index)
-
-            if (index <= 2) {
-                arm.pos = new Vector(this.pos.x + this.r * 1.3, this.pos.y + index / 6 * 80 - 20)
-            } else {
-                arm.pos = new Vector(this.pos.x - this.r * 1.3, this.pos.y - index / 6 * 80 + 50)
-            }
-
-            arm.draw(context)
-        })
 
 
     }
