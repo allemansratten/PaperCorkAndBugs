@@ -12,9 +12,7 @@ export class Eye extends BodyPart implements Drawable {
     private blinkingSinePrev: number
     private blinkingLastTime: number = 0
 
-    private static readonly WHITE_COLOR = "#888888"
-    private static readonly IRIS_COLOR = "#222222"
-    private static readonly EYELID_COLOR = "#6d371e"
+    private static readonly EYELID_COLOR = "#c6c4c2"
     private static readonly BLINKING_INTERVAL = 600
     private static readonly BLINKING_DURATION = 300
 

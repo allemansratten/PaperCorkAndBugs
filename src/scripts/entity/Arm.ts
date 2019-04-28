@@ -5,7 +5,6 @@ import {CircleHitbox} from "./CircleHitbox"
 import {ImageManager} from "../ImageManager"
 import {Player} from "./Player"
 
-
 export class Arm extends BodyPart implements Drawable {
 
     private static readonly RADIUS = 25

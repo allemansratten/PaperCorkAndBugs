@@ -30,7 +30,7 @@ export abstract class BodyPart extends Entity {
             } else {
                 // Avoid division by zero
                 this.lspeed.setAxes(0, 0)
-            }
+            }   
 
             this.pos.add(this.lspeed.clone().mulS(seconds))
         }

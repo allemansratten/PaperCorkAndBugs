@@ -45,7 +45,7 @@ export abstract class Monster extends Entity {
                 } else if (partRand < 2 / 3) {
                     this.createdEntities.push(new Eye(this.pos.clone() as Vector, Eye.randomEyeSize() * 2, this.player))
                 } else {
-                    this.createdEntities.push(new Arm(this.pos.clone() as Vector, Math.PI * 2 * Math.random()), this.player)
+                    this.createdEntities.push(new Arm(this.pos.clone() as Vector, Math.PI * 2 * Math.random(), this.player))
                 }
             }
         }
