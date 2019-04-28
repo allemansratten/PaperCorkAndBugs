@@ -9,8 +9,8 @@ export abstract class BodyPart extends Entity {
     pickedUp: boolean = false
     magnet: Player = null
     lspeed: Vector = new Vector(0, 0)
-    private static readonly MAX_SPEED = 620
-    private static readonly ACCELERATION = 2000
+    private static readonly MAX_SPEED = 500
+    private static readonly ACCELERATION = 3000
 
     collideWith(entity: Entity): void {
         if (entity instanceof Player) this.pickedUp = true
