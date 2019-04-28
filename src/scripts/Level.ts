@@ -8,6 +8,7 @@ export class Level implements Drawable {
 
     public player: Player
     public static readonly TILE_SIZE = 80
+    public static readonly PAD_TILES_COUNT = 7
     tiles: Tile[][]
 
     constructor(public width: number, public height: number, public levelNum: number) {
@@ -64,25 +65,26 @@ export class Level implements Drawable {
     }
 
     draw(context: CanvasRenderingContext2D): void {
-        const img_background = ImageManager.get("cork")
         // draw cork background
-        context.drawImage(img_background, 0, 0, img_background.width, img_background.height, -300, -300, img_background.width, img_background.height)
+        const img_background = ImageManager.get("cork")
+        context.drawImage(img_background, 0, 0, img_background.width, img_background.height,
+            -Level.PAD_TILES_COUNT*Level.TILE_SIZE, -Level.PAD_TILES_COUNT*Level.TILE_SIZE,
+            (this.width + 2*Level.PAD_TILES_COUNT)*Level.TILE_SIZE, (this.height + 2*Level.PAD_TILES_COUNT)*Level.TILE_SIZE)
         
         // add pad tiles
-        const PAD_TILES_COUNT = 4
         context.globalAlpha = 0.8
-        for(let xi = -PAD_TILES_COUNT; xi < 0; xi++) {
-            for(let yi = -PAD_TILES_COUNT; yi < this.height+PAD_TILES_COUNT; yi++) {
+        for(let xi = -Level.PAD_TILES_COUNT; xi < 0; xi++) {
+            for(let yi = -Level.PAD_TILES_COUNT; yi < this.height+Level.PAD_TILES_COUNT; yi++) {
                 context.fillStyle = "#444340"
                 context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
-                context.fillRect((this.width + PAD_TILES_COUNT + xi) * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
+                context.fillRect((this.width + Level.PAD_TILES_COUNT + xi) * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
             }
         }        
-        for(let yi = -PAD_TILES_COUNT; yi < 0; yi++) {
+        for(let yi = -Level.PAD_TILES_COUNT; yi < 0; yi++) {
             for(let xi = 0; xi < this.width; xi++) {
                 context.fillStyle = "#444340"
                 context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
-                context.fillRect(xi * Level.TILE_SIZE, (this.height + PAD_TILES_COUNT + yi) * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
+                context.fillRect(xi * Level.TILE_SIZE, (this.height + Level.PAD_TILES_COUNT + yi) * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
             }
         }        
         context.globalAlpha = 1
