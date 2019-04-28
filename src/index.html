@@ -6,21 +6,52 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>LD44</title>
     <meta name="description" content="A game by Allemansratten">
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Schoolbell" rel="stylesheet">
+
     <meta name="author" content="Allemansratten">
     <style>
-    * {
-        font-family: Lato
-    }
+        * {
+            font-family: 'Roboto'
+        }
+
+        #game_canvas {
+            width: 80vh;
+            height: 80vh;
+            display: inline-block;
+            border: 4px solid black;
+            margin-right: 40px;
+        }
+
+        #center_container {
+            margin-top: 5vw;
+            margin-left: 18vw;
+            margin-right: 5vw;
+        }
+
+        #about_container {
+            width: 400px;
+            display: inline-block;
+            vertical-align: top;
+        }
     </style>
 </head>
 
-<body style="margin:0; width:100%; height:100vh; background-color: grey;">
-    <div style='margin-top: 0px; margin-left: auto; margin-right: auto; width: 600px;'>
-        <div style='font-size: 18px; font-weight: bold;'>Jettisoning Bodyparts Until You Can't Move Anymore</div>
-        <div style='font-size: 15px;'>Ludum Dare game by Allemansratten (Vašek, Honza and Vilda)</div>
-        <canvas id="canvas" style="margin-top: 5px; width:600px; height:600px; border: 2px solid black;"></canvas>
-        <p style='text-align: right; font-size: 15px;'>Source</p>
+<body style="margin:0; width:100%; background-color: grey;">
+    <div id='center_container'>
+        <canvas id="game_canvas"></canvas>
+        <div id='about_container'>
+            <div style='font-size: 38px; font-weight: bold;'>Paper, Cork and Bugs</div>
+            <div style='font-size: 22px; margin-top: 30px;'>Ludum Dare game by Allemansratten (Vašek, Honza, Vilda and Bětka)</div>
+            <div style='font-size: 22px; margin-top: 30px;'>
+                <em>How to play:</em> WASD to move, arrow keys to shoot. You don't like bugs. Get rid of the bugs to move on to the next level.
+                If you get hit, you either lose an eye, an arm, or a leg.
+                The bugs may drop eyes, arms, and legs - but these don't help you directly, but are for your offspring.
+                When you complete the level, you can either continue, or retire and let your offspring take over - it will use the limbs and eyes you collected earlier.
+                How far can you get?
+            </div>
+            <div style='font-size: 22px; margin-top: 30px;'>Source</div>
+        </div>
     </div>
     <script src="../build/main.js"></script>
 </body>

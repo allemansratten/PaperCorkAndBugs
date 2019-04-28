@@ -3,7 +3,7 @@ import {Monster} from "./Monster"
 import {Level} from "../../Level"
 import {clamp, interpolateLinear} from "../../Util"
 import {Vector} from "vector2d"
-import {getAndCacheOutputJSFileName} from "ts-loader/dist/types/utils"
+import {ImageManager} from "../../ImageManager"
 
 export class Wasp extends Monster {
 
@@ -21,35 +21,40 @@ export class Wasp extends Monster {
     private static readonly COLOR_DEFAULT = [200, 200, 0]
     private static readonly COLOR_ANGRY = [200, 50, 50]
 
-    chargePrepProgress : number = 0 // How long has the wasp been waiting to charge?
-    timeSinceLastCharge : number = Wasp.CHARGE_COOLDOWN
-    speed: Vector = new Vector(0, 0)
+    chargePrepProgress: number = 0 // How long has the wasp been waiting to charge?
+    timeSinceLastCharge: number = Wasp.CHARGE_COOLDOWN
 
     constructor(player: Player, pos: Vector) {
         super(player, pos, Wasp.RADIUS, Wasp.HP)
     }
 
-    draw(context: CanvasRenderingContext2D): void {
-
+    aliveDraw(context: CanvasRenderingContext2D): void {
         context.globalAlpha = this.getAlpha()
         context.fillStyle = this.getColor() //"#cc0"
         context.strokeStyle = "#000"
         context.lineWidth = 3
-        context.beginPath()
-        context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
-        context.fill()
-        context.stroke()
-        context.globalAlpha = 1
+        // context.beginPath()
+        // context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
+        // context.fill()
+        // context.stroke()
+        context.save()
+        context.translate(this.pos.x, this.pos.y)
+        context.rotate(this.imageAngle())
+        const angriness = this.getAngriness()
+        let imageName = "waspYellow"
+        if (0 < angriness && angriness < 0.5) {
+            imageName = "waspOrange"
+        } else if (0.5 <= angriness) {
+            imageName = "waspRed"
+        }
+        const img = ImageManager.get(imageName)
+        context.drawImage(img, 0, 0, img.width, img.height,
+            - this.r, - this.r, this.r * 2, this.r * 2)
+        context.restore()
     }
 
-    step(seconds: number, level: Level): boolean {
+    aliveStep(seconds: number, level: Level) {
         this.r = interpolateLinear(20, 30, this.getAngriness())
-        if (!super.step(seconds, level)) {
-            return false
-        }
-        if (!this.alive()) {
-            return true
-        }
 
         this.timeSinceLastCharge += seconds
         let chargeDone = false
@@ -96,8 +101,6 @@ export class Wasp extends Monster {
             this.player.pos.distance(this.pos) < Wasp.CHARGE_DISTANCE) {
             this.chargePrepProgress += seconds
         }
-
-        return true
     }
 
     getAngriness(): number {
@@ -109,7 +112,7 @@ export class Wasp extends Monster {
     }
 
     getColor(): string {
-        let rgb = [0,0,0]
+        let rgb = [0, 0, 0]
         for (let i = 0; i < 3; i++) {
             rgb[i] = Math.floor(interpolateLinear(Wasp.COLOR_DEFAULT[i], Wasp.COLOR_ANGRY[i], this.getAngriness()))
         }

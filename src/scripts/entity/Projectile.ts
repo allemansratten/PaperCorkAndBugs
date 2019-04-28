@@ -1,5 +1,4 @@
 import {Entity} from "./Entity"
-import {Level} from "../Level"
 import {Player} from "./Player"
 import {Vector} from "vector2d"
 import {CircleHitbox} from "./CircleHitbox"

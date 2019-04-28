@@ -1,13 +1,11 @@
 import {Player} from "./entity/Player"
 import {Entity} from "./entity/Entity"
 import {Level} from "./Level"
-import {Vector} from "vector2d"
 import {PauseSymbol} from "./entity/PauseSymbol"
 import {Hitbox} from "./entity/Hitbox"
-import {StagBeetle} from "./entity/monster/StagBeetle"
-import {Ant} from "./entity/monster/Ant"
 import {Monster} from "./entity/monster/Monster"
-import {Wasp} from "./entity/monster/Wasp"
+import {GameState} from "./GameState"
+import {MonsterGenerator} from "./entity/MonsterGenerator"
 
 export class Game {
 
@@ -16,40 +14,33 @@ export class Game {
     private player: Player
     private level: Level
     public pauseSymbol: PauseSymbol
-    public paused: boolean = false
+    private gameState: GameState = GameState.IN_GAME
+    private endLevelContinueSelected: boolean = true
+    private static readonly END_LEVEL_MENU_OPTION_1 = "Continue"
+    private static readonly END_LEVEL_MENU_OPTION_2 = "Let your offspring take over"
 
     constructor(private width: number, private height: number) {
-        this.player = new Player(new Vector(width / 2, height / 2))
-        this.entities.push(this.player)
-        this.level = new Level(20, 20)
-        this.level.player = this.player
-        for (let i = 0; i < 5; i++) {
-            this.addMonsterRandom()
-        }
         this.pauseSymbol = new PauseSymbol()
+        this.nextLevel(true)
     }
 
-    private randomMonsterType() {
-        const x = Math.random()
-        if (x < 0.33) {
-            return StagBeetle
-        } else if (x < 0.66) {
-            return Wasp
+    private nextLevel(createNewPlayer: boolean) {
+        this.endLevelContinueSelected = true
+        this.entities = []
+        this.level = new Level(20, 20, this.level == undefined ? 1 : this.level.levelNum + 1)
+        if (createNewPlayer) this.player = this.nextPlayer(this.level)
+        this.entities.push(this.player)
+        this.entities.push(...MonsterGenerator.generateMonsters(this.level, this.player))
+        this.gameState = GameState.IN_GAME
+    }
+
+    private nextPlayer(level: Level): Player {
+        const playerPos = level.generateValidPos(Player.RADIUS)
+        if (this.player == undefined) {
+            return new Player(playerPos, 4, 4, 4)
         } else {
-            return Ant
+            return new Player(playerPos, this.player.childEyes, this.player.childLegs, this.player.childArms)
         }
-    }
-
-    private addMonsterRandom() {
-        let success = false
-        do {
-            const x = Math.random() * this.level.width * Level.TILE_SIZE
-            const y = Math.random() * this.level.height * Level.TILE_SIZE
-            const toAdd = new (this.randomMonsterType())(this.player, new Vector(x, y))
-
-            this.entities.push(toAdd)
-            success = true
-        } while (!success)
     }
 
     private resolveCollisions() {
@@ -67,27 +58,41 @@ export class Game {
     }
 
     step(seconds: number) {
-        let nKilled = 0
-        this.entities = this.entities.filter(entity => {
-            const died = entity.step(seconds, this.level)
-            if (!died && entity instanceof Monster) {
-                nKilled++
+        if (this.gameState == GameState.IN_GAME) {
+            let nKilled = 0
+
+            const monsters = this.entities.filter(entity => (entity instanceof Monster)) as Monster[]
+            for (let i = 0; i < monsters.length; i++) {
+                for (let j = i + 1; j < monsters.length; j++) {
+                    Monster.pushAway(monsters[i], monsters[j])
+                }
             }
-            return died
-        })
-        for (let i = 0; i < nKilled * 2; i++) {
-            this.addMonsterRandom()
+
+            this.entities = this.entities.filter(entity => {
+                const died = entity.step(seconds, this.level)
+                if (!died && entity instanceof Monster) {
+                    nKilled++
+                }
+                return died
+            })
+            // this.monstersKilledInLevel += nKilled
+            /* for (let i = 0; i < nKilled * 2; i++) {
+                 this.addMonsterRandom()
+             }*/
+            this.resolveCollisions()
+            // Add player's projectiles
+            this.entities.forEach(entity => {
+                this.entities.push(...entity.createdEntities)
+                // console.log(this.entities)
+                entity.createdEntities = []
+            })
+            if (!this.player.alive) {
+                this.gameState = GameState.GAME_OVER
+            }
         }
-        this.resolveCollisions()
-        // Add player's projectiles
-        this.entities.forEach(entity => {
-            this.entities.push(...entity.droppedEntities)
-            // console.log(this.entities)
-            entity.droppedEntities = []
-        })
     }
 
-    drawAll(context: CanvasRenderingContext2D) {
+    drawGame(context: CanvasRenderingContext2D) {
         context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight)
         const zoom = this.player.getZoom()
         context.scale(zoom, zoom)
@@ -101,22 +106,123 @@ export class Game {
 
         context.resetTransform()
         this.drawHud(context)
+
+    }
+
+    private drawEndLevelMenu(context: CanvasRenderingContext2D) {
+        var option1 = Game.END_LEVEL_MENU_OPTION_1
+        var option2 = Game.END_LEVEL_MENU_OPTION_2
+        if (this.endLevelContinueSelected) {
+            option1 = ">  " + option1
+        } else {
+            option2 = ">  " + option2
+        }
+
+        const x = this.width - 120
+        const y = this.height / 2
+        context.textAlign = "right"
+        context.font = '30px Schoolbell'
+        context.lineWidth = 5
+        context.lineJoin = "bevel"
+
+        context.strokeStyle = 'black'
+        context.strokeText(option1, x, y - 30)
+        context.fillStyle = '#90cc9b'
+        context.fillText(option1, x, y - 30)
+
+        context.strokeStyle = 'black'
+        context.strokeText(option2, x, y + 30)
+        context.fillStyle = '#af4646'
+        context.fillText(option2, x, y + 30)
+
+        context.textAlign = "start"
+
+    }
+
+    drawAll(context: CanvasRenderingContext2D) {
+        if (this.gameState != GameState.PAUSED)
+            this.drawGame(context)
+
+        switch (this.gameState) {
+            case GameState.PAUSED:
+                this.pauseSymbol.draw(context)
+                break
+            case GameState.LEVEL_END:
+                this.drawEndLevelMenu(context)
+                break
+            case GameState.GAME_OVER:
+                const text = "GAME OVER"
+                const x = this.width / 2
+                const y = this.height / 2
+                context.textAlign = "center"
+                context.lineJoin = "bevel"
+                context.font = '70px Schoolbell'
+                context.strokeStyle = 'black'
+                context.lineWidth = 7
+                context.strokeText(text, x, y)
+                context.fillStyle = '#600'
+                context.fillText(text, x, y)
+                context.textAlign = "start"
+        }
+        if (this.monstersLeft() == 0 && this.gameState != GameState.LEVEL_END) {
+            this.gameState = GameState.LEVEL_END
+            // const text = "press F to end level"
+            // const x = this.width / 2
+            // const y = this.height - 20
+            // context.textAlign = "center"
+            // context.lineJoin = "bevel"
+            // context.font = '23px Schoolbell'
+            // context.strokeStyle = 'black'
+            // context.lineWidth = 5
+            // context.strokeText(text, x, y)
+            // context.fillStyle = '#c9b352'
+            // context.fillText(text, x, y)
+            // context.textAlign = "start"
+        }
+    }
+
+    private monstersLeft(): number {
+        return this.entities.filter(e => e instanceof Monster).length
     }
 
     private drawHud(context: CanvasRenderingContext2D) {
-        context.font = "30px Arial"
-        context.fillStyle = "#abc"
-        context.fillText("Child stats:", 10, 30)
-        context.fillText("eyes: " + this.player.childEyes, 10, 70)
-        context.fillText("legs: " + this.player.childLegs, 10, 100)
-        context.fillText("arms: " + this.player.childArms, 10, 130)
+        context.font = "23px Schoolbell"
+        context.lineJoin = "bevel"
+        context.strokeStyle = 'black'
+        context.lineWidth = 5
+        context.strokeText("Level: " + this.level.levelNum, 10, 30)
+        context.strokeText("Monsters left: " + this.monstersLeft(), 10, 60)
+        context.strokeText("Offspring stats:", 10, 490)
+        context.strokeText("eyes: " + this.player.childEyes, 10, 520)
+        context.strokeText("legs: " + this.player.childLegs, 10, 550)
+        context.strokeText("arms: " + this.player.childArms, 10, 580)
+
+        context.fillStyle = "#d0d0d0"
+        context.fillText("Level: " + this.level.levelNum, 10, 30)
+        context.fillText("Monsters left: " + this.monstersLeft(), 10, 60)
+        context.fillText("Offspring stats:", 10, 490)
+        context.fillText("eyes: " + this.player.childEyes, 10, 520)
+        context.fillText("legs: " + this.player.childLegs, 10, 550)
+        context.fillText("arms: " + this.player.childArms, 10, 580)
+
     }
 
     handleKeyPress(event: KeyboardEvent) {
         this.player.movementKeyState.handleKey(event.key.toLowerCase(), true)
         this.player.shootingKeyState.handleKey(event.key.toLowerCase(), true)
-        if(event.key.toLowerCase() == 'p') {
-            this.paused = !this.paused;
+        if (event.key.toLowerCase() == 'p') {
+            if (this.gameState == GameState.PAUSED) this.gameState = GameState.IN_GAME
+            else if (this.gameState == GameState.IN_GAME) this.gameState = GameState.PAUSED
+        }
+        if (this.gameState == GameState.LEVEL_END) {
+            if (event.key.toLocaleLowerCase() == "arrowup" || event.key.toLocaleLowerCase() == "arrowdown") {
+                this.endLevelContinueSelected = !this.endLevelContinueSelected
+            } else if (event.key.toLocaleLowerCase() == "enter") {
+                this.nextLevel(!this.endLevelContinueSelected)
+            }
+        }
+        if (this.gameState == GameState.IN_GAME && this.monstersLeft() == 0 && event.key.toLocaleLowerCase() == "f") {
+            this.gameState = GameState.LEVEL_END
         }
     }
 

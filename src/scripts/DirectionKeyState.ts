@@ -2,10 +2,10 @@ import {Vector} from "vector2d"
 
 export class DirectionKeyState {
 
-    public states : [boolean, boolean, boolean, boolean] = [false, false, false, false];
+    public states: [boolean, boolean, boolean, boolean] = [false, false, false, false]
 
     // up, right, down, left
-    constructor(public keys : [string, string, string, string]) {
+    constructor(public keys: [string, string, string, string]) {
     }
 
     handleKey(key: string, pressed: boolean) {
@@ -16,8 +16,8 @@ export class DirectionKeyState {
         }
     }
 
-    getDirection() : Vector {
-        let res : Vector = new Vector(0, 0)
+    getDirection(): Vector {
+        let res: Vector = new Vector(0, 0)
         const deltas = [[0, -1], [1, 0], [0, 1], [-1, 0]]
         for (let i = 0; i < 4; i++) {
             if (this.states[i]) {

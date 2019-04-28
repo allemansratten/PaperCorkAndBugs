@@ -5,7 +5,7 @@ import {Hitbox} from "./Hitbox"
 
 export abstract class Entity implements Drawable {
 
-    droppedEntities: Entity[] = [] // For entities produced by the player
+    createdEntities: Entity[] = [] // For entities produced by the entity
 
     private readonly BOX_DIRECTIONS = [[-1, 0], [0, -1], [0, 1], [1, 0]]
     private readonly CORNER_DIRECTION_COORDS = [[-1, -1, 0, 0], [-1, 1, 0, 1], [1, -1, 1, 0], [1, 1, 1, 1]]

@@ -3,6 +3,7 @@ import {Monster} from "./Monster"
 import {Level} from "../../Level"
 import {angleDistance} from "../../Util"
 import {Vector} from "vector2d"
+import {ImageManager} from "../../ImageManager"
 
 export class StagBeetle extends Monster {
 
@@ -12,7 +13,7 @@ export class StagBeetle extends Monster {
     private static readonly SPEED = 70
     private static readonly ANGRY_SPEED = 180
     private static readonly ANGRY_COOLDOWN = 0.5
-    private static readonly HP = 10
+    private static readonly HP = 8
     private angle: number = 0
     private angry: boolean = false
     private angryCooldown: number = 0
@@ -23,51 +24,36 @@ export class StagBeetle extends Monster {
         this.angle = this.angleToPlayer()
     }
 
-    private angleToPlayer(): number {
-        const delta = this.player.pos.clone().subtract(this.pos)
-        return Math.atan2(delta.y, delta.x)
+    aliveDraw(context: CanvasRenderingContext2D): void {
+        /*     context.fillStyle = "#2fa"
+             if (this.angry) {
+                 context.fillStyle = "#d33"
+             }
+             context.beginPath()
+             context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
+             context.fill()
+
+     */
+        context.save()
+        context.translate(this.pos.x, this.pos.y)
+        context.rotate(this.imageAngle())
+        const img = this.angry ? ImageManager.get("stagBeetleAngry") : ImageManager.get("stagBeetle")
+        context.drawImage(img, 0, 0, img.width, img.height,
+            -this.r, -this.r, this.r * 2, this.r * 2)
+        context.restore()
     }
 
-    draw(context: CanvasRenderingContext2D): void {
-        context.globalAlpha = this.getAlpha()
-        context.fillStyle = "#2fa"
-        if (this.angry) {
-            context.fillStyle = "#d33"
-        }
-        context.beginPath()
-        context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
-        context.fill()
-
-        context.globalAlpha = 1
-    }
-
-    step(seconds: number, level: Level): boolean {
-        if(!super.step(seconds, level)) {
-            return false
-        }
-        if(!this.alive()){
-            return true
-        }
+    aliveStep(seconds: number, level: Level) {
         this.angryCooldown = Math.max(0, this.angryCooldown - seconds)
-        const targetAngle = this.angleToPlayer()
-        const angleDif = Math.min(angleDistance(targetAngle, this.angle), StagBeetle.ANGLE_SPEED_MAX * seconds)
-        const a1 = this.angle + angleDif
-        const a2 = this.angle - angleDif
-        if (angleDistance(a1, targetAngle) < angleDistance(a2, targetAngle)) {
-            this.angle = a1
-        } else {
-            this.angle = a2
-        }
-        this.angry = (this.angryCooldown === 0) && angleDistance(this.angle, targetAngle) < StagBeetle.ANGRY_ANGLE
+        this.angle = Monster.getCloserAngle(this.angle, this.angleToPlayer(), StagBeetle.ANGLE_SPEED_MAX * seconds)
+        this.angry = (this.angryCooldown === 0) && angleDistance(this.angle, this.angleToPlayer()) < StagBeetle.ANGRY_ANGLE
         const speedMagnitude = this.angry ? StagBeetle.ANGRY_SPEED : StagBeetle.SPEED
-        let speed = new Vector(Math.cos(this.angle), Math.sin(this.angle)).mulS(speedMagnitude)
-        this.pos.add(speed.clone().mulS(seconds))
+        this.speed = new Vector(Math.cos(this.angle), Math.sin(this.angle)).mulS(speedMagnitude)
+        this.pos.add(this.speed.clone().mulS(seconds))
 
-        const didCollide = this.resolveLevelCollision(level, speed)
+        const didCollide = this.resolveLevelCollision(level, this.speed)
         if (didCollide) {
             this.angryCooldown = StagBeetle.ANGRY_COOLDOWN
         }
-
-        return true
     }
 }

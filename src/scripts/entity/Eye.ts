@@ -2,6 +2,8 @@ import {Drawable} from "../Drawable"
 import {Vector} from "vector2d"
 import {BodyPart} from "./BodyPart"
 import {CircleHitbox} from "./CircleHitbox"
+import {ImageManager} from "../ImageManager"
+import {Player} from "./Player"
 
 export class Eye extends BodyPart implements Drawable {
 
@@ -10,34 +12,26 @@ export class Eye extends BodyPart implements Drawable {
     private blinkingSinePrev: number
     private blinkingLastTime: number = 0
 
-    private static readonly WHITE_COLOR = "#888888"
-    private static readonly IRIS_COLOR = "#222222"
-    private static readonly EYELID_COLOR = "#6d371e"
-    private static readonly BLINKING_INTERVAL = 800
+    private static readonly EYELID_COLOR = "#c6c4c2"
+    private static readonly BLINKING_INTERVAL = 600
     private static readonly BLINKING_DURATION = 300
 
-    constructor(pos: Vector, r: number) {
+    constructor(pos: Vector, r: number, magnet: Player = null) {
         super(pos, r, new CircleHitbox(r))
         this.blinkingLastTime = Date.now()
+        this.magnet = magnet
     }
 
     static randomEyeSize(): number {
-        return 5 + (Math.random() - 0.5) * 2.5
+        return 10 + (Math.random() - 0.5) * 2.5
     }
 
     draw(context: CanvasRenderingContext2D): void {
         let time = Date.now()
 
-        context.fillStyle = Eye.WHITE_COLOR
-        context.beginPath()
-        context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
-        context.fill()
-        context.fillStyle = Eye.IRIS_COLOR
-
-        context.beginPath()
-        context.arc(this.pos.x, this.pos.y, this.r / 2, 0, 2 * Math.PI)
-        context.closePath()
-        context.fill()
+        const img = ImageManager.get("eye1")
+        context.drawImage(img, 0, 0, img.width, img.height,
+            this.pos.x - this.r, this.pos.y - this.r, this.r * 2, this.r * 2)
 
         // roll dice to start blinking
         if (this.blinkingState == -1) {
@@ -50,10 +44,10 @@ export class Eye extends BodyPart implements Drawable {
         } else {
             let blinkSine = Math.sin((this.blinkingStartTime - time) / Eye.BLINKING_DURATION)
             context.beginPath()
-            // context.arc(this.pos.x, this.pos.y, this.r, 0, Math.PI * (1-blinkSine))
-            context.ellipse(this.pos.x, this.pos.y, this.r, (1 + blinkSine) * this.r, 0, 0, 2 * Math.PI)
-            context.fill()
+            context.arc(this.pos.x, this.pos.y, this.r, Math.PI - blinkSine*1.1,  +blinkSine*1.1)
+            // context.ellipse(this.pos.x, this.pos.y, this.r, (1 + blinkSine) * this.r, 0, 0, 2 * Math.PI)
             context.fillStyle = Eye.EYELID_COLOR
+            context.fill()
             if (this.blinkingState == 0 && blinkSine <= this.blinkingSinePrev) {
                 this.blinkingState = 1
             }
