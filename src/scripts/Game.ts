@@ -1,16 +1,11 @@
 import {Player} from "./entity/Player"
 import {Entity} from "./entity/Entity"
 import {Level} from "./Level"
-import {Vector} from "vector2d"
 import {PauseSymbol} from "./entity/PauseSymbol"
 import {Hitbox} from "./entity/Hitbox"
-import {StagBeetle} from "./entity/monster/StagBeetle"
-import {Ant} from "./entity/monster/Ant"
 import {Monster} from "./entity/monster/Monster"
-import {Wasp} from "./entity/monster/Wasp"
-import {Fly} from "./entity/monster/Fly"
 import {GameState} from "./GameState"
-import {Worm} from "./entity/monster/Worm"
+import {MonsterGenerator} from "./entity/MonsterGenerator"
 
 export class Game {
 
@@ -23,10 +18,6 @@ export class Game {
     private endLevelContinueSelected: boolean = false
     private static readonly END_LEVEL_MENU_OPTION_1 = "Continue with this character"
     private static readonly END_LEVEL_MENU_OPTION_2 = "Kill parent and spawn a child"
-    // private monstersKilledInLevel = 0
-    private levelNum = 0
-    private static readonly FIRST_LEVEL_MONSTERS = 5
-    private static readonly LEVEL_MONSTERS_INCREMENT = 2
 
     constructor(private width: number, private height: number) {
         this.pauseSymbol = new PauseSymbol()
@@ -34,17 +25,13 @@ export class Game {
     }
 
     private nextLevel(createNewPlayer: boolean) {
-        this.levelNum++
-        // this.monstersKilledInLevel = 0
         this.endLevelContinueSelected = false
         this.entities = []
-        this.level = new Level(20, 20)
+        this.level = new Level(20, 20, this.level == undefined ? 1 : this.level.levelNum + 1)
         if (createNewPlayer) this.player = this.nextPlayer(this.level)
         this.entities.push(this.player)
         this.level.player = this.player
-        for (let i = 0; i < Game.FIRST_LEVEL_MONSTERS + Game.LEVEL_MONSTERS_INCREMENT * (this.levelNum - 1); i++) {
-            this.addMonsterRandom()
-        }
+        this.entities.push(...MonsterGenerator.generateMonsters(this.level, this.player))
         this.gameState = GameState.IN_GAME
     }
 
@@ -55,22 +42,6 @@ export class Game {
         } else {
             return new Player(playerPos, this.player.childEyes, this.player.childLegs, this.player.childArms)
         }
-    }
-
-    private randomMonsterType() {
-        const types = [StagBeetle, Wasp, Ant, Fly, Worm]
-        return types[Math.floor(Math.random() * types.length)]
-    }
-
-    private addMonsterRandom() {
-        let success = false
-        do {
-            const toAdd = new (this.randomMonsterType())(this.player, new Vector(0, 0))
-            toAdd.pos = this.level.generateValidPos(toAdd.r)
-
-            this.entities.push(toAdd)
-            success = true
-        } while (!success)
     }
 
     private resolveCollisions() {
@@ -215,7 +186,7 @@ export class Game {
     private drawHud(context: CanvasRenderingContext2D) {
         context.font = "30px Arial"
         context.fillStyle = "#abc"
-        context.fillText("Level:" + this.levelNum, 10, 30)
+        context.fillText("Level:" + this.level.levelNum, 10, 30)
         context.fillText("Monsters left: " + this.monstersLeft(), 10, 60)
         context.fillText("Child stats:", 10, 90)
         context.fillText("eyes: " + this.player.childEyes, 10, 120)
