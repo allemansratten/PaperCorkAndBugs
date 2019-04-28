@@ -43,6 +43,20 @@ export class Level implements Drawable {
         }
     }
 
+    generateValidPosNotCloseTo(r: number, pos: Vector, minDistance: number): Vector {
+        while (true) {
+            const coords = this.randomCoords()
+            if (this.at(coords).obstacle) continue
+            coords.mulS(Level.TILE_SIZE)
+            coords.add(new Vector(
+                r + Math.random() * (Level.TILE_SIZE - 2 * r),
+                r + Math.random() * (Level.TILE_SIZE - 2 * r))
+            )
+            if (coords.clone().subtract(pos).length() < minDistance) continue
+            return coords
+        }
+    }
+
     private randomCoords(): Vector {
         const x = Math.floor(Math.random() * this.width)
         const y = Math.floor(Math.random() * this.height)

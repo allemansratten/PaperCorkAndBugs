@@ -9,7 +9,6 @@ import {clamp, Smoother} from "../Util"
 import {Arm} from "./Arm"
 import {Leg} from "./Leg"
 import {Monster} from "./monster/Monster"
-import {Projectile} from "./Projectile"
 import {BodyPart} from "./BodyPart"
 import {ImageManager} from "../ImageManager"
 

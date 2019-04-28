@@ -12,6 +12,7 @@ import {Ladybug} from "./monster/Ladybug"
 export class MonsterGenerator {
     private static readonly FIRST_LEVEL_MONSTERS = 5
     private static readonly LEVEL_MONSTERS_INCREMENT = 2
+    private static readonly NEW_MONSTER_MIN_DIST = 250
     private static readonly LEVEL_MONSTERS = [
         [Ant],
         [Ant, Fly],
@@ -23,7 +24,14 @@ export class MonsterGenerator {
 
     static generateMonsters(level: Level, player: Player): Entity[] {
         const entities: Entity[] = []
-        for (let i = 0; i < MonsterGenerator.FIRST_LEVEL_MONSTERS + MonsterGenerator.LEVEL_MONSTERS_INCREMENT * (level.levelNum - 1); i++) {
+        if (level.levelNum != this.LEVEL_MONSTERS.length) {
+            /** make sure the new monster shows up */
+            const monsterTypes = this.LEVEL_MONSTERS[level.levelNum - 1]
+            const toAdd = new (monsterTypes[monsterTypes.length - 1])(player, new Vector(0, 0))
+            toAdd.pos = level.generateValidPosNotCloseTo(toAdd.r, player.pos, this.NEW_MONSTER_MIN_DIST)
+            entities.push(toAdd)
+        }
+        while (entities.length < MonsterGenerator.FIRST_LEVEL_MONSTERS + MonsterGenerator.LEVEL_MONSTERS_INCREMENT * (level.levelNum - 1)) {
             entities.push(this.addMonsterRandom(level, player))
         }
         return entities
@@ -37,7 +45,7 @@ export class MonsterGenerator {
 
     static addMonsterRandom(level: Level, player: Player): Entity {
         const toAdd = new (this.randomMonsterType(level))(player, new Vector(0, 0))
-        toAdd.pos = level.generateValidPos(toAdd.r)
+        toAdd.pos = level.generateValidPosNotCloseTo(toAdd.r, player.pos, this.NEW_MONSTER_MIN_DIST)
         return toAdd
     }
 }
