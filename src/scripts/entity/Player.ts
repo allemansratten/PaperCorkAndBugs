@@ -60,16 +60,16 @@ export class Player extends Entity {
     childLegs = 0
     childArms = 0
 
-    constructor(pos: Vector) {
+    constructor(pos: Vector, eyes: number, legs: number, arms: number) {
         super(pos, Player.RADIUS, new CircleHitbox((Player.RADIUS)))
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < eyes; i++) {
             this.eyes.push(new Eye(pos, Eye.randomEyeSize()))
         }
-        for (let i = 0, dir = 0; i < 6; i++, dir++) {
+        for (let i = 0, dir = 0; i < legs; i++, dir++) {
             if (dir == 0 || dir == 4) dir++
             this.arms.push(new Arm(pos, dir))
         }
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < arms; i++) {
             this.legs.push(new Leg(pos))
         }
         this.zoomSmoother = new Smoother(this.getTargetZoom(), 1)
