@@ -235,11 +235,11 @@ export class Player extends Entity {
             this.invincibleTime = Player.INVINCIBLE_AFTER_HIT_TIME
         } else if (entity instanceof BodyPart) {
             if (entity instanceof Arm) {
-                this.childArms = Math.max(Player.BODY_PARTS_MAX, this.childArms + 1)
+                this.childArms = Math.min(Player.BODY_PARTS_MAX, this.childArms + 1)
             } else if (entity instanceof Leg) {
-                this.childLegs = Math.max(Player.BODY_PARTS_MAX, this.childLegs + 1)
+                this.childLegs = Math.min(Player.BODY_PARTS_MAX, this.childLegs + 1)
             } else {
-                this.childArms = Math.max(Player.BODY_PARTS_MAX, this.childArms + 1)
+                this.childArms = Math.min(Player.BODY_PARTS_MAX, this.childArms + 1)
             }
         }
         if (this.legs.length == 0 && this.arms.length == 0 && this.eyes.length == 0) this.alive = false
