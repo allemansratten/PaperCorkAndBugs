@@ -34,6 +34,8 @@ export class ImageManager {
         ["waspRed", "waspred.png"],
         ["worm", "worm.png"],
         ["mosquito", "mosquito.png"],
+        ["shotplayer", "shotplayer.png"],
+        ["shotenemy", "shotenemy.png"]
     ]
 
     public static loadAll() {

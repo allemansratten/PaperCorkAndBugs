@@ -5,6 +5,7 @@ import {Player} from "./Player"
 import {Vector} from "vector2d"
 import {BodyPart} from "./BodyPart"
 import {Monster} from "./monster/Monster"
+import {ImageManager} from "../ImageManager"
 
 export class Shot extends Projectile {
 
@@ -42,9 +43,11 @@ export class Shot extends Projectile {
 
     draw(context: CanvasRenderingContext2D): void {
         super.draw(context)
-        context.fillStyle = this.friendly ? 'rgb(230,230,230)' : 'rgb(160,50,50)'
-        context.beginPath()
-        context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
-        context.fill()
+        context.save()
+        context.translate(this.pos.x, this.pos.y)
+        const img = this.friendly ? ImageManager.get("shotplayer") : ImageManager.get("shotenemy")
+        context.drawImage(img, 0, 0, img.width, img.height,
+            -this.r, -this.r, this.r * 2, this.r * 2)
+        context.restore()
     }
 }
