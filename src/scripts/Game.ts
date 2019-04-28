@@ -38,7 +38,7 @@ export class Game {
     private nextPlayer(level: Level): Player {
         const playerPos = level.generateValidPos(Player.RADIUS)
         if (this.player == undefined) {
-            return new Player(playerPos, 6, 6, 6)
+            return new Player(playerPos, 4, 4, 4)
         } else {
             return new Player(playerPos, this.player.childEyes, this.player.childLegs, this.player.childArms)
         }
@@ -141,9 +141,9 @@ export class Game {
     }
 
     drawAll(context: CanvasRenderingContext2D) {
-        if(this.gameState != GameState.PAUSED)
+        if (this.gameState != GameState.PAUSED)
             this.drawGame(context)
-        
+
         switch (this.gameState) {
             case GameState.PAUSED:
                 this.pauseSymbol.draw(context)

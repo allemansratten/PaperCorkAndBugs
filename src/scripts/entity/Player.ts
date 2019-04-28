@@ -5,7 +5,7 @@ import {Level} from "../Level"
 import {CircleHitbox} from "./CircleHitbox"
 import {Eye} from "./Eye"
 import {Shot} from "./Shot"
-import {clamp, Smoother} from "../Util"
+import {clamp, Smoother, randFromArray} from "../Util"
 import {Arm} from "./Arm"
 import {Leg} from "./Leg"
 import {Monster} from "./monster/Monster"
@@ -68,10 +68,14 @@ export class Player extends Entity {
         for (let i = 0; i < eyes; i++) {
             this.eyes.push(new Eye(pos, Eye.randomEyeSize()))
         }
-        for (let i = 0, dir = 0; i < 10; i++, dir++) {
-            if(dir == 0 || dir == 5) dir++;
+        let armIndicies = [1, 2, 3, 4, 6, 7, 8, 9, 11, 12]
+        for (let i = 0; i < arms; i++) {
+            let index = Math.floor(Math.random()*armIndicies.length)
+            let dir = armIndicies[index]
+            armIndicies.splice(index, 1)
             this.arms.push(new Arm(pos, dir))
         }
+        
         for (let i = 0; i < legs; i++) {
             this.legs.push(new Leg(pos))
         }
@@ -99,10 +103,10 @@ export class Player extends Entity {
         // draw arms
         this.arms.forEach((arm, index) => {
             arm.pos = new Vector(this.pos.x - 40, this.pos.y + 5 * index)
-            if (index <= 4) {
-                arm.pos = new Vector(this.pos.x + this.r * 1.3, this.pos.y + index / 10 * 110 - 20)
+            if (arm.defaultDir <= 6) {
+                arm.pos = new Vector(this.pos.x + this.r * 1.22, this.pos.y + arm.defaultDir / 12 * 110 - 38)
             } else {
-                arm.pos = new Vector(this.pos.x - this.r * 1.3, this.pos.y - index / 10 * 100 + 70)
+                arm.pos = new Vector(this.pos.x - this.r * 1.22, this.pos.y - arm.defaultDir / 12 * 100 + 76)
             }
             arm.draw(context)
         })
@@ -172,7 +176,7 @@ export class Player extends Entity {
     private stepMovement(seconds: number, level: Level) {
         // Acceleration
         let direction: Vector = this.movementKeyState.getDirection()
-        const accel = Player.ACCELERATION * 0.5 + this.legs.length * 0.1 * Player.ACCELERATION
+        const accel = Player.ACCELERATION * 0.75 + this.legs.length * 0.08 * Player.ACCELERATION
         if (direction.length() !== 0) {
             direction.normalise().mulS(accel * seconds)
         }
@@ -237,7 +241,7 @@ export class Player extends Entity {
             } else if (entity instanceof Leg) {
                 this.childLegs = Math.min(Player.BODY_PARTS_MAX, this.childLegs + 1)
             } else {
-                this.childArms = Math.min(Player.BODY_PARTS_MAX, this.childArms + 1)
+                this.childEyes = Math.min(Player.BODY_PARTS_MAX, this.childEyes + 1)
             }
         }
         if (this.legs.length == 0 && this.arms.length == 0 && this.eyes.length == 0) this.alive = false
@@ -253,7 +257,7 @@ export class Player extends Entity {
         if (this.eyes.length === 0) {
             return Player.ZOOM_0_EYES
         }
-        const goodness = (this.eyes.length - 1) / 9
+        const goodness = (this.eyes.length - 1) / 7
         return Math.exp(Math.log(Player.ZOOM_MAX_EYES) * goodness + Math.log(Player.ZOOM_1_EYE) * (1 - goodness))
         // return 1 / (1 + 0.05 * this.eyes.length)
     }
@@ -266,11 +270,11 @@ export class Player extends Entity {
         if (this.legs.length == 0) {
             return Player.ZERO_LEGS_MAX_SPEED
         } else {
-            return Player.MAX_SPEED * 0.5 + this.legs.length * 0.1 * Player.MAX_SPEED
+            return Player.MAX_SPEED * 0.75 + this.legs.length * 0.08 * Player.MAX_SPEED
         }
     }
 
     getShootingSpeed(): number {
-        return Player.SHOOTING_FREQ * 0.1 + this.arms.length * Player.SHOOTING_FREQ * 0.1
+        return Player.SHOOTING_FREQ * 0.1 + this.arms.length * Player.SHOOTING_FREQ * 0.15
     }
 }
