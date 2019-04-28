@@ -10,7 +10,7 @@ export class Level implements Drawable {
     public static readonly TILE_SIZE = 80
     tiles: Tile[][]
 
-    constructor(public width: number, public height: number) {
+    constructor(public width: number, public height: number, public levelNum: number) {
         this.tiles = []
         for (let xi = 0; xi < width; xi++) {
             this.tiles.push([])
