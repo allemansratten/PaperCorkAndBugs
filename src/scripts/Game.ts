@@ -141,7 +141,9 @@ export class Game {
     }
 
     drawAll(context: CanvasRenderingContext2D) {
-        this.drawGame(context)
+        if(this.gameState != GameState.PAUSED)
+            this.drawGame(context)
+        
         switch (this.gameState) {
             case GameState.PAUSED:
                 this.pauseSymbol.draw(context)
