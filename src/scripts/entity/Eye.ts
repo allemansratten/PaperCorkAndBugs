@@ -14,7 +14,7 @@ export class Eye extends BodyPart implements Drawable {
     private static readonly WHITE_COLOR = "#888888"
     private static readonly IRIS_COLOR = "#222222"
     private static readonly EYELID_COLOR = "#6d371e"
-    private static readonly BLINKING_INTERVAL = 800
+    private static readonly BLINKING_INTERVAL = 600
     private static readonly BLINKING_DURATION = 300
 
     constructor(pos: Vector, r: number) {
