@@ -11,7 +11,7 @@ export class Fly extends Monster {
     private static readonly HP = 5
     private static readonly REORIENTATION_TIME = 1
     private static readonly ANGLE_SPEED_MAX = Math.PI
-    private static readonly ANGLE_DELTA_MAX = Math.PI * 0.5
+    private static readonly ANGLE_DELTA_MAX = Math.PI * 0.35
     private angle: number = 0
     private targetAngle: number = 0
     private timeSinceReorientation: number = Fly.REORIENTATION_TIME
