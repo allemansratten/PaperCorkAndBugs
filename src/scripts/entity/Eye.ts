@@ -14,7 +14,7 @@ export class Eye extends BodyPart implements Drawable {
     private static readonly WHITE_COLOR = "#888888"
     private static readonly IRIS_COLOR = "#222222"
     private static readonly EYELID_COLOR = "#6d371e"
-    private static readonly BLINKING_INTERVAL = 800
+    private static readonly BLINKING_INTERVAL = 600
     private static readonly BLINKING_DURATION = 300
 
     constructor(pos: Vector, r: number) {
@@ -28,18 +28,7 @@ export class Eye extends BodyPart implements Drawable {
 
     draw(context: CanvasRenderingContext2D): void {
         let time = Date.now()
-
-        context.fillStyle = Eye.WHITE_COLOR
-        context.beginPath()
-        context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
-        context.fill()
-        context.fillStyle = Eye.IRIS_COLOR
-
-        context.beginPath()
-        context.arc(this.pos.x, this.pos.y, this.r / 2, 0, 2 * Math.PI)
-        context.closePath()
-        context.fill()
-
+        
         const img = ImageManager.get("eye1")
         context.drawImage(img, 0, 0, img.width, img.height,
             this.pos.x - this.r, this.pos.y - this.r, this.r * 2, this.r * 2)
