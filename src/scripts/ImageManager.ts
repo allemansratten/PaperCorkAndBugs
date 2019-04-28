@@ -26,6 +26,8 @@ export class ImageManager {
         ["ant", "ant.png"],
         ["ladybug", "ladybug.png"],
         ["fly", "fly.png"],
+        ["stagBeetle", "stagbeetle.png"],
+        ["stagBeetleAngry", "stagbeetleangry.png"],
     ]
 
     public static loadAll() {
