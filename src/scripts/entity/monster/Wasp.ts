@@ -3,6 +3,7 @@ import {Monster} from "./Monster"
 import {Level} from "../../Level"
 import {clamp, interpolateLinear} from "../../Util"
 import {Vector} from "vector2d"
+import {ImageManager} from "../../ImageManager"
 
 export class Wasp extends Monster {
 
@@ -22,7 +23,6 @@ export class Wasp extends Monster {
 
     chargePrepProgress: number = 0 // How long has the wasp been waiting to charge?
     timeSinceLastCharge: number = Wasp.CHARGE_COOLDOWN
-    speed: Vector = new Vector(0, 0)
 
     constructor(player: Player, pos: Vector) {
         super(player, pos, Wasp.RADIUS, Wasp.HP)
@@ -33,10 +33,24 @@ export class Wasp extends Monster {
         context.fillStyle = this.getColor() //"#cc0"
         context.strokeStyle = "#000"
         context.lineWidth = 3
-        context.beginPath()
-        context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
-        context.fill()
-        context.stroke()
+        // context.beginPath()
+        // context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
+        // context.fill()
+        // context.stroke()
+        context.save()
+        context.translate(this.pos.x, this.pos.y)
+        context.rotate(this.imageAngle())
+        const angriness = this.getAngriness()
+        let imageName = "waspYellow"
+        if (0 < angriness && angriness < 0.5) {
+            imageName = "waspOrange"
+        } else if (0.5 <= angriness) {
+            imageName = "waspRed"
+        }
+        const img = ImageManager.get(imageName)
+        context.drawImage(img, 0, 0, img.width, img.height,
+            - this.r, - this.r, this.r * 2, this.r * 2)
+        context.restore()
     }
 
     aliveStep(seconds: number, level: Level) {

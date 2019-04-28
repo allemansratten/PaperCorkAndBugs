@@ -28,6 +28,9 @@ export class ImageManager {
         ["fly", "fly.png"],
         ["stagBeetle", "stagbeetle.png"],
         ["stagBeetleAngry", "stagbeetleangry.png"],
+        ["waspYellow", "waspyellow.png"],
+        ["waspOrange", "wasporange.png"],
+        ["waspRed", "waspred.png"],
     ]
 
     public static loadAll() {

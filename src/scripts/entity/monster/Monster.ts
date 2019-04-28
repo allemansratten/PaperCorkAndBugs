@@ -41,11 +41,11 @@ export abstract class Monster extends Entity {
             if (Math.random() < Monster.BODY_PART_DROP_CHANCE) {
                 const partRand = Math.random()
                 if (partRand < 1 / 3) {
-                    this.createdEntities.push(new Leg(this.pos.clone() as Vector))
+                    this.createdEntities.push(new Leg(this.pos.clone() as Vector, this.player))
                 } else if (partRand < 2 / 3) {
-                    this.createdEntities.push(new Eye(this.pos.clone() as Vector, Eye.randomEyeSize() * 2))
+                    this.createdEntities.push(new Eye(this.pos.clone() as Vector, Eye.randomEyeSize() * 2, this.player))
                 } else {
-                    this.createdEntities.push(new Arm(this.pos.clone() as Vector, Math.PI * 2 * Math.random()))
+                    this.createdEntities.push(new Arm(this.pos.clone() as Vector, Math.PI * 2 * Math.random(), this.player))
                 }
             }
         }

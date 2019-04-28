@@ -1,9 +1,9 @@
 import {Drawable} from "../Drawable"
 import {Vector} from "vector2d"
-import {Player} from "./Player"
 import {BodyPart} from "./BodyPart"
 import {CircleHitbox} from "./CircleHitbox"
 import {ImageManager} from "../ImageManager"
+import {Player} from "./Player"
 
 export class Leg extends BodyPart implements Drawable {
 
@@ -12,8 +12,9 @@ export class Leg extends BodyPart implements Drawable {
     speed: number
     private baseWiggleOffset: number = Math.random() * 10
 
-    constructor(pos: Vector) {
+    constructor(pos: Vector, magnet: Player = null) {
         super(pos, Leg.RADIUS, new CircleHitbox(Leg.RADIUS))
+        this.magnet = magnet
     }
 
     draw(context: CanvasRenderingContext2D): void {
