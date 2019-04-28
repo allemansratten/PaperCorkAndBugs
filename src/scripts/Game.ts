@@ -30,7 +30,6 @@ export class Game {
         this.level = new Level(20, 20, this.level == undefined ? 1 : this.level.levelNum + 1)
         if (createNewPlayer) this.player = this.nextPlayer(this.level)
         this.entities.push(this.player)
-        this.level.player = this.player
         this.entities.push(...MonsterGenerator.generateMonsters(this.level, this.player))
         this.gameState = GameState.IN_GAME
     }
@@ -205,7 +204,7 @@ export class Game {
         context.fillText("eyes: " + this.player.childEyes, 10, 520)
         context.fillText("legs: " + this.player.childLegs, 10, 550)
         context.fillText("arms: " + this.player.childArms, 10, 580)
-        
+
     }
 
     handleKeyPress(event: KeyboardEvent) {

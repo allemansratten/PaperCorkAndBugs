@@ -6,7 +6,6 @@ import {Vector} from "vector2d"
 
 export class Level implements Drawable {
 
-    public player: Player
     public static readonly TILE_SIZE = 80
     public static readonly PAD_TILES_COUNT = 7
     tiles: Tile[][]
@@ -70,27 +69,10 @@ export class Level implements Drawable {
         context.drawImage(img_background, 0, 0, img_background.width, img_background.height,
             -Level.PAD_TILES_COUNT*Level.TILE_SIZE, -Level.PAD_TILES_COUNT*Level.TILE_SIZE,
             (this.width + 2*Level.PAD_TILES_COUNT)*Level.TILE_SIZE, (this.height + 2*Level.PAD_TILES_COUNT)*Level.TILE_SIZE)
-        
-        // add pad tiles
-        context.globalAlpha = 0.8
-        for(let xi = -Level.PAD_TILES_COUNT; xi < 0; xi++) {
-            for(let yi = -Level.PAD_TILES_COUNT; yi < this.height+Level.PAD_TILES_COUNT; yi++) {
-                context.fillStyle = "#444340"
-                // context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 0, Level.TILE_SIZE + 0)
-                // context.fillRect((this.width + Level.PAD_TILES_COUNT + xi) * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 0, Level.TILE_SIZE + 0)
-            }
-        }        
-        for(let yi = -Level.PAD_TILES_COUNT; yi < 0; yi++) {
-            for(let xi = 0; xi < this.width; xi++) {
-                context.fillStyle = "#444340"
-                // context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 0, Level.TILE_SIZE + 0)
-                // context.fillRect(xi * Level.TILE_SIZE, (this.height + Level.PAD_TILES_COUNT + yi) * Level.TILE_SIZE, Level.TILE_SIZE + 0, Level.TILE_SIZE + 0)
-            }
-        }        
-        context.globalAlpha = 1
+            
+        const img_pins = ImageManager.get("pins")
         
 
-        const img_pins = ImageManager.get("pins")
         for (let xi = 0; xi < this.width; xi++) {
             for (let yi = 0; yi < this.height; yi++) {
                 const tile = this.tiles[xi][yi]
@@ -100,13 +82,32 @@ export class Level implements Drawable {
                     // context.globalAlpha = 0.8
                     // context.fillStyle = "rgb(50, 50, 50)"
                     // context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
+                    context.globalAlpha = 1
                 } else {
                     // context.globalAlpha = 0.8
                     // context.fillStyle = "rgb(10, 100, 100)"
                     // context.fillRect(xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE + 1, Level.TILE_SIZE + 1)
                 }
-                context.globalAlpha = 1
             }
         }
+
+
+        // add pad tiles
+        context.globalAlpha = 1
+        for(let xi = -Level.PAD_TILES_COUNT-1; xi < 1; xi++) {
+            for(let yi = -Level.PAD_TILES_COUNT; yi < this.height+Level.PAD_TILES_COUNT; yi++) {
+                context.fillStyle = "#444340"
+                context.drawImage(img_pins, 0, 0, img_pins.width, img_pins.height, xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE -0, Level.TILE_SIZE -0)
+                context.drawImage(img_pins, 0, 0, img_pins.width, img_pins.height, (this.width + Level.PAD_TILES_COUNT + xi) * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE -0, Level.TILE_SIZE -0)
+            }
+        }        
+        for(let yi = -Level.PAD_TILES_COUNT-1; yi < 1; yi++) {
+            for(let xi = 0; xi < this.width; xi++) {
+                context.fillStyle = "#444340"
+                context.drawImage(img_pins, 0, 0, img_pins.width, img_pins.height, xi * Level.TILE_SIZE, yi * Level.TILE_SIZE, Level.TILE_SIZE -0, Level.TILE_SIZE -0)
+                context.drawImage(img_pins, 0, 0, img_pins.width, img_pins.height, xi * Level.TILE_SIZE, (this.height + Level.PAD_TILES_COUNT + yi) * Level.TILE_SIZE, Level.TILE_SIZE -0, Level.TILE_SIZE -0)
+            }
+        }        
+        context.globalAlpha = 1
     }
 }
