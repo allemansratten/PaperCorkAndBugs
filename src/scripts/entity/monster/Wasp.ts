@@ -29,8 +29,7 @@ export class Wasp extends Monster {
         super(player, pos, Wasp.RADIUS, Wasp.HP)
     }
 
-    draw(context: CanvasRenderingContext2D): void {
-
+    aliveDraw(context: CanvasRenderingContext2D): void {
         context.globalAlpha = this.getAlpha()
         context.fillStyle = this.getColor() //"#cc0"
         context.strokeStyle = "#000"
@@ -39,17 +38,10 @@ export class Wasp extends Monster {
         context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
         context.fill()
         context.stroke()
-        context.globalAlpha = 1
     }
 
-    step(seconds: number, level: Level): boolean {
+    aliveStep(seconds: number, level: Level) {
         this.r = interpolateLinear(20, 30, this.getAngriness())
-        if (!super.step(seconds, level)) {
-            return false
-        }
-        if (!this.alive()) {
-            return true
-        }
 
         this.timeSinceLastCharge += seconds
         let chargeDone = false
@@ -96,8 +88,6 @@ export class Wasp extends Monster {
             this.player.pos.distance(this.pos) < Wasp.CHARGE_DISTANCE) {
             this.chargePrepProgress += seconds
         }
-
-        return true
     }
 
     getAngriness(): number {

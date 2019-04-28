@@ -18,22 +18,14 @@ export class Worm extends Monster {
         super(player, pos, Worm.RADIUS, Worm.HP)
     }
 
-    draw(context: CanvasRenderingContext2D): void {
-        context.globalAlpha = this.getAlpha()
+    aliveDraw(context: CanvasRenderingContext2D): void {
         context.fillStyle = Worm.COLOR
         context.beginPath()
         context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
         context.fill()
-        context.globalAlpha = 1
     }
 
-    step(seconds: number, level: Level): boolean {
-        if (!super.step(seconds, level)) {
-            return false
-        }
-        if (!this.alive()) {
-            return true
-        }
+    aliveStep(seconds: number, level: Level) {
         this.timeSinceLastShot += seconds
         if (this.timeSinceLastShot > 1 / Worm.SHOOTING_FREQ) {
             this.createdEntities.push(
@@ -47,7 +39,5 @@ export class Worm extends Monster {
             )
             this.timeSinceLastShot = 0
         }
-
-        return true
     }
 }
