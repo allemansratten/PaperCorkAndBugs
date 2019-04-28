@@ -120,7 +120,7 @@ export class Player extends Entity {
         // draw eyes
         this.eyes.forEach((eye, index) => {
             if (this.eyes.length == 1) {
-                eye.pos = new Vector(this.pos.x, this.pos.y - this.r)
+                eye.pos = new Vector(this.pos.x, this.pos.y - this.r/2)
             } else {
                 if (index >= 8 && index <= 9)
                     eye.pos = new Vector(this.pos.x + (8.5 - index) * this.r * 0.9, this.pos.y - this.r / 5.6)
