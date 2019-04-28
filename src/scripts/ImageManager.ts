@@ -18,7 +18,7 @@ export class ImageManager {
     public static readonly ASSETS_DIR = "../assets/"
 
     public static readonly IMAGES_TO_LOAD = [
-        ["harold", "harold.jpg"],
+        ["cork", "cork.jpg"],
         ["eye1", "eye1.png"],
         ["paper1", "paper1.png"],
         ["leg1", "leg1.png"],

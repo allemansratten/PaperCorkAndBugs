@@ -7,6 +7,7 @@ import {Fly} from "./monster/Fly"
 import {StagBeetle} from "./monster/StagBeetle"
 import {Vector} from "vector2d"
 import {Player} from "./Player"
+import {Ladybug} from "./monster/Ladybug"
 
 export class MonsterGenerator {
     private static readonly FIRST_LEVEL_MONSTERS = 5
@@ -18,6 +19,7 @@ export class MonsterGenerator {
         [Ant, Fly, StagBeetle],
         [Ant, Fly, StagBeetle, Wasp],
         [Ant, Fly, StagBeetle, Wasp, Worm],
+        [Ant, Fly, StagBeetle, Wasp, Worm, Ladybug],
     ]
 
     static generateMonsters(level: Level, player: Player): Entity[] {
