@@ -1,14 +1,16 @@
 import {Game} from "./Game"
 import {ImageManager} from "./ImageManager"
 
-const canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement
+
+const GAME_WINDOW_SIZE : number = 600
+const canvas: HTMLCanvasElement = document.getElementById('game_canvas') as HTMLCanvasElement
 const ctx: CanvasRenderingContext2D = canvas.getContext('2d')
-canvas.width = ctx.canvas.clientWidth
-canvas.height = ctx.canvas.clientHeight
+canvas.width = GAME_WINDOW_SIZE
+canvas.height = GAME_WINDOW_SIZE
 
 ImageManager.loadAll()
 
-let game: Game = new Game(600, 600)
+let game: Game = new Game(GAME_WINDOW_SIZE, GAME_WINDOW_SIZE)
 document.body.onkeydown = (event: KeyboardEvent) => {
     game.handleKeyPress(event)
 }
