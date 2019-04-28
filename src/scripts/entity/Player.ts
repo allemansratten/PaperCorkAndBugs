@@ -11,6 +11,7 @@ import {Leg} from "./Leg"
 import {Monster} from "./monster/Monster"
 import {Projectile} from "./Projectile"
 import {BodyPart} from "./BodyPart"
+import {ImageManager} from "../ImageManager"
 
 export class Player extends Entity {
 
@@ -96,11 +97,10 @@ export class Player extends Entity {
         // draw body
         context.fillStyle = this.invincibleTime > 0 ? Player.INVINCIBLE_COLOR : Player.ALIVE_COLOR
         context.beginPath()
-        if (this.hitAnimStatus == -1)
-            context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
-        else {
+        let curR = this.r
+        if (this.hitAnimStatus !== -1) {
             let hitSine = Math.sin((this.hitStartTime - time) / 100)
-            context.arc(this.pos.x, this.pos.y, this.r - hitSine * Player.HIT_THICC_MULTIPLIER, 0, 2 * Math.PI)
+            curR = this.r - hitSine * Player.HIT_THICC_MULTIPLIER
             if (this.hitAnimStatus == 0 && hitSine >= 0.9) {
                 this.hitAnimStatus = 1
             }
@@ -109,7 +109,13 @@ export class Player extends Entity {
             }
             this.hitSinePrev = hitSine
         }
-        context.fill()
+        const img = ImageManager.get("paper1")
+        context.drawImage(img, 0, 0, img.width, img.height,
+            this.pos.x - curR, this.pos.y - curR, curR * 2, curR * 2)
+        // context.globalAlpha = 0.5
+        // context.arc(this.pos.x, this.pos.y, curR, 0, 2 * Math.PI)
+        // context.fill()
+        // context.globalAlpha = 1.0
 
         // draw eyes
         this.eyes.forEach((eye, index) => {

@@ -2,6 +2,7 @@ import {Drawable} from "../Drawable"
 import {Vector} from "vector2d"
 import {BodyPart} from "./BodyPart"
 import {CircleHitbox} from "./CircleHitbox"
+import {ImageManager} from "../ImageManager"
 
 export class Eye extends BodyPart implements Drawable {
 
@@ -22,7 +23,7 @@ export class Eye extends BodyPart implements Drawable {
     }
 
     static randomEyeSize(): number {
-        return 5 + (Math.random() - 0.5) * 2.5
+        return 10 + (Math.random() - 0.5) * 2.5
     }
 
     draw(context: CanvasRenderingContext2D): void {
@@ -62,5 +63,9 @@ export class Eye extends BodyPart implements Drawable {
             }
             this.blinkingSinePrev = blinkSine
         }
+
+        const img = ImageManager.get("eye1")
+        context.drawImage(img, 0, 0, img.width, img.height,
+            this.pos.x - this.r, this.pos.y - this.r, this.r * 2, this.r * 2)
     }
 }

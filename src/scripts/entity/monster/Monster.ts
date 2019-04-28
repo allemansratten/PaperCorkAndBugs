@@ -41,7 +41,7 @@ export abstract class Monster extends Entity {
                 if (partRand < 1 / 3) {
                     this.createdEntities.push(new Leg(this.pos.clone() as Vector))
                 } else if (partRand < 2 / 3) {
-                    this.createdEntities.push(new Eye(this.pos.clone() as Vector, Eye.randomEyeSize() * 3))
+                    this.createdEntities.push(new Eye(this.pos.clone() as Vector, Eye.randomEyeSize() * 2))
                 } else {
                     this.createdEntities.push(new Arm(this.pos.clone() as Vector, Math.PI * 2 * Math.random()))
                 }

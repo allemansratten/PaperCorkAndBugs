@@ -11,4 +11,18 @@ export class ImageManager {
     public static get(name: string) {
         return ImageManager.images.get(name)
     }
+
+    public static readonly ASSETS_DIR = "../assets/"
+
+    public static readonly IMAGES_TO_LOAD = [
+        ["harold", "harold.jpg"],
+        ["eye1", "eye1.png"],
+        ["paper1", "paper1.png"],
+    ]
+
+    public static loadAll() {
+        this.IMAGES_TO_LOAD.forEach(imgPair => {
+            ImageManager.add(imgPair[0], this.ASSETS_DIR + imgPair[1])
+        })
+    }
 }

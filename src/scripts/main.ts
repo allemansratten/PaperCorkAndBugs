@@ -6,7 +6,7 @@ const ctx: CanvasRenderingContext2D = canvas.getContext('2d')
 canvas.width = ctx.canvas.clientWidth
 canvas.height = ctx.canvas.clientHeight
 
-ImageManager.add("harold", "../assets/harold.jpg")
+ImageManager.loadAll()
 
 let game: Game = new Game(600, 600)
 document.body.onkeydown = (event: KeyboardEvent) => {
