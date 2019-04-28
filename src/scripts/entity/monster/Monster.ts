@@ -11,7 +11,7 @@ import {Arm} from "../Arm"
 
 export abstract class Monster extends Entity {
 
-    private readonly BODY_PART_DROP_CHANCE = 0.5
+    private static readonly BODY_PART_DROP_CHANCE = 0.5
 
     constructor(protected player: Player, pos: Vector, r: number, protected hp: number) {
         super(pos, r, new CircleHitbox(r))
@@ -20,6 +20,7 @@ export abstract class Monster extends Entity {
     readonly friendly: boolean = false
     protected timeSinceDeath: number = 0
     protected static readonly DEATH_TIME = 0.5
+    protected static readonly PUSH_COEF = 0.2
 
     alive(): boolean {
         return this.hp > 0
@@ -35,7 +36,7 @@ export abstract class Monster extends Entity {
 
     step(seconds: number, level: Level): boolean {
         if (!this.alive() && this.timeSinceDeath == 0) {
-            if (Math.random() < this.BODY_PART_DROP_CHANCE) {
+            if (Math.random() < Monster.BODY_PART_DROP_CHANCE) {
                 const partRand = Math.random()
                 if (partRand < 1 / 3) {
                     this.createdEntities.push(new Leg(this.pos.clone() as Vector))
@@ -81,5 +82,20 @@ export abstract class Monster extends Entity {
         } else {
             return a2
         }
+    }
+
+    static pushAway(m1: Monster, m2: Monster) {
+        if (m1.pos.equals(m2.pos)) {
+            return
+        }
+        let delta = m1.pos.clone().subtract(m2.pos)
+        let minDelta = delta.clone().normalise().mulS(m1.r + m2.r)
+        if (delta.length() < minDelta.length()) {
+            let overlap = delta.subtract(minDelta)
+            // console.log(overlap)
+            m1.pos.subtract(overlap.clone().mulS(Monster.PUSH_COEF))
+            m2.pos.add(overlap.clone().mulS(Monster.PUSH_COEF))
+        }
+
     }
 }
