@@ -5,6 +5,7 @@ import {Vector} from "vector2d"
 import {Shot} from "../Shot"
 import {Entity} from "../Entity"
 import {CircleHitbox} from "../CircleHitbox"
+import {ImageManager} from "../../ImageManager"
 
 export class Worm extends Monster {
 
@@ -28,10 +29,13 @@ export class Worm extends Monster {
     }
 
     aliveDraw(context: CanvasRenderingContext2D): void {
-        context.fillStyle = Worm.COLOR
-        context.beginPath()
-        context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
-        context.fill()
+        context.save()
+        context.translate(this.pos.x, this.pos.y)
+        // context.rotate(this.imageAngle())
+        const img = ImageManager.get("worm")
+        context.drawImage(img, 0, 0, img.width, img.height,
+            - this.r, - this.r, this.r * 2, this.r * 2)
+        context.restore()
     }
 
     aliveStep(seconds: number, level: Level) {
