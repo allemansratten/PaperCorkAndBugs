@@ -3,6 +3,7 @@ import {Vector} from "vector2d"
 import {BodyPart} from "./BodyPart"
 import {CircleHitbox} from "./CircleHitbox"
 import {ImageManager} from "../ImageManager"
+import {Player} from "./Player"
 
 export class Eye extends BodyPart implements Drawable {
 
@@ -17,9 +18,10 @@ export class Eye extends BodyPart implements Drawable {
     private static readonly BLINKING_INTERVAL = 600
     private static readonly BLINKING_DURATION = 300
 
-    constructor(pos: Vector, r: number) {
+    constructor(pos: Vector, r: number, magnet: Player = null) {
         super(pos, r, new CircleHitbox(r))
         this.blinkingLastTime = Date.now()
+        this.magnet = magnet
     }
 
     static randomEyeSize(): number {
