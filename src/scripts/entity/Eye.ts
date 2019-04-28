@@ -40,6 +40,10 @@ export class Eye extends BodyPart implements Drawable {
         context.closePath()
         context.fill()
 
+        const img = ImageManager.get("eye1")
+        context.drawImage(img, 0, 0, img.width, img.height,
+            this.pos.x - this.r, this.pos.y - this.r, this.r * 2, this.r * 2)
+
         // roll dice to start blinking
         if (this.blinkingState == -1) {
             // this is so that the probs wouldn't be frame dependent
@@ -51,8 +55,8 @@ export class Eye extends BodyPart implements Drawable {
         } else {
             let blinkSine = Math.sin((this.blinkingStartTime - time) / Eye.BLINKING_DURATION)
             context.beginPath()
-            // context.arc(this.pos.x, this.pos.y, this.r, 0, Math.PI * (1-blinkSine))
-            context.ellipse(this.pos.x, this.pos.y, this.r, (1 + blinkSine) * this.r, 0, 0, 2 * Math.PI)
+            context.arc(this.pos.x, this.pos.y, this.r, Math.PI - blinkSine*1.1,  +blinkSine*1.1)
+            // context.ellipse(this.pos.x, this.pos.y, this.r, (1 + blinkSine) * this.r, 0, 0, 2 * Math.PI)
             context.fill()
             context.fillStyle = Eye.EYELID_COLOR
             if (this.blinkingState == 0 && blinkSine <= this.blinkingSinePrev) {
@@ -63,9 +67,5 @@ export class Eye extends BodyPart implements Drawable {
             }
             this.blinkingSinePrev = blinkSine
         }
-
-        const img = ImageManager.get("eye1")
-        context.drawImage(img, 0, 0, img.width, img.height,
-            this.pos.x - this.r, this.pos.y - this.r, this.r * 2, this.r * 2)
     }
 }
