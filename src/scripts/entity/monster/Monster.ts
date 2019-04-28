@@ -66,6 +66,16 @@ export abstract class Monster extends Entity {
         context.globalAlpha = 1
     }
 
+    drawDebugCircle(context: CanvasRenderingContext2D) {
+        context.globalAlpha = 0.5
+        context.strokeStyle = "#f00"
+        context.lineWidth = 2
+        context.beginPath()
+        context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
+        context.stroke()
+        context.globalAlpha = 1
+    }
+
     getAlpha(): number {
         return clamp(1 - this.timeSinceDeath / Monster.DEATH_TIME, 0, 1)
     }

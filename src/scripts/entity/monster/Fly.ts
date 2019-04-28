@@ -2,6 +2,7 @@ import {Player} from "../Player"
 import {Monster} from "./Monster"
 import {Level} from "../../Level"
 import {Vector} from "vector2d"
+import {ImageManager} from "../../ImageManager"
 
 export class Fly extends Monster {
 
@@ -22,10 +23,13 @@ export class Fly extends Monster {
     }
 
     aliveDraw(context: CanvasRenderingContext2D): void {
-        context.fillStyle = "#228"
-        context.beginPath()
-        context.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI)
-        context.fill()
+        context.save()
+        context.translate(this.pos.x, this.pos.y)
+        context.rotate(this.imageAngle())
+        const img = ImageManager.get("fly")
+        context.drawImage(img, 0, 0, img.width, img.height,
+            - this.r, - this.r, this.r * 2, this.r * 2)
+        context.restore()
     }
 
     aliveStep(seconds: number, level: Level) {
@@ -36,7 +40,7 @@ export class Fly extends Monster {
         }
 
         this.angle = Monster.getCloserAngle(this.angle, this.targetAngle, Fly.ANGLE_SPEED_MAX * seconds)
-        let speed = new Vector(Math.cos(this.angle), Math.sin(this.angle)).mulS(Fly.MAX_SPEED)
-        this.pos.add(speed.clone().mulS(seconds))
+        this.speed = new Vector(Math.cos(this.angle), Math.sin(this.angle)).mulS(Fly.MAX_SPEED)
+        this.pos.add(this.speed.clone().mulS(seconds))
     }
 }
