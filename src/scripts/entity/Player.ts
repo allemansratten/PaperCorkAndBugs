@@ -5,7 +5,7 @@ import {Level} from "../Level"
 import {CircleHitbox} from "./CircleHitbox"
 import {Eye} from "./Eye"
 import {Shot} from "./Shot"
-import {clamp, Smoother} from "../Util"
+import {clamp, interpolateLinear, Smoother} from "../Util"
 import {Arm} from "./Arm"
 import {Leg} from "./Leg"
 import {Monster} from "./monster/Monster"
@@ -19,12 +19,13 @@ export class Player extends Entity {
     static readonly ZERO_LEGS_MAX_SPEED = 20 // px / s
     private static readonly ACCELERATION = 2000 // px / s^2
     private static readonly DECELERATION = 800
-    private static readonly SHOOTING_FREQ = 5
     private static readonly INVINCIBLE_AFTER_HIT_TIME = 1
     private static readonly SHOT_SPEED = 500
     private static readonly ZOOM_0_EYES = 5
-    private static readonly ZOOM_1_EYE = 2
-    private static readonly ZOOM_MAX_EYES = 0.5
+    private static readonly ZOOM_1_EYE = 1.7
+    private static readonly ZOOM_MAX_EYES = 0.6
+    private static readonly SHOOTING_FREQ_1_ARM = 2
+    private static readonly SHOOTING_FREQ_10_ARMS = 6
     // Cosmetics
     private static readonly ALIVE_COLOR = "#9e502c"
     private static readonly INVINCIBLE_COLOR = "#ff502c"
@@ -256,7 +257,7 @@ export class Player extends Entity {
         if (this.eyes.length === 0) {
             return Player.ZOOM_0_EYES
         }
-        const goodness = (this.eyes.length - 1) / 7
+        const goodness = (this.eyes.length - 1) / 9
         return Math.exp(Math.log(Player.ZOOM_MAX_EYES) * goodness + Math.log(Player.ZOOM_1_EYE) * (1 - goodness))
         // return 1 / (1 + 0.05 * this.eyes.length)
     }
@@ -274,6 +275,10 @@ export class Player extends Entity {
     }
 
     getShootingSpeed(): number {
-        return Player.SHOOTING_FREQ * 0.1 + this.arms.length * Player.SHOOTING_FREQ * 0.15
+        if (this.arms.length === 0) {
+            return 0
+        }
+        const goodness = (this.arms.length - 1) / 9
+        return Math.exp(Math.log(Player.SHOOTING_FREQ_10_ARMS) * goodness + Math.log(Player.SHOOTING_FREQ_1_ARM) * (1 - goodness))
     }
 }

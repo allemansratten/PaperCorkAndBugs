@@ -11,40 +11,54 @@ import {Ladybug} from "./monster/Ladybug"
 import {Mosquito} from "./monster/Mosquito"
 
 export class MonsterGenerator {
-    private static readonly FIRST_LEVEL_MONSTERS = 5
-    private static readonly LEVEL_MONSTERS_INCREMENT = 0.4
+    private static readonly LEVEL_MONSTERS_BASE = 10
+    private static readonly LEVEL_MONSTERS_INCREMENT = 1
     private static readonly NEW_MONSTER_MIN_DIST = 250
-    private static readonly LEVEL_MONSTERS = [
-        [Ant],
-        [Ant, Fly],
-        [Ant, Fly, StagBeetle],
-        [Ant, Fly, StagBeetle, Wasp],
-        [Ant, Fly, StagBeetle, Wasp],
-        [Ant, Fly, StagBeetle, Wasp, Worm],
-        [Ant, Fly, StagBeetle, Wasp, Worm],
-        [Ant, Fly, StagBeetle, Wasp, Worm, Ladybug],
-        [Ant, Fly, StagBeetle, Wasp, Worm, Ladybug],
-        [Ant, Fly, StagBeetle, Wasp, Worm, Ladybug, Mosquito],
+
+    private static readonly MONSTER_TYPES = [Ant, Fly, StagBeetle, Wasp, Mosquito, Ladybug, Worm]
+    private static readonly FIXED_LEVELS = [
+        [1],
+        [2],
+        [3],
+        [4],
+        [2, 1],
+        [2, 3],
+        [3, 0, 1],
+        [4, 1, 2],
+        [0, 0, 4],
+        [3, 0, 0, 2],
+        [3, 2, 0, 3],
+        [3, 2, 0, 2, 1],
+        [3, 0, 0, 0, 4],
+        [4, 2, 1, 1, 3],
+        [4, 2, 1, 0, 0, 2],
+        [4, 2, 1, 1, 1, 2],
+        [0, 0, 0, 0, 0, 0, 2],
     ]
 
     static generateMonsters(level: Level, player: Player): Entity[] {
+        const levelI = level.levelNum - 1
         const entities: Entity[] = []
-        if (level.levelNum <= this.LEVEL_MONSTERS.length) {
-            /** make sure the new monster shows up */
-            const monsterTypes = this.LEVEL_MONSTERS[level.levelNum - 1]
-            const toAdd = new (monsterTypes[monsterTypes.length - 1])(player, new Vector(0, 0))
-            toAdd.pos = level.generateValidPosNotCloseTo(toAdd.r, player.pos, this.NEW_MONSTER_MIN_DIST)
-            entities.push(toAdd)
-        }
-        while (entities.length < MonsterGenerator.FIRST_LEVEL_MONSTERS + MonsterGenerator.LEVEL_MONSTERS_INCREMENT * (level.levelNum - 1)) {
-            entities.push(this.addMonsterRandom(level, player))
+        if (levelI < this.FIXED_LEVELS.length) {
+            for (let i = 0; i < this.FIXED_LEVELS[levelI].length; i++) {
+                for (let j = 0; j < this.FIXED_LEVELS[levelI][i]; j++) {
+                    const toAdd = new (this.MONSTER_TYPES[i])(player, new Vector(0, 0))
+                    toAdd.pos = level.generateValidPosNotCloseTo(toAdd.r, player.pos, this.NEW_MONSTER_MIN_DIST)
+                    entities.push(toAdd)
+                }
+            }
+        } else {
+            const levelMonsters = (MonsterGenerator.LEVEL_MONSTERS_BASE +
+                MonsterGenerator.LEVEL_MONSTERS_INCREMENT * (levelI - this.FIXED_LEVELS.length))
+            while (entities.length < levelMonsters) {
+                entities.push(this.addMonsterRandom(level, player))
+            }
         }
         return entities
     }
 
     static randomMonsterType(level: Level) {
-        const levelTypeIdx = Math.min(level.levelNum, MonsterGenerator.LEVEL_MONSTERS.length) - 1
-        const types = MonsterGenerator.LEVEL_MONSTERS[levelTypeIdx]
+        const types = MonsterGenerator.MONSTER_TYPES
         return types[Math.floor(Math.random() * types.length)]
     }
 

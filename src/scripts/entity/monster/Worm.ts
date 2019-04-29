@@ -11,7 +11,7 @@ export class Worm extends Monster {
 
     private static readonly RADIUS = 20
     private static readonly COLOR = "#faa"
-    private static readonly HP = 4
+    private static readonly HP = 5
     private static readonly SHOOTING_FREQ = 1
     private static readonly SHOT_SPEED = 300
     private static readonly TELEPORT_FREQ = 0.1
