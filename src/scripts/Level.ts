@@ -7,7 +7,7 @@ export class Level implements Drawable {
 
     public static readonly TILE_SIZE = 80
     public static readonly PAD_TILES_COUNT = 7
-    private static readonly MAP_SIZES = [15, 16, 17, 18, 19, 20]
+    private static readonly MAP_SIZES = [12, 12, 12, 12, 12, 12, 12, 13, 14, 15, 16, 17, 18, 19, 20]
     public width: number
     public height: number
     tiles: Tile[][]

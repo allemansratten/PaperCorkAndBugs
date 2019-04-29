@@ -12,7 +12,7 @@ export class Ladybug extends Monster {
     private static readonly MAX_SPEED = 70
     private static readonly ACCELERATION = 1000
     private static readonly DEACCELERATION = 500
-    private static readonly HP = 10
+    private static readonly HP = 7
     private static readonly SHOT_PREP_TIME = 0.5
     private static readonly SHOOTING_FREQ = 0.3
     private static readonly N_SHOTS = 7

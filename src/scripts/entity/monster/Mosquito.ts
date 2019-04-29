@@ -11,8 +11,8 @@ export class Mosquito extends Monster {
 
     private static readonly RADIUS = 20
     private static readonly MAX_SPEED = 250
-    private static readonly ACCELERATION = 750
-    private static readonly HP = 3
+    private static readonly ACCELERATION = 450
+    private static readonly HP = 4
 
     constructor(player: Player, pos: Vector) {
         super(player, pos, Mosquito.RADIUS, Mosquito.HP)
@@ -31,7 +31,7 @@ export class Mosquito extends Monster {
     collideWith(entity: Entity): void {
         super.collideWith(entity)
         if (entity instanceof Shot) {
-            this.speed = entity.speed.clone().normalise().mulS(Mosquito.MAX_SPEED) as Vector
+            this.speed = this.speed.clone().add(entity.speed.clone()).normalise().mulS(Mosquito.MAX_SPEED) as Vector
         }
     }
 
